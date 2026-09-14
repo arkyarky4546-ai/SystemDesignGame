@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState, type Ref } from 'react'
+import { useCallback, useMemo, useRef, useState, type ReactNode, type Ref } from 'react'
 import { useStore } from 'zustand'
 import type { StoreApi } from 'zustand/vanilla'
 import { COMPONENT_DEFS } from '../../../content/components'
@@ -41,6 +41,8 @@ type CanvasScreenProps = {
   /** Defaults to advancing the store directly, with no animation or report. */
   readonly onAdvance?: () => void
   readonly advanceButtonRef?: Ref<HTMLButtonElement>
+  /** "How a week works" while it's open. The layout decides where it goes (ADR-0038). */
+  readonly guide?: ReactNode
 }
 
 const utilizationOf = (tick: TickResult | null): Readonly<Record<NodeId, number>> =>
@@ -50,11 +52,15 @@ const utilizationOf = (tick: TickResult | null): Readonly<Record<NodeId, number>
  * The canvas screen (05-UI-DESIGN §4): catalog, canvas and inspector, with next week's
  * forecast above the canvas and its costs beside Advance. The layout follows §9's
  * breakpoints:
- * - 900px and up: three columns.
- * - 600–899px: the canvas gets the full width, with catalog and inspector in bottom sheets.
- * - Below 600px: the canvas is pan and zoom only, and editing happens in a component list.
+ * - 900px and up: three columns, with the week guide above them.
+ * - 600–899px: the canvas gets the full width, with the guide, catalog and inspector in bottom sheets.
+ * - Below 600px: the canvas is pan and zoom only, and editing happens in a component list,
+ *   with the guide first in the panel under the canvas.
+ *
+ * Below 900px the guide goes in the panel that already scrolls, because a banner above the
+ * canvas takes most of its height.
  */
-export function CanvasScreen({ store, playback = null, busy = false, onAdvance, advanceButtonRef }: CanvasScreenProps) {
+export function CanvasScreen({ store, playback = null, busy = false, onAdvance, advanceButtonRef, guide }: CanvasScreenProps) {
   const run = useStore(store, (state) => state.run)
   const catalog = useStore(store, (state) => state.catalog)
   const difficulty = useStore(store, (state) => state.settings.difficulty)
@@ -157,6 +163,8 @@ export function CanvasScreen({ store, playback = null, busy = false, onAdvance, 
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
+      {wide && guide && <div className="max-h-[40dvh] shrink-0 overflow-y-auto border-b border-panel-line">{guide}</div>}
+
       <div className="flex min-h-0 flex-1 flex-col min-[900px]:grid min-[900px]:grid-cols-[13rem_minmax(0,1fr)_17rem]">
         {wide && <aside className="overflow-y-auto border-r border-panel-line p-4">{palette}</aside>}
 
@@ -190,8 +198,11 @@ export function CanvasScreen({ store, playback = null, busy = false, onAdvance, 
 
         {wide && <aside className="overflow-y-auto border-l border-panel-line p-4">{inspector}</aside>}
 
+        {/* Relative, so the sheets' screen-reader-only headings stay inside the scroll area. Pushed
+            below the fold by the guide, they otherwise made the whole page scroll (ADR-0038). */}
         {!wide && editable && (
-          <div className="max-h-[45dvh] shrink-0 overflow-y-auto border-t border-panel-line bg-panel-raised">
+          <div className="relative max-h-[45dvh] shrink-0 overflow-y-auto border-t border-panel-line bg-panel-raised">
+            {guide && <div className="border-b border-panel-line">{guide}</div>}
             <details open>
               <summary className={PANEL_HEADING}>Catalog</summary>
               <div className="px-4 pb-4">
@@ -209,6 +220,7 @@ export function CanvasScreen({ store, playback = null, busy = false, onAdvance, 
 
         {!editable && (
           <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto border-t border-panel-line p-4">
+            {guide && <div className="-mx-4 -mt-4 border-b border-panel-line">{guide}</div>}
             <section aria-labelledby="component-list-heading" className="flex flex-col gap-2">
               <h2 id="component-list-heading" className="text-sm font-medium text-ink-bright">
                 On the canvas

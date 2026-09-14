@@ -1,13 +1,16 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import { useStore } from 'zustand'
 import type { StoreApi } from 'zustand/vanilla'
 import { BRANDING } from '../config/branding'
 import type { GameStore, LastTurn, SaveProblem } from '../state/store'
 import { StatusBar } from './components/StatusBar'
+import { WeekGuide } from './components/WeekGuide'
 import { CanvasScreen } from './screens/canvas/CanvasScreen'
 import { TurnReport } from './screens/report/TurnReport'
 import { TURN_ANIMATION_MS, type TurnPlayback } from './turn-playback'
 import { useMediaQuery } from './use-media-query'
+
+const HEADER_BUTTON = 'ml-auto rounded border border-panel-line px-2 py-1 text-xs text-ink-bright hover:border-flow aria-expanded:border-flow'
 
 export function App({ store }: { readonly store: StoreApi<GameStore> }) {
   const reducedMotionSetting = useStore(store, (state) => state.settings.reducedMotion)
@@ -16,7 +19,12 @@ export function App({ store }: { readonly store: StoreApi<GameStore> }) {
   const saveProblem = useStore(store, (state) => state.ui.saveProblem)
   const run = useStore(store, (state) => state.run)
   const lastTurn = useStore(store, (state) => state.ui.lastTurn)
+  const guideOpen = useStore(store, (state) => state.ui.guideOpen)
   const advanceButton = useRef<HTMLButtonElement | null>(null)
+  const guideButton = useRef<HTMLButtonElement | null>(null)
+  const guideId = useId()
+  // A player who opens the guide from the header is taken to it. A guide that opens with a new run leaves focus alone.
+  const [guideRequested, setGuideRequested] = useState(false)
 
   // Each Advance plays once: the animation, then the report, then back to planning. The
   // turns are compared by identity, since a new run starts its week count again.
@@ -53,12 +61,39 @@ export function App({ store }: { readonly store: StoreApi<GameStore> }) {
     if (dismissed) advanceButton.current?.focus()
   }, [dismissed])
 
+  // Closing from inside the guide removes the focused element, so focus goes to the button that reopens it.
+  const closeGuideFromInside = () => {
+    guideButton.current?.focus()
+    store.getState().closeGuide()
+  }
+
+  const toggleGuide = () => {
+    if (guideOpen) {
+      store.getState().closeGuide()
+      return
+    }
+    setGuideRequested(true)
+    store.getState().openGuide()
+  }
+
   return (
     <div data-reduced-motion={reducedMotion} className="flex h-dvh flex-col">
       <div inert={reportOpen} className="flex min-h-0 flex-1 flex-col">
         <header className="flex flex-wrap items-center gap-x-6 gap-y-1 border-b border-panel-line px-4 py-2">
           <h1 className="text-base font-semibold text-ink-bright">{BRANDING.name}</h1>
           {run && <StatusBar run={run} playback={playback} />}
+          {run && (
+            <button
+              ref={guideButton}
+              type="button"
+              aria-expanded={guideOpen}
+              aria-controls={guideOpen ? guideId : undefined}
+              className={HEADER_BUTTON}
+              onClick={toggleGuide}
+            >
+              How a week works
+            </button>
+          )}
         </header>
         {saveProblem && (
           <div role="alert" className="flex items-start justify-between gap-4 border-b border-fault px-4 py-2 text-sm text-ink-bright">
@@ -78,6 +113,7 @@ export function App({ store }: { readonly store: StoreApi<GameStore> }) {
           busy={busy}
           onAdvance={() => store.getState().advanceTurn()}
           advanceButtonRef={advanceButton}
+          guide={guideOpen && <WeekGuide id={guideId} focusHeading={guideRequested} onClose={closeGuideFromInside} />}
         />
       </div>
       {reportOpen && <TurnReport lastTurn={lastTurn} onClose={() => setDismissed(lastTurn)} />}

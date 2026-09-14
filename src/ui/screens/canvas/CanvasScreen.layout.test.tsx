@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { cleanup, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import type { ReactNode } from 'react'
 import { afterEach, describe, expect, it } from 'vitest'
 import { TEST_CATALOG } from '../../../engine/test-helpers'
 import { createGameStore } from '../../../state/store'
@@ -9,7 +10,7 @@ import { CanvasScreen } from './CanvasScreen'
 
 // 05-UI-DESIGN §9 layouts, chosen by viewport width. jsdom has no matchMedia, so each test
 // answers min-width queries for the width it simulates.
-function renderAt(width: number) {
+function renderAt(width: number, guide?: ReactNode) {
   Object.defineProperty(window, 'matchMedia', {
     configurable: true,
     value: (query: string) => ({
@@ -25,9 +26,12 @@ function renderAt(width: number) {
   })
   const store = createGameStore({ storage: memoryStorage(), catalog: TEST_CATALOG, now: FIXED_NOW })
   store.getState().startRun(1)
-  render(<CanvasScreen store={store} />)
+  render(<CanvasScreen store={store} guide={guide} />)
   return { store, canvas: screen.getByRole('application', { name: 'Architecture canvas' }), user: userEvent.setup() }
 }
+
+const follows = (earlier: Node, later: Node | null) =>
+  later !== null && Boolean(earlier.compareDocumentPosition(later) & Node.DOCUMENT_POSITION_FOLLOWING)
 
 afterEach(() => {
   cleanup()
@@ -82,5 +86,22 @@ describe('canvas screen layout (05-UI-DESIGN §9)', () => {
     for (let step = 0; step < 4; step++) await user.click(screen.getByRole('button', { name: 'Zoom in' }))
     expect(width()).toBe(full * 1.5)
     expect(screen.getByRole('button', { name: 'Zoom in' }).hasAttribute('disabled')).toBe(true)
+  })
+
+  it.each([1440, 900])('at %ipx shows the week guide above the three columns', (width) => {
+    renderAt(width, <section aria-label="Week guide" />)
+    const guide = screen.getByRole('region', { name: 'Week guide' })
+    expect(follows(guide, screen.getByRole('heading', { name: 'Catalog' }))).toBe(true)
+  })
+
+  // A banner above the canvas took it down to 97px tall at 600 × 900 (ADR-0038).
+  it.each([
+    { width: 600, panelStart: () => document.querySelector('details') },
+    { width: 400, panelStart: () => screen.getByRole('region', { name: 'On the canvas' }) },
+  ])('at $width px puts the week guide under the canvas, first in the panel that scrolls', ({ width, panelStart }) => {
+    const { canvas } = renderAt(width, <section aria-label="Week guide" />)
+    const guide = screen.getByRole('region', { name: 'Week guide' })
+    expect(follows(canvas, guide)).toBe(true)
+    expect(follows(guide, panelStart())).toBe(true)
   })
 })
