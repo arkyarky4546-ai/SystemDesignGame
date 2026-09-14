@@ -1,0 +1,35 @@
+{
+  "version": 0,
+  "savedAt": "2026-09-01T18:30:00.000Z",
+  "knowledge": {
+    "unlockedConcepts": ["client-server-basics", "latency-and-throughput"]
+  },
+  "settings": {
+    "difficulty": "senior"
+  },
+  "run": {
+    "seed": 123456789,
+    "turn": 7,
+    "cashCents": 412345,
+    "reputation": 0.64,
+    "workload": {
+      "meanRps": 12.5,
+      "peakMultiplier": 2.5,
+      "readFraction": 0.8,
+      "staticFraction": 0.3,
+      "keySkew": 0.2,
+      "payloadKb": 50
+    },
+    "architecture": {
+      "nodes": [
+        { "id": "ingress", "kind": "ingress", "replicas": 1, "tier": 0, "config": {} },
+        { "id": "app", "kind": "app-server", "replicas": 1, "tier": 1, "config": { "fanoutFactor": 1 } },
+        { "id": "db", "kind": "database", "replicas": 1, "tier": 0, "config": {} }
+      ],
+      "edges": [
+        { "from": "ingress", "to": "app" },
+        { "from": "app", "to": "db" }
+      ]
+    }
+  }
+}
