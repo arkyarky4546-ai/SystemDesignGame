@@ -987,3 +987,304 @@ The specs only sketch the keyboard: arrow keys move the selection and Enter conn
 - jsdom has no layout, so tests stub the canvas's `getBoundingClientRect` and shim
   `PointerEvent`.
 - Frame rate and widths are checked in a real browser at the checkpoint, not in CI.
+
+---
+
+## ADR-0031 — Node status, the bottleneck and edge flow in the tick
+2026-09-14 · Status: accepted · Extends ADR-0020, ADR-0023
+
+**Context.** ADR-0023 left `bottleneck` and per-node `status` to M4. `02-SIMULATION.md` §9
+defines the bottleneck as the "highest utilization node above warning threshold". Three
+details were open:
+- Utilization is capped at U_MAX (0.995), so every overloaded node reads the same.
+- Whether a node exactly at a threshold is above it.
+- `05-UI-DESIGN.md` §4 wants edge stroke weight by throughput, which needs flow per edge
+  (ADR-0029's consequences).
+
+**Decision.**
+- **Status.** `nodeStatus(u)` in `engine/resolve.ts`. Warning starts at
+  `BALANCE.status.warningUtilization` (0.75) and saturated at `saturatedUtilization` (0.9),
+  both inclusive, as the canvas already drew them (ADR-0029). The canvas now reads the
+  engine's function, so there is one definition. §9's `failed` waits for failures (§5.7).
+- **Bottleneck.** Among nodes at warning or above, the one with the highest inbound ÷
+  capacity. Below capacity that equals utilization. Above it, it ranks overloaded nodes by
+  how far past capacity they are. An exact tie goes to the node nearer ingress, whose drops
+  the next node never saw. Null when every node is healthy.
+- **Edge flow.** `TickResult.perEdge` lists `{ from, to, rps }` in path order: what arrives
+  at `to`, which is what the previous hop served times its fanout. The canvas draws stroke
+  width on a log scale, 1.5 units at 1 rps to 7 units at 100k rps.
+- `perNode` is keyed by id, and object keys that look like numbers don't keep insertion
+  order. Anything that needs path order reads `perEdge`.
+
+**Alternatives.**
+- Ranking by capped utilization: two overloaded nodes both read 99.5%, and the first one
+  would be named even if the second is three times past capacity.
+- Deriving edge flow in the UI from each node's inbound load: only correct while every node
+  has one inbound edge. Branching topologies need it from the resolver.
+
+**Consequences.**
+- Nothing saved changes. History still keeps only utilization per node.
+
+---
+
+## ADR-0032 — The forecast, and what the player sees before Advance
+2026-09-14 · Status: accepted
+
+**Context.** `05-UI-DESIGN.md` §4 requires next turn's projected peak on screen before
+Advance, and calls planning against it "the actual skill being taught". The specs don't say:
+- whether the forecast includes the turn's seeded growth noise (`02-SIMULATION.md` §3)
+- whether projected load, latency or money are shown too
+
+The human chose at the start of M4: an estimate with a likely range, and inputs only.
+
+**Decision.**
+- **Forecast.** `forecastTraffic(run, difficulty)` in `engine/plan.ts` applies §3's growth
+  with the noise term at zero. Peak is that mean times the peak multiplier. The likely range
+  puts the noise `BALANCE.forecast.rangeSigmas` (2) standard deviations either side, clamped
+  as the real draw is. It shares `meanRpsAfterGrowth` with the real turn, so the arithmetic
+  can't drift, and it draws nothing from the RNG.
+  - On Intern the noise is zero, so the range collapses and the forecast is exact. A test
+    asserts equality over ten turns.
+  - A test asserts the real peak lands inside the range on more than 95% of 2,000 first
+    turns on Junior, Senior and Staff, and outside it at least once.
+  - Measured on each of those difficulties: inside on 98.0% of 20,000 first turns, and on
+    97.9% of 15,000 turns within runs. Every miss was above the range. The 2σ lower bound is
+    at or below the noise's lower clamp on all three, so a week never lands below the range.
+- **Plan.** `planTurn(run, { difficulty, catalog })` returns:
+  - the forecast
+  - next turn's running and setup costs, exact
+  - bandwidth at the forecast's mean with nothing dropped, an estimate
+
+  An architecture that can't run returns the error `simulateTurn` would. The planned
+  architecture is resolved to find that out, but projected utilization, latency and revenue
+  are deliberately not returned. A test pins the result's keys.
+- **Screen.**
+  - A forecast line above the canvas: "Forecast for week 5: about 8.4/s at peak, likely
+    8.1–8.7/s · last week 6.5/s".
+  - Next week's costs, or the reason the week can't run, beside Advance.
+  - The inspector shows capacity at the chosen size next to what the node received last
+    week. It never shows next week's projected load.
+
+**Alternatives.**
+- The exact seeded value: "spiky" and "bursty" growth on Senior and Staff stop being felt,
+  and the forecast leaks the turn's draw.
+- A full preview of projected utilization, p99 and net cash: a player can adjust sizes until
+  the numbers turn green without doing the capacity arithmetic.
+- A range from simulating many draws: exact, but a Monte Carlo run on every edit when the
+  closed form is already known.
+
+**Consequences.**
+- A week can still land above the range. It's labeled "likely", not promised.
+- Whether the forecast gives enough to plan is `07-TESTING.md` §8's checkpoint question.
+- `rangeSigmas` is a placeholder for M9.
+
+---
+
+## ADR-0033 — Placeholder tier figures, the catalog on the store, and last week re-resolved
+2026-09-14 · Status: accepted · Extends ADR-0020, ADR-0027
+
+**Context.**
+- Advance needs tier figures. M3 gave the store an empty catalog.
+- `03-CONTENT-SCHEMA.md` §5 puts capacity, service time and prices on `ComponentDef.tiers`,
+  and M7 balances them.
+- With the engine tests' `TEST_CATALOG` figures, a Junior player's first sizing decision
+  comes around week 9. M4's checkpoint is to play ten weeks.
+- The inspector needs last week's inbound load, capacity and p99 per node. Saves keep only
+  utilization, to stay inside ADR-0025's size budget.
+
+**Decision.**
+- **Tier fields.** `ComponentDef.tiers` gains `capacityRps`, `serviceTimeMs`,
+  `setupCostCents` and `runningCostPerTurnCents`. `failureRatePerTurn` waits for failures
+  (`02-SIMULATION.md` §5.7).
+- **Placeholder figures,** sized in four steps across Act 1's peak of 2.5–250 rps:
+
+  | | Small | Medium | Large | Extra large |
+  |---|---|---|---|---|
+  | App server rps | 10 | 40 | 150 | 500 |
+  | App server setup / week | $100 / $20 | $400 / $50 | $1,200 / $120 | $3,000 / $300 |
+  | Database rps | 15 | 50 | 200 | 600 |
+  | Database setup / week | $150 / $30 | $600 / $80 | $1,800 / $200 | $4,500 / $450 |
+
+  Service times are 12, 11, 10, 10 ms for app servers and 6, 6, 5, 5 ms for databases. A
+  headless player who sizes against the forecast's high end on Junior (seed 7) upgrades in
+  weeks 4, 5, 8, 9, 12 and 13, and reaches Act 2 in week 14.
+- **Catalog.** `state/catalog.ts` builds `CONTENT_CATALOG` from the definitions, and the game
+  passes it to the store. Engine tests keep `TEST_CATALOG` (ADR-0020). The store exposes
+  `catalog`, never saved, so screens show the figures the engine resolves against.
+- **Last turn.** `ui.lastTurn` becomes `{ result, before }`. The report names nodes from the
+  architecture that ran, and deltas and the animation start from the run before.
+- **Re-resolving.** `lastResolvedTick(run, catalog)` resolves `builtArchitecture` at
+  `workload` again, which reproduces the last turn exactly (asserted).
+  - Canvas fills, edge weights and inspector figures come from it, and survive a reload
+    without a save change.
+  - After a rollback it describes the restored checkpoint, which is what the canvas shows.
+
+**Alternatives.**
+- Tier figures in `BALANCE`: ADR-0020 and ADR-0026 put them in content.
+- Keeping `TEST_CATALOG`'s figures: nothing to decide for the first nine weeks.
+- Saving per-node metrics, as save v3: four more numbers per node per turn. ADR-0025 measured
+  utilization alone at 110 KB unrounded for 50 nodes.
+
+**Consequences.**
+- In the headless run above, cash rises every week, so money isn't a constraint yet. M7 and
+  M9 balance it.
+- In the same runs, one late upgrade saturates a tier. p99 reaches about 11 s, and §7's
+  uncapped severity takes reputation from about 0.7 to 0 in one week, then traffic shrinks
+  for many weeks (ADR-0024 flagged this). Expect it to dominate the M4 playtest.
+- M5's Zod schema must carry the four tier fields.
+
+---
+
+## ADR-0034 — App server fanout is read-only
+2026-09-14 · Status: accepted · Supersedes part of ADR-0029
+
+**Context.** ADR-0029 made an app server's database queries per request editable in the
+inspector. At 0 the database receives no load at all, so database sizing can be skipped for
+free. How many queries code makes isn't something the player buys. The human chose at the
+start of M4.
+
+**Decision.** The inspector shows fanout as a fact about the app server. `setFanout` and
+its `invalid-fanout` refusal are removed. New app servers keep
+`BALANCE.starter.appFanoutFactor`.
+
+**Alternatives.**
+- Keep it editable: a free lever that bypasses a tier.
+- Editable at a cost: a new mechanic with no spec behind it.
+
+**Consequences.** Fanout can return as a deliberate mechanic, such as a query-batching
+upgrade, with its own ADR.
+
+---
+
+## ADR-0035 — The weekly report and its bottleneck paragraph
+2026-09-14 · Status: accepted
+
+**Context.** `05-UI-DESIGN.md` §5 specifies four panels and a generated paragraph that names
+the bottleneck and what wasn't the problem. M4 requires the paragraph to name the
+highest-utilization node and one node that wasn't the problem. Open questions:
+- Which healthy node to name.
+- Generated sentences can say untrue things. "That's where the latency came from" is false
+  whenever another hop has a longer service time.
+- §3 lists `/run/report` as a modal, and no router is on the dependency list.
+
+**Decision.**
+- **Charts.** p99 and error rate, each with a dashed target line; cash; users. Each is a
+  hand-written SVG line over d3-scale's linear scale for every week in history.
+  - The y axis always includes zero.
+  - Weeks over target are marked ▲.
+  - Each panel toggles to a table of every week, with a met or missed column where there's
+    a target.
+- **The paragraph.** `state/report.ts` picks the nodes and
+  `ui/screens/report/load-paragraph.ts` words them. It restates figures from the tick and
+  makes no causal claims.
+  - The bottleneck is named. If it dropped requests, the paragraph gives what it received,
+    its capacity and what it turned away. It gives its share of p99, which is exact because
+    end-to-end p99 is the sum of the hops (ADR-0009), and names any other node that dropped.
+  - Not the problem: the busiest healthy node, the one most likely to be fixed by mistake.
+    If an earlier node dropped requests, the paragraph says this node only saw what that one
+    let through, instead of calling it fine (§8, masked bottleneck).
+  - If no node is healthy, it says no component had headroom.
+  - If every node is healthy, it names the busiest node and the one with the most headroom.
+- **Beyond §5.**
+  - Bailouts, rollbacks and new acts at the top.
+  - A money breakdown, which §6 wants legible.
+  - Reputation before and after, with which target was missed.
+  - A table of every component at peak, since `00-GAME-DESIGN.md` §3 lists utilization per
+    component.
+- **A dialog, not a route.**
+  - `role="dialog"` over the canvas, with the page behind it `inert` and focus on the week
+    heading.
+  - Escape or "Back to canvas" closes it and returns focus to Advance.
+  - Routing waits for the first screen that needs a URL, the lessons in M6.
+- **Copy details.**
+  - Utilization rounds down, so a healthy node at 74.99% reads 74%, never the 75% that means
+    warning.
+  - The button reads "Advance week" without §4's arrow, which §2 forbids. It stays focusable
+    when blocked (`aria-disabled`), so keyboard users can reach the reason it describes.
+
+**Alternatives.**
+- The least-loaded node as "not the problem": true but uninformative.
+- A router dependency now: nothing needs a URL yet.
+- A native `<dialog>`: gives modality for free, but jsdom's support is uneven. It can replace
+  the ARIA dialog later without changing behavior.
+
+**Consequences.**
+- The paragraph and event copy make claims about the model, so they're flagged for review at
+  the checkpoint.
+- A rollback shows as a collapse in the charts, because history isn't restored (ADR-0024).
+
+---
+
+## ADR-0036 — Turn animation, d3-scale, and measuring turn resolution
+2026-09-14 · Status: accepted · Extends ADR-0029, ADR-0030
+
+**Context.**
+- `05-UI-DESIGN.md` §2 gives turn resolution the game's one orchestrated moment: about
+  800 ms of load flowing along the edges, nodes changing color as they saturate, and numbers
+  counting. Reduced motion replaces it with a direct cut and a brief highlight on changed
+  values.
+- M4 requires turn resolution to render in under 16 ms for a 50-node architecture, measured
+  and asserted.
+- `01-ARCHITECTURE.md` §5 approves d3-scale for chart arithmetic, but it ships no type
+  declarations.
+
+**Decision.**
+- **Dependencies.**
+  - `d3-scale` 4.0.2, on the approved list. It brings d3-array, d3-format, d3-interpolate,
+    d3-time and d3-time-format. After M4 the production bundle is 126.8 KB gzipped, up from
+    110.4 KB after M3; d3 is part of that increase.
+  - `@types/d3-scale` 4.0.9, as a dev dependency. Strict TypeScript needs declarations, the
+    same reason ADR-0016 gave for `@types/react`.
+- **Animation.**
+  - `useTurnFrames` paints each frame straight onto the DOM, as the M3 drag does
+    (ADR-0029), so no frame re-renders.
+  - Fills, colors, hatching and readings go through `loadVisual`, the same function the node
+    renders with, so the last frame leaves exactly what React drew.
+  - The status bar's cash, users and reputation count to their new values.
+  - Edges get a dashed overlay that moves toward each target, driven by CSS while the canvas
+    carries `data-flowing`.
+  - The playback carries its start time, so a component that mounts mid-animation joins at
+    the right point or skips it.
+  - The report opens when the animation ends. Advance stays blocked until it closes.
+- **Reduced motion,** from the OS or the in-game setting: no overlay, fills cut straight to
+  their level, and changed readings and status figures are highlighted for 1.2 s by switching
+  a style on and off. The report opens at once.
+- **What "renders in under 16 ms" covers:** from Advance to the resolved turn committed to
+  the DOM. That is the engine call, every node and edge taking its new load, and the status
+  bar. Two assertions run in `npm run test`:
+  - `state/turn-performance.test.ts` times the turn plus everything the screens derive from
+    it, on a 50-node chain. Its 90th percentile must be under 16 ms. Measured: median 0.14 ms,
+    p90 0.23 ms.
+  - `ui/turn-render-performance.test.tsx` times React committing a resolved 50-node turn in
+    jsdom, with the report dialog opening in the same commit. Its median must be under 16 ms.
+    Measured: median 7.6 ms, p90 9.6 ms, max 11.8 ms.
+- **Browser measurement.** Headless Chrome 152 at 1440px, with trusted clicks on Advance in
+  the 50-node lab, 10 turns each way. The script lives in the session scratchpad, as in M3.
+
+  | Production build | Reduced motion | Animated |
+  |---|---|---|
+  | Click to canvas commit | 1.1 ms median, 3.0 ms max | 0.8 ms median, 1.0 ms max |
+  | Click to report commit | 3.9 ms median, 7.5 ms max | 804 ms median, after the animation |
+  | Click to next painted frame | 7.8 ms median, 16.7 ms max | — |
+  | Animation frames | — | 4.2 ms median, 4.3 ms max, none over 20 ms (1,917 frames) |
+
+  The development build (unminified React, with StrictMode rendering twice) was slower:
+  - canvas commit 6.7 ms median, 12.6 ms max
+  - report commit 13.3 ms median, 28.7 ms max
+  - animation frames 4.2 ms median, 8.3 ms max
+
+**Alternatives.**
+- React state per frame: every node re-renders about 50 times per animation.
+- CSS transitions on the fill's SVG attributes: `y` and `height` on a `rect` don't
+  transition reliably across browsers, and the counting numbers need JavaScript anyway.
+- A browser in CI asserting real frames: ADR-0030 kept browser checks at the checkpoint.
+
+**Consequences.**
+- jsdom stands in for the browser in CI. It does no layout or paint, and on this machine it
+  has about 2× headroom, so a much slower CI runner could approach the budget.
+- Under reduced motion the report paints in the same frame as the turn. One production turn
+  in ten took 16.7 ms from click to painted frame, including the wait for the frame; its
+  commit stayed under 8 ms.
+- The headless numbers come from one Windows laptop with uncapped frames. Whether the
+  animation is satisfying or annoying by turn 30 (`07-TESTING.md` §8) is the human's call at
+  the checkpoint.
