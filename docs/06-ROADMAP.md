@@ -31,7 +31,7 @@ No game logic. No components beyond the shell. Resist.
 
 ---
 
-## [ ] M1 — Engine core: capacity and latency
+## [x] M1 — Engine core: capacity and latency
 
 **Read:** `02-SIMULATION.md` §1–5.2, `CLAUDE.md`
 
