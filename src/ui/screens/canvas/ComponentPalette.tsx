@@ -1,9 +1,13 @@
-import { useRef, type PointerEvent } from 'react'
+import { useId, useRef, type PointerEvent } from 'react'
 import { COMPONENT_DEFS } from '../../../content/components'
 import { COMPONENT_KINDS, type ComponentKind } from '../../../content/schema'
+import type { PricedCatalog } from '../../../engine'
+import { formatDollars } from '../../format'
 import { capturePointer } from '../../pointer-capture'
 
 type ComponentPaletteProps = {
+  /** Tier prices, from the same catalog the turns resolve against. */
+  readonly catalog: PricedCatalog
   /** A component dropped at a point on screen. The screen decides whether that point is on the canvas. */
   readonly onDrop: (kind: ComponentKind, client: { clientX: number; clientY: number }) => void
   /** Placed without a pointer: next to the selection, or in the first free cell. */
@@ -18,11 +22,13 @@ const DRAG_THRESHOLD_PX = 5
 type Drag = { kind: ComponentKind; pointerId: number; startX: number; startY: number; dragging: boolean }
 
 /**
- * The components the player can place. M4 turns this into the full catalog with locked
- * items and prices. Dragging follows the pointer with a ghost moved directly in the DOM.
- * A click or Enter places the component without a drag.
+ * The catalog (05-UI-DESIGN §4): every component the player can place, with what its
+ * smallest size costs. Locked components and their gating concepts arrive with concepts in
+ * M6. Dragging follows the pointer with a ghost moved directly in the DOM. A click or Enter
+ * places the component without a drag.
  */
-export function ComponentPalette({ onDrop, onPlace, headingHidden = false }: ComponentPaletteProps) {
+export function ComponentPalette({ catalog, onDrop, onPlace, headingHidden = false }: ComponentPaletteProps) {
+  const id = useId()
   const drag = useRef<Drag | null>(null)
   const ghost = useRef<HTMLDivElement | null>(null)
   const suppressClick = useRef(false)
@@ -64,35 +70,46 @@ export function ComponentPalette({ onDrop, onPlace, headingHidden = false }: Com
   }
 
   return (
-    <section aria-labelledby="palette-heading" className="flex flex-col gap-3">
+    <section aria-labelledby={`${id}-heading`} className="flex flex-col gap-3">
       <div>
-        <h2 id="palette-heading" className={headingHidden ? 'sr-only' : 'text-sm font-medium text-ink-bright'}>
-          Components
+        <h2 id={`${id}-heading`} className={headingHidden ? 'sr-only' : 'text-sm font-medium text-ink-bright'}>
+          Catalog
         </h2>
         <p className="mt-1 text-xs leading-relaxed">Drag one onto the canvas, or press Enter to place it next to the selection.</p>
       </div>
       <ul className="flex flex-wrap gap-2 min-[900px]:flex-col">
-        {placeable.map((def) => (
-          <li key={def.kind}>
-            <button
-              type="button"
-              className="w-full cursor-grab touch-none rounded border border-panel-line bg-panel-raised px-3 py-2 text-left text-sm text-ink-bright hover:border-flow"
-              onPointerDown={(event) => onPointerDown(event, def.kind)}
-              onPointerMove={onPointerMove}
-              onPointerUp={(event) => finish(event, true)}
-              onPointerCancel={(event) => finish(event, false)}
-              onClick={() => {
-                if (suppressClick.current) {
-                  suppressClick.current = false
-                  return
-                }
-                onPlace(def.kind)
-              }}
-            >
-              {def.displayName}
-            </button>
-          </li>
-        ))}
+        {placeable.map((def) => {
+          const smallest = def.kind === 'ingress' ? undefined : catalog[def.kind][0]
+          const priceId = `${id}-${def.kind}-price`
+          return (
+            <li key={def.kind}>
+              <button
+                type="button"
+                aria-label={def.displayName}
+                aria-describedby={smallest ? priceId : undefined}
+                className="w-full cursor-grab touch-none rounded border border-panel-line bg-panel-raised px-3 py-2 text-left text-sm text-ink-bright hover:border-flow"
+                onPointerDown={(event) => onPointerDown(event, def.kind)}
+                onPointerMove={onPointerMove}
+                onPointerUp={(event) => finish(event, true)}
+                onPointerCancel={(event) => finish(event, false)}
+                onClick={() => {
+                  if (suppressClick.current) {
+                    suppressClick.current = false
+                    return
+                  }
+                  onPlace(def.kind)
+                }}
+              >
+                <span className="block">{def.displayName}</span>
+                {smallest && (
+                  <span id={priceId} className="num block text-xs text-ink">
+                    from {formatDollars(smallest.setupCostCents)} setup, {formatDollars(smallest.runningCostPerTurnCents)} a week
+                  </span>
+                )}
+              </button>
+            </li>
+          )
+        })}
       </ul>
       <div
         ref={ghost}

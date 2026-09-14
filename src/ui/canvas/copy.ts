@@ -1,6 +1,5 @@
-import { BALANCE } from '../../config/balance'
 import { COMPONENT_DEFS } from '../../content/components'
-import type { Architecture, NodeId } from '../../engine'
+import { nodeStatus, type Architecture, type NodeId, type NodeStatus } from '../../engine'
 import { findNode, type ConnectionRefusal, type EditRefusal } from '../../state/architecture'
 
 // Player-facing canvas copy (05-UI-DESIGN §8): dry, second person, the problem and the fix,
@@ -15,19 +14,16 @@ export function nodeName(architecture: Architecture, nodeId: NodeId): string {
   return sameKind.length > 1 ? `${name} ${sameKind.indexOf(node) + 1}` : name
 }
 
-export type LoadLevel = 'unknown' | 'healthy' | 'warning' | 'saturated'
+export type LoadLevel = 'unknown' | NodeStatus
 
-/** How a utilization (0..1) reads on the canvas. Unknown until a turn has run. */
+/** How a utilization (0..1) reads on the canvas: the engine's status, or unknown until a turn has run. */
 export function loadLevel(utilization: number | undefined): LoadLevel {
-  if (utilization === undefined) return 'unknown'
-  if (utilization >= BALANCE.status.saturatedUtilization) return 'saturated'
-  if (utilization >= BALANCE.status.warningUtilization) return 'warning'
-  return 'healthy'
+  return utilization === undefined ? 'unknown' : nodeStatus(utilization)
 }
 
-/** Utilization as the canvas prints it, e.g. "78%". */
-export function percent(utilization: number): string {
-  return `${Math.round(utilization * 100)}%`
+/** A ratio as a rounded percent, such as the zoom level: "125%". Utilization uses `formatUtilization`. */
+export function percent(ratio: number): string {
+  return `${Math.round(ratio * 100)}%`
 }
 
 export function describeConnectionRefusal(

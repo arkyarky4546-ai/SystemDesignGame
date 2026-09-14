@@ -2,6 +2,7 @@ import {
   useCallback,
   useEffect,
   useId,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -21,9 +22,11 @@ import {
   removeNode,
   type Edit,
 } from '../../state/architecture'
+import { formatRps, formatUtilization } from '../format'
 import { capturePointer } from '../pointer-capture'
+import { CHANGE_HIGHLIGHT_MS, useTurnFrames, type TurnPlayback } from '../turn-playback'
 import { CanvasEdge } from './CanvasEdge'
-import { CanvasNode } from './CanvasNode'
+import { CanvasNode, paintLoad } from './CanvasNode'
 import { describeConnectionRefusal, describeEditRefusal, nodeName } from './copy'
 import {
   CELL_HEIGHT,
@@ -45,10 +48,17 @@ export type CanvasSelection =
 
 export type CanvasMessage = { readonly tone: 'info' | 'refusal'; readonly text: string }
 
+/** A turn being replayed on the canvas, with each node's utilization (0..1) before it. */
+export type CanvasPlayback = TurnPlayback & { readonly fromUtilization: Readonly<Record<NodeId, number>> }
+
 export type ArchitectureCanvasProps = {
   readonly architecture: Architecture
   /** Peak utilization per node, 0..1. Missing until a turn has run. */
   readonly utilization: Readonly<Record<NodeId, number>>
+  /** Load each edge carried at peak last week, rps, keyed by `edgeKey`. */
+  readonly edgeFlow: Readonly<Record<string, number>>
+  /** The turn being replayed, or null. */
+  readonly playback: CanvasPlayback | null
   readonly selection: CanvasSelection
   /** False for pan-and-zoom only: nothing can be moved, connected or removed here. */
   readonly editable: boolean
@@ -88,7 +98,8 @@ export function ArchitectureCanvas(props: ArchitectureCanvasProps) {
   const { architecture, utilization, selection, editable, zoom } = props
   const prefix = `canvas${useId().replace(/[^a-zA-Z0-9]/g, '')}`
   const latest = useRef(props)
-  useEffect(() => {
+  // A layout effect, so the turn animation's first frame already sees this render's load.
+  useLayoutEffect(() => {
     latest.current = props
   })
 
@@ -360,6 +371,45 @@ export function ArchitectureCanvas(props: ArchitectureCanvasProps) {
     }
   }
 
+  // The turn animation (05-UI-DESIGN §2): fills move to last week's load while dashes flow
+  // along the edges. It's painted onto the SVG like a drag, so no frame re-renders.
+  useTurnFrames(
+    props.playback,
+    (progress) => {
+      const { utilization: target, playback } = latest.current
+      for (const [nodeId, element] of nodeElements.current) {
+        const to = target[nodeId]
+        if (to === undefined) continue
+        const from = playback?.fromUtilization[nodeId] ?? 0
+        paintLoad(element, progress >= 1 ? to : from + (to - from) * progress)
+      }
+      if (progress < 1 && playback?.animate) svgElement.current?.setAttribute('data-flowing', 'true')
+      else svgElement.current?.removeAttribute('data-flowing')
+    },
+    [utilization],
+  )
+
+  // Under reduced motion the fills cut straight to their new level, and nodes whose reading
+  // changed are outlined for a moment instead (§2).
+  useEffect(() => {
+    const playback = props.playback
+    if (!playback || playback.animate) return
+    const changed: SVGGElement[] = []
+    for (const [nodeId, element] of nodeElements.current) {
+      const to = latest.current.utilization[nodeId]
+      if (to === undefined) continue
+      const from = playback.fromUtilization[nodeId]
+      if (from === undefined || formatUtilization(from) !== formatUtilization(to)) changed.push(element)
+    }
+    for (const element of changed) element.setAttribute('data-changed', 'true')
+    const clear = () => changed.forEach((element) => element.removeAttribute('data-changed'))
+    const timer = setTimeout(clear, CHANGE_HIGHLIGHT_MS)
+    return () => {
+      clearTimeout(timer)
+      clear()
+    }
+  }, [props.playback])
+
   const { cols, rows } = gridSize(architecture)
   const width = cols * CELL_WIDTH
   const height = rows * CELL_HEIGHT
@@ -400,10 +450,11 @@ export function ArchitectureCanvas(props: ArchitectureCanvasProps) {
         <pattern id="nines-hatch" width={8} height={8} patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
           <line x1={0} y1={0} x2={0} y2={8} className="stroke-fault" strokeWidth={3} />
         </pattern>
-        <marker id="nines-arrow" viewBox="0 0 10 10" refX={9} refY={5} markerWidth={7} markerHeight={7} orient="auto">
+        {/* Sized in canvas units, so a heavy edge doesn't get a huge arrowhead. */}
+        <marker id="nines-arrow" viewBox="0 0 10 10" refX={9} refY={5} markerUnits="userSpaceOnUse" markerWidth={12} markerHeight={12} orient="auto">
           <path d="M 0 0 L 10 5 L 0 10 z" className="fill-panel-line" />
         </marker>
-        <marker id="nines-arrow-selected" viewBox="0 0 10 10" refX={9} refY={5} markerWidth={7} markerHeight={7} orient="auto">
+        <marker id="nines-arrow-selected" viewBox="0 0 10 10" refX={9} refY={5} markerUnits="userSpaceOnUse" markerWidth={12} markerHeight={12} orient="auto">
           <path d="M 0 0 L 10 5 L 0 10 z" className="fill-flow" />
         </marker>
       </defs>
@@ -425,7 +476,8 @@ export function ArchitectureCanvas(props: ArchitectureCanvasProps) {
             edge={edge}
             edgeKey={key}
             path={edgePath(nodeOrigin(from.position), nodeOrigin(to.position))}
-            label={`${nodeName(architecture, edge.from)} sends requests to ${nodeName(architecture, edge.to)}`}
+            label={edgeLabel(architecture, edge, props.edgeFlow[key])}
+            flowRps={props.edgeFlow[key]}
             selected={key === selectedEdgeKey}
             editable={editable}
             register={registerEdge}
@@ -466,6 +518,11 @@ const ARROWS: Readonly<Record<string, { readonly col: number; readonly row: numb
   ArrowDown: { col: 0, row: 1 },
   ArrowLeft: { col: -1, row: 0 },
   ArrowRight: { col: 1, row: 0 },
+}
+
+function edgeLabel(architecture: Architecture, edge: Edge, flowRps: number | undefined): string {
+  const sentence = `${nodeName(architecture, edge.from)} sends requests to ${nodeName(architecture, edge.to)}`
+  return flowRps === undefined ? sentence : `${sentence}, ${formatRps(flowRps)} at peak last week`
 }
 
 /** The node under a canvas point, if the point is inside its box rather than the gutter. */

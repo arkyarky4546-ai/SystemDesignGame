@@ -78,7 +78,7 @@ describe('canvas with the keyboard alone (M3 acceptance)', () => {
 
     // Reconfigure from the inspector's form controls.
     const inspector = screen.getByRole('region', { name: 'Database 2' })
-    await user.selectOptions(within(inspector).getByLabelText('Size'), 'Large')
+    await user.selectOptions(within(inspector).getByLabelText('Size'), '2')
     expect(architecture().nodes.find((n) => n.id === 'database-1')?.tier).toBe(2)
 
     // Delete removes the selection and its connections.
@@ -222,27 +222,48 @@ describe('pointer capture', () => {
 })
 
 describe('utilization (05-UI-DESIGN §4)', () => {
-  it('fills each node to its utilization and marks saturation without relying on color', () => {
-    const store = createGameStore({ storage: memoryStorage(), catalog: TEST_CATALOG, now: FIXED_NOW })
+  it('fills each node to last week’s utilization and marks saturation without relying on color', () => {
+    // At 10 rps peak, a 20 rps app server runs at 50% and a 10/0.955 rps database at 95.5%.
+    const tier = (capacityRps: number) => ({ capacityRps, serviceTimeMs: 10, setupCostCents: 0, runningCostPerTurnCents: 0 })
+    const catalog = { 'app-server': [tier(20)], database: [tier(10 / 0.955)] }
+    const store = createGameStore({ storage: memoryStorage(), catalog, now: FIXED_NOW })
     store.getState().startRun(1)
     const run = store.getState().run
     if (!run) throw new Error('expected a run')
     const summary = {
-      turn: 1, meanRps: 1, peakRps: 2, users: 10, p99Ms: 90, errorRate: 0, revenueCents: 1, costCents: 1,
-      setupCostCents: 0, sloMet: true, cashCents: 1, reputation: 0.7, events: [],
-      utilization: { app: 0.5, db: 0.95 },
+      turn: 1, meanRps: 10, peakRps: 10, users: 100, p99Ms: 90, errorRate: 0, revenueCents: 1, costCents: 1,
+      setupCostCents: 0, sloMet: true, cashCents: 1, reputation: 0.7, events: [], utilization: {},
     }
-    store.setState({ run: { ...run, history: [summary] } })
+    store.setState({ run: { ...run, workload: { ...run.workload, meanRps: 10, peakMultiplier: 1 }, turn: 1, history: [summary] } })
     render(<CanvasScreen store={store} />)
     const canvas = screen.getByRole('application', { name: 'Architecture canvas' })
 
     expect(node(canvas, 'ingress').getAttribute('data-load')).toBe('unknown')
-    expect(node(canvas, 'app').getAttribute('data-load')).toBe('healthy')
-    expect(node(canvas, 'app').querySelector('[clip-path] rect')?.getAttribute('height')).toBe('32')
+    const app = node(canvas, 'app')
+    expect(app.getAttribute('data-load')).toBe('healthy')
+    expect(app.querySelector('[data-part="fill"]')?.getAttribute('height')).toBe('32')
+    expect(app.querySelector('[data-part="hatch"]')?.getAttribute('visibility')).toBe('hidden')
     const db = node(canvas, 'db')
     expect(db.getAttribute('data-load')).toBe('saturated')
     expect(db.getAttribute('aria-label')).toContain('saturated')
-    expect(db.querySelector('rect[fill="url(#nines-hatch)"]')).not.toBeNull()
+    expect(db.querySelector('[data-part="hatch"]')?.getAttribute('visibility')).toBe('visible')
     expect(db.textContent).toContain('▲ 95%')
+  })
+
+  it('draws busier edges heavier', () => {
+    const store = createGameStore({ storage: memoryStorage(), catalog: TEST_CATALOG, now: FIXED_NOW })
+    store.getState().startRun(1)
+    store.getState().advanceTurn()
+    render(<CanvasScreen store={store} />)
+    const canvas = screen.getByRole('application', { name: 'Architecture canvas' })
+    const width = (key: string) => Number(canvas.querySelector(`[data-edge='${key}'] [data-part="line"]`)?.getAttribute('stroke-width'))
+    const lastTurn = store.getState().ui.lastTurn
+    const [intoApp, intoDb] = lastTurn?.result.perEdge ?? []
+    expect(intoApp?.rps).toBeGreaterThan(0)
+    expect(width('["ingress","app"]')).toBeGreaterThan(0)
+    // Fanout 1 carries the same load on both edges, so they're drawn the same.
+    expect(intoDb?.rps).toBe(intoApp?.rps)
+    expect(width('["app","db"]')).toBe(width('["ingress","app"]'))
+    expect(canvas.querySelector(`[data-edge='["ingress","app"]']`)?.getAttribute('aria-label')).toMatch(/at peak last week$/)
   })
 })

@@ -37,7 +37,7 @@ afterEach(() => {
 describe('canvas screen layout (05-UI-DESIGN §9)', () => {
   it.each([1440, 900])('at %ipx shows palette, canvas and inspector side by side, all editable', (width) => {
     const { canvas } = renderAt(width)
-    expect(screen.getByRole('heading', { name: 'Components' })).toBeTruthy()
+    expect(screen.getByRole('heading', { name: 'Catalog' })).toBeTruthy()
     expect(screen.getByRole('heading', { name: 'Inspector' })).toBeTruthy()
     expect(document.querySelectorAll('details')).toHaveLength(0)
     expect(screen.queryByRole('heading', { name: 'On the canvas' })).toBeNull()
@@ -47,7 +47,7 @@ describe('canvas screen layout (05-UI-DESIGN §9)', () => {
   it('below 900px gives the canvas full width and moves palette and inspector into bottom sheets', () => {
     const { canvas } = renderAt(600)
     const sheets = [...document.querySelectorAll('details > summary')].map((summary) => summary.textContent)
-    expect(sheets).toEqual(['Components', 'Inspector'])
+    expect(sheets).toEqual(['Catalog', 'Inspector'])
     expect(canvas.querySelectorAll('[data-port="out"]').length).toBeGreaterThan(0)
   })
 

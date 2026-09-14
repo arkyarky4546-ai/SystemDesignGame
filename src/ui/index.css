@@ -51,8 +51,43 @@ body {
   }
 }
 
-/* Motion is reserved for turn resolution (M4); everywhere else changes are instant. This
-   also covers the OS setting and the in-game override. */
+/* The turn animation's flowing load (05-UI-DESIGN §2). While the canvas carries
+   data-flowing, dashes travel along each edge toward its target; otherwise the overlay is
+   hidden. Under reduced motion the canvas never sets data-flowing. */
+[data-part="flow"] {
+  visibility: hidden;
+  stroke-dasharray: 6 10;
+}
+
+[data-flowing="true"] [data-part="flow"] {
+  visibility: visible;
+  animation: nines-flow 320ms linear infinite;
+}
+
+@keyframes nines-flow {
+  from {
+    stroke-dashoffset: 16;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Under reduced motion, values a turn changed are highlighted for a moment instead of
+   animating (§2). The highlight switches on and off; nothing fades. */
+[data-changed="true"] [data-part="frame"] {
+  stroke: var(--color-flow);
+  stroke-width: 3;
+}
+
+span[data-changed="true"] {
+  background-color: var(--color-flow);
+  color: var(--color-panel-void);
+  border-radius: 2px;
+}
+
+/* Motion is reserved for turn resolution; everywhere else changes are instant. This also
+   covers the OS setting and the in-game override. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

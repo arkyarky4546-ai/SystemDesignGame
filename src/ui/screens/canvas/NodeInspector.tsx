@@ -1,21 +1,19 @@
-import { useId, useState } from 'react'
+import { useId, useState, type ReactNode } from 'react'
 import { COMPONENT_DEFS } from '../../../content/components'
-import type { Architecture, ComponentNode, Edge, NodeId } from '../../../engine'
-import {
-  connect,
-  connectionRefusal,
-  disconnect,
-  findNode,
-  removeNode,
-  setTier,
-  type Edit,
-} from '../../../state/architecture'
+import { setupCostCents, type Architecture, type ComponentNode, type Edge, type PricedCatalog, type TickResult } from '../../../engine'
+import { connect, connectionRefusal, disconnect, findNode, removeNode, setTier, type Edit } from '../../../state/architecture'
 import type { CanvasMessage, CanvasSelection } from '../../canvas/ArchitectureCanvas'
-import { describeConnectionRefusal, describeEditRefusal, nodeName, percent } from '../../canvas/copy'
+import { describeConnectionRefusal, describeEditRefusal, nodeName } from '../../canvas/copy'
+import { formatDollars, formatMs, formatRps, formatUtilization } from '../../format'
 
 type NodeInspectorProps = {
+  /** What the next Advance will run: the player's plan. */
   readonly architecture: Architecture
-  readonly utilization: Readonly<Record<NodeId, number>>
+  /** What ran last week, which setup costs are charged against. */
+  readonly builtArchitecture: Architecture
+  /** Last week at peak, or null before the first week. */
+  readonly lastTick: TickResult | null
+  readonly catalog: PricedCatalog
   readonly selection: CanvasSelection
   readonly onChange: (architecture: Architecture, announcement: string) => void
   readonly onSelect: (selection: CanvasSelection) => void
@@ -26,11 +24,13 @@ type NodeInspectorProps = {
 
 const BUTTON = 'rounded border border-panel-line px-2 py-1 text-xs text-ink-bright hover:border-flow disabled:opacity-50'
 const FIELD = 'w-full rounded border border-panel-line bg-panel-void px-2 py-1 text-sm text-ink-bright'
+const FIGURES = 'grid grid-cols-[1fr_auto] gap-x-3 gap-y-1 text-xs'
 
 /**
- * Settings and connections for the selection. Every canvas edit can also be made here with
- * standard form controls, which is also how editing works below 600px (05-UI-DESIGN §9).
- * M4 adds load, capacity and cost figures.
+ * The selection's figures and settings (05-UI-DESIGN §4). It shows capacity and cost at the
+ * chosen size next to what the node received last week, so the player can size against the
+ * forecast. It never projects next week's load (ADR-0032). Every canvas edit can also be
+ * made here with standard form controls, which is also how editing works below 600px (§9).
  */
 export function NodeInspector(props: NodeInspectorProps) {
   const { architecture, selection } = props
@@ -84,7 +84,7 @@ export function NodeInspector(props: NodeInspectorProps) {
         <h2 id="inspector-heading" className={props.headingHidden ? 'sr-only' : 'text-sm font-medium text-ink-bright'}>
           Inspector
         </h2>
-        <p className="text-sm">Select a component to change its size and connections.</p>
+        <p className="text-sm">Select a component to see its load and change its size and connections.</p>
       </section>
     )
   }
@@ -99,15 +99,21 @@ function NodeDetails(
     readonly disconnectEdge: (edge: Edge) => void
   },
 ) {
-  const { architecture, node, apply } = props
+  const { architecture, node, apply, lastTick } = props
   const id = useId()
   const def = COMPONENT_DEFS[node.kind]
   const name = nodeName(architecture, node.id)
-  const utilization = props.utilization[node.id]
   const outgoing = architecture.edges.filter((edge) => edge.from === node.id)
   const incoming = architecture.edges.filter((edge) => edge.to === node.id)
   const others = architecture.nodes.filter((other) => other.id !== node.id)
   const [target, setTarget] = useState(others[0]?.id ?? '')
+
+  const tiers = node.kind === 'ingress' ? [] : props.catalog[node.kind]
+  const tier = tiers[node.tier]
+  const setup = node.kind !== 'ingress' && tier ? setupCostCents(props.builtArchitecture, [{ node, tier }]) : 0
+  const built = findNode(props.builtArchitecture, node.id)
+  const metrics = lastTick?.perNode[node.id]
+  const builtSize = built && built.tier !== node.tier ? def.tiers[built.tier]?.label : undefined
 
   return (
     <section aria-labelledby={`${id}-heading`} className="flex flex-col gap-4">
@@ -115,28 +121,69 @@ function NodeDetails(
         <h2 id={`${id}-heading`} className="text-sm font-medium text-ink-bright">
           {name}
         </h2>
-        <p className="num mt-1 text-xs">
-          {utilization === undefined ? 'No turns run yet' : `Utilization ${percent(utilization)} at peak`}
-        </p>
+        {node.kind !== 'ingress' && (
+          <p className="mt-1 text-xs">
+            {def.tiers[node.tier]?.label ?? 'Unknown size'} × <span className="num">{node.replicas}</span>
+          </p>
+        )}
       </div>
 
       {def.tiers.length > 0 && (
         <label className="flex flex-col gap-1 text-xs">
           Size
           <select
-            className={FIELD}
+            className={`${FIELD} num`}
             value={node.tier}
             onChange={(event) =>
-              apply(setTier(architecture, node.id, Number(event.target.value)), `${name} set to ${def.tiers[Number(event.target.value)]?.label ?? 'a new size'}.`)
+              apply(
+                setTier(architecture, node.id, Number(event.target.value)),
+                `${name} set to ${def.tiers[Number(event.target.value)]?.label ?? 'a new size'}.`,
+              )
             }
           >
-            {def.tiers.map((tier, index) => (
-              <option key={tier.label} value={index}>
-                {tier.label}
-              </option>
-            ))}
+            {def.tiers.map((option, index) => {
+              const figures = tiers[index]
+              return (
+                <option key={option.label} value={index}>
+                  {figures
+                    ? `${option.label} · ${formatRps(figures.capacityRps)} · ${formatDollars(figures.runningCostPerTurnCents)} a week`
+                    : option.label}
+                </option>
+              )
+            })}
           </select>
         </label>
+      )}
+
+      {tier && (
+        <Figures title="At this size">
+          <Figure label="Capacity" value={formatRps(tier.capacityRps)} />
+          <Figure label="Service time" value={formatMs(tier.serviceTimeMs)} />
+          <Figure label="Running cost" value={`${formatDollars(tier.runningCostPerTurnCents * node.replicas)} a week`} />
+          {setup > 0 && <Figure label="Setup when you advance" value={formatDollars(setup)} />}
+        </Figures>
+      )}
+
+      {node.kind === 'ingress' ? (
+        lastTick && (
+          <Figures title="Last week">
+            <Figure label="Traffic at peak" value={formatRps(lastTick.peakRps)} />
+          </Figures>
+        )
+      ) : (
+        <Figures title={builtSize ? `Last week at peak, as ${builtSize}` : 'Last week at peak'}>
+          {metrics ? (
+            <>
+              <Figure label="Received" value={formatRps(metrics.inboundRps)} />
+              <Figure label="Capacity" value={formatRps(metrics.capacityRps)} />
+              <Figure label="Utilization" value={formatUtilization(metrics.utilization)} />
+              <Figure label="p99" value={formatMs(metrics.p99Ms)} />
+              {metrics.droppedRps > 0 && <Figure label="Turned away" value={formatRps(metrics.droppedRps)} />}
+            </>
+          ) : (
+            <p className="col-span-2">{lastTick ? 'Not running yet. It runs from next week.' : 'No weeks run yet.'}</p>
+          )}
+        </Figures>
       )}
 
       {node.kind === 'app-server' && (
@@ -208,5 +255,28 @@ function NodeDetails(
         </div>
       )}
     </section>
+  )
+}
+
+function Figures({ title, children }: { readonly title: string; readonly children: ReactNode }) {
+  const id = useId()
+  return (
+    <div className="flex flex-col gap-1">
+      <h3 id={id} className="text-xs font-medium text-ink-bright">
+        {title}
+      </h3>
+      <dl aria-labelledby={id} className={FIGURES}>
+        {children}
+      </dl>
+    </div>
+  )
+}
+
+function Figure({ label, value }: { readonly label: string; readonly value: string }) {
+  return (
+    <>
+      <dt>{label}</dt>
+      <dd className="num text-right text-ink-bright">{value}</dd>
+    </>
   )
 }
