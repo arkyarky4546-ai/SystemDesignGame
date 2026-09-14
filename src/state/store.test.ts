@@ -34,7 +34,7 @@ describe('game store', () => {
     const expected = unwrap(simulateTurn(createRun({ seed: 42, difficulty: 'junior' }), { difficulty: 'junior', catalog: TEST_CATALOG }))
     const { run, ui } = store.getState()
     expect(run).toEqual(expected.nextRun)
-    expect(ui.lastTurn).toEqual(expected)
+    expect(ui.lastTurn).toEqual({ result: expected, before: createRun({ seed: 42, difficulty: 'junior' }) })
     expect(savedGame(storage).run).toEqual(expected.nextRun)
   })
 

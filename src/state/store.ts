@@ -22,10 +22,17 @@ export type SaveProblem =
   | { readonly kind: 'write-failed'; readonly detail: string }
   | { readonly kind: 'import-failed'; readonly error: SaveReadError }
 
+/** One Advance: what the engine returned, and the run it started from. */
+export type LastTurn = {
+  readonly result: TurnResult
+  /** The run before the turn: its architecture is what ran, and its figures are where deltas start. */
+  readonly before: RunState
+}
+
 /** Transient state for the screens. Never saved. */
 export type UiState = {
-  /** The most recent Advance, for the weekly report. */
-  readonly lastTurn: TurnResult | null
+  /** The most recent Advance, for the weekly report and the turn animation. */
+  readonly lastTurn: LastTurn | null
   /** Why the last Advance was refused, if it was. */
   readonly turnError: TickError | null
   readonly saveProblem: SaveProblem | null
@@ -36,6 +43,8 @@ export type GameState = {
   readonly knowledge: Knowledge
   readonly settings: Settings
   readonly ui: UiState
+  /** The tiers every turn resolves against, so screens show the same figures the engine uses. Never saved. */
+  readonly catalog: PricedCatalog
 }
 
 export type GameActions = {
@@ -87,6 +96,7 @@ export function createGameStore(deps: GameStoreDeps): StoreApi<GameStore> {
       knowledge: DEFAULT_KNOWLEDGE,
       settings: DEFAULT_SETTINGS,
       ui: INITIAL_UI,
+      catalog: deps.catalog,
 
       load: () => {
         const outcome = loadSave(deps.storage, deps.now)
@@ -124,7 +134,10 @@ export function createGameStore(deps: GameStoreDeps): StoreApi<GameStore> {
           set((state) => ({ ui: { ...state.ui, turnError: result.error } }))
           return
         }
-        set((state) => ({ run: result.value.nextRun, ui: { ...state.ui, lastTurn: result.value, turnError: null } }))
+        set((state) => ({
+          run: result.value.nextRun,
+          ui: { ...state.ui, lastTurn: { result: result.value, before: run }, turnError: null },
+        }))
         persist()
       },
 
