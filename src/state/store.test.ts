@@ -147,4 +147,39 @@ describe('game store', () => {
     expect(store.getState().run?.turn).toBe(0)
     expect(store.getState().ui.saveProblem).toEqual({ kind: 'write-failed', detail: 'QuotaExceededError' })
   })
+
+  it('opens the week guide for a run that hasn’t advanced, and never saves whether it’s open (ADR-0038)', () => {
+    const { store, storage, actions } = setup()
+    expect(store.getState().ui.guideOpen).toBe(false)
+    actions.startRun(4)
+    expect(store.getState().ui.guideOpen).toBe(true)
+    actions.closeGuide()
+    expect(store.getState().ui.guideOpen).toBe(false)
+    actions.advanceTurn()
+    expect(store.getState().ui.guideOpen).toBe(false)
+    actions.openGuide()
+    expect(store.getState().ui.guideOpen).toBe(true)
+    expect(storage.items.get(CURRENT_KEY)).not.toContain('guideOpen')
+
+    // Loading or importing opens it only for a run still at week 0.
+    const { knowledge, settings } = store.getState()
+    const newRun = serializeSave(createSave({ run: createRun({ seed: 4, difficulty: 'junior' }), knowledge, settings }, FIXED_NOW))
+    const reloadedNew = setup({ [CURRENT_KEY]: newRun })
+    reloadedNew.actions.load()
+    expect(reloadedNew.store.getState().ui.guideOpen).toBe(true)
+
+    const reloadedPlayed = setup({ [CURRENT_KEY]: storage.items.get(CURRENT_KEY) ?? '' })
+    reloadedPlayed.actions.load()
+    expect(reloadedPlayed.store.getState().run?.turn).toBe(1)
+    expect(reloadedPlayed.store.getState().ui.guideOpen).toBe(false)
+
+    const imported = setup()
+    imported.actions.importProgress(reloadedNew.actions.exportProgress())
+    expect(imported.store.getState().ui.guideOpen).toBe(true)
+    imported.actions.importProgress(actions.exportProgress())
+    expect(imported.store.getState().ui.guideOpen).toBe(false)
+
+    actions.abandonRun()
+    expect(store.getState().ui.guideOpen).toBe(false)
+  })
 })

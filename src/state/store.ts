@@ -36,6 +36,12 @@ export type UiState = {
   /** Why the last Advance was refused, if it was. */
   readonly turnError: TickError | null
   readonly saveProblem: SaveProblem | null
+  /**
+   * Whether "How a week works" is showing (M4a). A run that hasn't advanced yet opens it, and it
+   * stays open until the player closes it. Saves don't record it (ADR-0038), so a run reloaded
+   * before its first week shows it again.
+   */
+  readonly guideOpen: boolean
 }
 
 export type GameState = {
@@ -61,6 +67,8 @@ export type GameActions = {
   readonly exportProgress: () => string
   readonly importProgress: (encoded: string) => boolean
   readonly dismissSaveProblem: () => void
+  readonly openGuide: () => void
+  readonly closeGuide: () => void
 }
 
 export type GameStore = GameState & GameActions
@@ -73,7 +81,9 @@ export type GameStoreDeps = {
   readonly now: () => Date
 }
 
-const INITIAL_UI: UiState = { lastTurn: null, turnError: null, saveProblem: null }
+const INITIAL_UI: UiState = { lastTurn: null, turnError: null, saveProblem: null, guideOpen: false }
+
+const isNewRun = (run: RunState | null): boolean => run !== null && run.turn === 0
 
 /**
  * The single game store (01-ARCHITECTURE §4). A vanilla Zustand store, so tests and the
@@ -102,7 +112,7 @@ export function createGameStore(deps: GameStoreDeps): StoreApi<GameStore> {
         const outcome = loadSave(deps.storage, deps.now)
         if (outcome.kind === 'loaded') {
           const { run, knowledge, settings } = outcome.save
-          set({ run, knowledge, settings, ui: INITIAL_UI })
+          set({ run, knowledge, settings, ui: { ...INITIAL_UI, guideOpen: isNewRun(run) } })
         } else if (outcome.kind === 'corrupt') {
           reportProblem({ kind: 'corrupt-save', error: outcome.error, quarantineKey: outcome.quarantineKey })
         } else if (outcome.kind === 'unavailable') {
@@ -114,7 +124,7 @@ export function createGameStore(deps: GameStoreDeps): StoreApi<GameStore> {
       startRun: (seed) => {
         set((state) => ({
           run: createRun({ seed, difficulty: state.settings.difficulty }),
-          ui: { ...state.ui, lastTurn: null, turnError: null },
+          ui: { ...state.ui, lastTurn: null, turnError: null, guideOpen: true },
         }))
         persist()
       },
@@ -147,7 +157,7 @@ export function createGameStore(deps: GameStoreDeps): StoreApi<GameStore> {
       },
 
       abandonRun: () => {
-        set((state) => ({ run: null, ui: { ...state.ui, lastTurn: null, turnError: null } }))
+        set((state) => ({ run: null, ui: { ...state.ui, lastTurn: null, turnError: null, guideOpen: false } }))
         persist()
       },
 
@@ -163,12 +173,16 @@ export function createGameStore(deps: GameStoreDeps): StoreApi<GameStore> {
           return false
         }
         const { run, knowledge, settings } = imported.value
-        set({ run, knowledge, settings, ui: INITIAL_UI })
+        set({ run, knowledge, settings, ui: { ...INITIAL_UI, guideOpen: isNewRun(run) } })
         persist()
         return true
       },
 
       dismissSaveProblem: () => set((state) => ({ ui: { ...state.ui, saveProblem: null } })),
+
+      openGuide: () => set((state) => ({ ui: { ...state.ui, guideOpen: true } })),
+
+      closeGuide: () => set((state) => ({ ui: { ...state.ui, guideOpen: false } })),
     }
   })
 }
