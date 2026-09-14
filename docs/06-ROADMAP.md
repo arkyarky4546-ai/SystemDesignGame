@@ -136,7 +136,7 @@ was added before M5 (ADR-0037).
 
 ---
 
-## [ ] M4a — First-run guidance
+## [x] M4a — First-run guidance
 
 **Read:** `05-UI-DESIGN.md` §4, §5, §8, `00-GAME-DESIGN.md` §3, ADR-0032, ADR-0035, ADR-0037
 
