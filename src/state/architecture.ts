@@ -29,7 +29,6 @@ export type EditRefusal =
   | { readonly kind: 'fixed-component'; readonly nodeId: NodeId }
   | { readonly kind: 'not-placeable'; readonly componentKind: ComponentKind }
   | { readonly kind: 'invalid-tier'; readonly nodeId: NodeId; readonly tier: number }
-  | { readonly kind: 'invalid-fanout'; readonly nodeId: NodeId }
   | { readonly kind: 'connection-refused'; readonly refusal: ConnectionRefusal }
 
 export type Edit<T = Architecture> = Result<T, EditRefusal>
@@ -158,18 +157,6 @@ export function setTier(architecture: Architecture, nodeId: NodeId, tier: number
     return refuse({ kind: 'invalid-tier', nodeId, tier })
   }
   return updateNode(architecture, nodeId, (current) => ({ ...current, tier }))
-}
-
-/** Sets an app server's database queries per request, a non-negative number. */
-export function setFanout(architecture: Architecture, nodeId: NodeId, fanoutFactor: number): Edit {
-  const node = findNode(architecture, nodeId)
-  if (!node) return refuse({ kind: 'unknown-node', nodeId })
-  if (node.kind !== 'app-server' || !Number.isFinite(fanoutFactor) || fanoutFactor < 0) {
-    return refuse({ kind: 'invalid-fanout', nodeId })
-  }
-  return updateNode(architecture, nodeId, (current) =>
-    current.kind === 'app-server' ? { ...current, config: { fanoutFactor } } : current,
-  )
 }
 
 function updateNode(

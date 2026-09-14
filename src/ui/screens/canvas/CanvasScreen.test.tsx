@@ -91,15 +91,13 @@ describe('canvas with the keyboard alone (M3 acceptance)', () => {
     ])
   })
 
-  it('edits app server fanout by typing', async () => {
-    const { canvas, architecture, user } = setup()
+  it('shows app server fanout as a fact about the app, not a setting (ADR-0034)', async () => {
+    const { canvas, user } = setup()
     canvas.focus()
     await user.keyboard('{ArrowDown}{ArrowDown}')
-    const field = screen.getByLabelText('Database queries per request')
-    await user.clear(field)
-    await user.type(field, '2.5')
-    const app = architecture().nodes.find((n) => n.id === 'app')
-    expect(app?.kind === 'app-server' && app.config.fanoutFactor).toBe(2.5)
+    const inspector = screen.getByRole('region', { name: 'App server' })
+    expect(within(inspector).getByText(/Database queries per request/).textContent).toBe('Database queries per request 1')
+    expect(within(inspector).queryByRole('spinbutton')).toBeNull()
   })
 
   it('refuses an invalid connection with the specific reason, and cancels with Escape', async () => {

@@ -7,7 +7,6 @@ import {
   disconnect,
   findNode,
   removeNode,
-  setFanout,
   setTier,
   type Edit,
 } from '../../../state/architecture'
@@ -109,7 +108,6 @@ function NodeDetails(
   const incoming = architecture.edges.filter((edge) => edge.to === node.id)
   const others = architecture.nodes.filter((other) => other.id !== node.id)
   const [target, setTarget] = useState(others[0]?.id ?? '')
-  const [fanout, setFanoutText] = useState(node.kind === 'app-server' ? String(node.config.fanoutFactor) : '')
 
   return (
     <section aria-labelledby={`${id}-heading`} className="flex flex-col gap-4">
@@ -142,24 +140,9 @@ function NodeDetails(
       )}
 
       {node.kind === 'app-server' && (
-        <label className="flex flex-col gap-1 text-xs">
-          Database queries per request
-          <input
-            className={`${FIELD} num`}
-            type="number"
-            min={0}
-            step={0.5}
-            inputMode="decimal"
-            value={fanout}
-            onChange={(event) => {
-              setFanoutText(event.target.value)
-              const value = Number(event.target.value)
-              if (event.target.value.trim() !== '' && Number.isFinite(value) && value >= 0) {
-                apply(setFanout(architecture, node.id, value), `${name} makes ${value} queries per request.`)
-              }
-            }}
-          />
-        </label>
+        <p className="text-xs">
+          Database queries per request <span className="num text-ink-bright">{node.config.fanoutFactor}</span>
+        </p>
       )}
 
       <div className="flex flex-col gap-2">

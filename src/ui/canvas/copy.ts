@@ -62,8 +62,6 @@ export function describeEditRefusal(refusal: EditRefusal, architecture: Architec
       return `${COMPONENT_DEFS[refusal.componentKind].displayName} is always present and can’t be added.`
     case 'invalid-tier':
       return 'That size doesn’t exist for this component.'
-    case 'invalid-fanout':
-      return 'Queries per request must be a number, zero or more.'
     case 'connection-refused':
       return refusal.refusal.kind === 'kinds' ? refusal.refusal.reason : 'That connection isn’t allowed.'
   }

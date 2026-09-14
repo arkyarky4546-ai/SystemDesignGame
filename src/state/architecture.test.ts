@@ -11,7 +11,6 @@ import {
   nextNodeId,
   placeNode,
   removeNode,
-  setFanout,
   setTier,
 } from './architecture'
 
@@ -122,13 +121,5 @@ describe('reconfiguring', () => {
     })
     expect(setTier(starter(), 'app', 0.5).ok).toBe(false)
     expect(setTier(starter(), 'ingress', 0).ok).toBe(false)
-  })
-
-  it('sets fanout on app servers only, to a non-negative number', () => {
-    const node = unwrap(setFanout(starter(), 'app', 3)).nodes[1]
-    expect(node?.kind === 'app-server' && node.config.fanoutFactor).toBe(3)
-    expect(setFanout(starter(), 'app', -1)).toEqual({ ok: false, error: { kind: 'invalid-fanout', nodeId: 'app' } })
-    expect(setFanout(starter(), 'app', Number.NaN).ok).toBe(false)
-    expect(setFanout(starter(), 'db', 2)).toEqual({ ok: false, error: { kind: 'invalid-fanout', nodeId: 'db' } })
   })
 })
