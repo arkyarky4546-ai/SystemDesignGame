@@ -21,6 +21,7 @@ import {
   removeNode,
   type Edit,
 } from '../../state/architecture'
+import { capturePointer } from '../pointer-capture'
 import { CanvasEdge } from './CanvasEdge'
 import { CanvasNode } from './CanvasNode'
 import { describeConnectionRefusal, describeEditRefusal, nodeName } from './copy'
@@ -215,7 +216,7 @@ export function ArchitectureCanvas(props: ArchitectureCanvasProps) {
       latest: point,
       moved: false,
     }
-    svg.setPointerCapture?.(event.pointerId)
+    capturePointer(svg, event.pointerId)
   }, [])
 
   const onPortPointerDown = useCallback(
@@ -225,7 +226,7 @@ export function ArchitectureCanvas(props: ArchitectureCanvasProps) {
       const svg = svgElement.current
       if (!svg) return
       gesture.current = { kind: 'connect', from: nodeId, pointerId: event.pointerId, latest: canvasPoint(svg, event, latest.current.zoom) }
-      svg.setPointerCapture?.(event.pointerId)
+      capturePointer(svg, event.pointerId)
       paintGesture()
     },
     [paintGesture],

@@ -205,6 +205,24 @@ describe('canvas with the mouse (M3 acceptance)', () => {
   })
 })
 
+describe('pointer capture', () => {
+  it('still drags when the browser refuses to capture the pointer', () => {
+    const { canvas, architecture } = setup()
+    Object.defineProperty(canvas, 'setPointerCapture', {
+      configurable: true,
+      value: () => {
+        throw new DOMException('No active pointer with the given id is found.', 'NotFoundError')
+      },
+    })
+    const body = node(canvas, 'db').querySelector('[data-part="body"]')
+    if (!body) throw new Error('no node body')
+    fireEvent.pointerDown(body, { button: 0, pointerId: 9, ...cellPoint(0, 2) })
+    fireEvent.pointerMove(canvas, { pointerId: 9, ...cellPoint(3, 2) })
+    fireEvent.pointerUp(canvas, { pointerId: 9, ...cellPoint(3, 2) })
+    expect(architecture().nodes.find((n) => n.id === 'db')?.position).toEqual({ col: 3, row: 2 })
+  })
+})
+
 describe('utilization (05-UI-DESIGN §4)', () => {
   it('fills each node to its utilization and marks saturation without relying on color', () => {
     const store = createGameStore({ storage: memoryStorage(), catalog: TEST_CATALOG, now: FIXED_NOW })

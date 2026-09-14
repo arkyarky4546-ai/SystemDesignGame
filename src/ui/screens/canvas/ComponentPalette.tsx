@@ -1,6 +1,7 @@
 import { useRef, type PointerEvent } from 'react'
 import { COMPONENT_DEFS } from '../../../content/components'
 import { COMPONENT_KINDS, type ComponentKind } from '../../../content/schema'
+import { capturePointer } from '../../pointer-capture'
 
 type ComponentPaletteProps = {
   /** A component dropped at a point on screen. The screen decides whether that point is on the canvas. */
@@ -32,7 +33,7 @@ export function ComponentPalette({ onDrop, onPlace }: ComponentPaletteProps) {
   const onPointerDown = (event: PointerEvent<HTMLButtonElement>, kind: ComponentKind) => {
     if (event.button !== 0) return
     drag.current = { kind, pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, dragging: false }
-    event.currentTarget.setPointerCapture?.(event.pointerId)
+    capturePointer(event.currentTarget, event.pointerId)
   }
 
   const onPointerMove = (event: PointerEvent<HTMLButtonElement>) => {
