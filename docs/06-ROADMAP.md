@@ -107,7 +107,7 @@ annoying — nothing downstream fixes that.
 
 ---
 
-## [ ] M4 — The loop is playable
+## [x] M4 — The loop is playable
 
 **Read:** `05-UI-DESIGN.md` §3–5, `00-GAME-DESIGN.md` §3
 
