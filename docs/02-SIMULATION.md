@@ -68,7 +68,12 @@ meanRps(t+1) = meanRps(t) × (1 + g) × reputationModifier(t) × eventModifier(t
 ```
 
 where `g = BALANCE.traffic.baseGrowthPerTurn[difficulty]` plus a seeded normal
-draw with sigma from balance config, clamped to `[-0.5g, +3g]`.
+draw with sigma from balance config, the draw clamped to `[-0.5g, +3g]`. Total
+growth therefore stays between 0.5g and 4g, so noise alone never shrinks
+traffic. The draw is approximately normal: the standardized sum of four uniform
+draws, since exact methods need functions JavaScript engines may round
+differently. For `bailoutGrowthPenaltyTurns` after an investor bailout (§7.2),
+`g` is multiplied by `bailoutGrowthMultiplier`. ADR-0023.
 
 `reputationModifier` is defined in §7. `eventModifier` is 1 except during
 scripted incidents.
@@ -324,6 +329,14 @@ cash(t+1) = cash(t) + revenueCents − costCents − oneTimeSetupCosts
 CDN offload reducing bandwidth cost is frequently the *only* reason a CDN pays
 for itself, and that should be legible in the weekly report's cost breakdown.
 
+`errorRate` and `p99` here and in §7 are service-wide:
+- `errorRate` weights each request class's error rate by its share of traffic.
+- `p99` is the worst p99 among classes that carry traffic.
+
+Revenue and bandwidth round to whole cents. One-time setup costs are charged for
+what changed since last turn: new nodes, tier changes, and added replicas.
+`storageCents` is 0 until a data-size model exists. ADR-0023.
+
 ## 7. Reputation and user growth
 
 Reputation is 0..1, starts at 0.7.
@@ -350,6 +363,38 @@ reputationModifier = 0.6 + 0.8 × reputation    // range [0.6, 1.4]
 Applied to next turn's traffic growth (§3). Great service compounds; bad service
 stalls you out. This is the feedback loop that makes the whole economy work —
 it's why you can't simply run a terrible architecture cheaply and profit.
+
+`staleRate` is 0 until replicas can serve stale reads. ADR-0023.
+
+### 7.1 Users and acts
+
+Users are derived from traffic, not simulated separately:
+
+```
+users = meanRps / BALANCE.traffic.meanRpsPerUser
+```
+
+Churn is the loop above. When `(1 + g) × reputationModifier < 1`, traffic and
+users shrink. The act is the highest of `00-GAME-DESIGN.md` §9's user thresholds
+reached, and it never goes down. ADR-0024.
+
+### 7.2 Failure states
+
+Applied after reputation, in this order (`00-GAME-DESIGN.md` §8, ADR-0024):
+
+```
+1. users < churnFloorOfActStart × users at the act's start   → roll back
+2. cash < 0, and this act's bailout is unused                → bailout:
+     cash = bailoutCashCents[difficulty]
+     reputation −= bailoutReputationPenalty
+     growth slowed (§3)
+3. cash < 0, and the bailout is spent                        → roll back
+4. otherwise, entering a new act resets the bailout and becomes the rollback point
+```
+
+A rollback restores the state saved at the act's start: cash, reputation,
+workload, architecture, act, and bailout state. The turn counter keeps counting.
+Knowledge lives outside the run and is never touched.
 
 ## 8. Named mechanics that produce specific lessons
 
