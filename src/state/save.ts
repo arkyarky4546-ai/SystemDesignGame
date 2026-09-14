@@ -4,12 +4,13 @@ import { DIFFICULTIES, type Difficulty } from '../config/difficulty'
 import {
   EMPTY_ARCHIVE,
   actForUsers,
+  layoutByFlow,
   usersForMeanRps,
   type Architecture,
   type ComponentNode,
+  type Edge,
   type HistoryArchive,
   type Result,
-  type RunCheckpoint,
   type RunState,
   type SimEvent,
   type TurnSummary,
@@ -17,9 +18,6 @@ import {
 } from '../engine'
 
 // Save files: serialize, validate, migrate, quarantine, export (01-ARCHITECTURE §7, ADR-0025).
-
-/** Schema version of the save document. Not the app version. */
-export const SAVE_VERSION = 1
 
 /**
  * Bumped when content changes in a way that breaks saved concept or question ids. No
@@ -60,7 +58,8 @@ export type Settings = {
 }
 
 export type SaveFile = {
-  readonly version: typeof SAVE_VERSION
+  /** Always SAVE_VERSION once loaded. */
+  readonly version: number
   readonly contentVersion: number
   /** ISO timestamp. Informational only; nothing reads it back. */
   readonly savedAt: string
@@ -103,6 +102,9 @@ const act = z
   .min(1)
   .max(BALANCE.acts.usersToEnter.length + 1)
 const noConfig = z.record(z.string(), z.never())
+const id = z.string()
+const replicas = z.number().int().positive()
+const seed = count.refine((value) => value >>> 0 === value, 'seed must be an unsigned 32-bit integer')
 
 const WorkloadSchema: z.ZodType<Workload> = z.object({
   meanRps: nonNegative,
@@ -113,17 +115,28 @@ const WorkloadSchema: z.ZodType<Workload> = z.object({
   payloadKb: nonNegative,
 })
 
-const id = z.string()
-const replicas = z.number().int().positive()
+const EdgesSchema: z.ZodType<Edge[]> = z.array(z.object({ from: z.string(), to: z.string() }))
+
 const ComponentNodeSchema: z.ZodType<ComponentNode> = z.discriminatedUnion('kind', [
-  z.object({ id, kind: z.literal('ingress'), replicas, tier: count, config: noConfig }),
-  z.object({ id, kind: z.literal('app-server'), replicas, tier: count, config: z.object({ fanoutFactor: nonNegative }) }),
-  z.object({ id, kind: z.literal('database'), replicas, tier: count, config: noConfig }),
+  z.object({ id, kind: z.literal('ingress'), replicas, tier: count, config: noConfig, position: gridPosition() }),
+  z.object({
+    id,
+    kind: z.literal('app-server'),
+    replicas,
+    tier: count,
+    config: z.object({ fanoutFactor: nonNegative }),
+    position: gridPosition(),
+  }),
+  z.object({ id, kind: z.literal('database'), replicas, tier: count, config: noConfig, position: gridPosition() }),
 ])
+
+function gridPosition() {
+  return z.object({ col: count, row: count })
+}
 
 const ArchitectureSchema: z.ZodType<Architecture> = z.object({
   nodes: z.array(ComponentNodeSchema),
-  edges: z.array(z.object({ from: z.string(), to: z.string() })),
+  edges: EdgesSchema,
 })
 
 const SimEventSchema: z.ZodType<SimEvent> = z.discriminatedUnion('kind', [
@@ -131,18 +144,6 @@ const SimEventSchema: z.ZodType<SimEvent> = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('bailout'), cashCents: cents }),
   z.object({ kind: z.literal('rollback'), reason: z.enum(['bankruptcy', 'churn']), act }),
 ])
-
-const checkpointFields = {
-  cashCents: cents,
-  reputation: fraction,
-  workload: WorkloadSchema,
-  architecture: ArchitectureSchema,
-  builtArchitecture: ArchitectureSchema,
-  act,
-  bailoutAvailable: z.boolean(),
-  growthPenaltyTurns: count,
-}
-const CheckpointSchema: z.ZodType<RunCheckpoint> = z.object(checkpointFields)
 
 const TurnSummarySchema: z.ZodType<TurnSummary> = z.object({
   turn: count,
@@ -170,16 +171,29 @@ const ArchiveSchema: z.ZodType<HistoryArchive> = z.object({
   peakUsers: nonNegative,
 })
 
-const seed = count.refine((value) => value >>> 0 === value, 'seed must be an unsigned 32-bit integer')
+/** A run schema around a given architecture schema, so older formats share everything else. */
+function runSchema<A extends z.ZodType>(architecture: A) {
+  const checkpoint = {
+    cashCents: cents,
+    reputation: fraction,
+    workload: WorkloadSchema,
+    architecture,
+    builtArchitecture: architecture,
+    act,
+    bailoutAvailable: z.boolean(),
+    growthPenaltyTurns: count,
+  }
+  return z.object({
+    ...checkpoint,
+    seed,
+    turn: count,
+    actStart: z.object(checkpoint),
+    history: z.array(TurnSummarySchema),
+    archive: ArchiveSchema,
+  })
+}
 
-const RunStateSchema: z.ZodType<RunState> = z.object({
-  ...checkpointFields,
-  seed,
-  turn: count,
-  actStart: CheckpointSchema,
-  history: z.array(TurnSummarySchema),
-  archive: ArchiveSchema,
-})
+const RunStateSchema: z.ZodType<RunState> = runSchema(ArchitectureSchema)
 
 const KnowledgeSchema: z.ZodType<Knowledge> = z.object({
   unlockedConcepts: z.array(z.string()),
@@ -201,21 +215,35 @@ const SettingsSchema: z.ZodType<Settings> = z.object({
   showHints: z.boolean(),
 })
 
-const SaveFileSchema: z.ZodType<SaveFile> = z.object({
-  version: z.literal(SAVE_VERSION),
+// Past formats. The migration runner checks versions, so these schemas don't.
+
+// Before version 2, nodes had no canvas position. This frozen node shape serves v0 and v1.
+const UnplacedArchitectureSchema = z.object({
+  nodes: z.array(
+    z.discriminatedUnion('kind', [
+      z.object({ id, kind: z.literal('ingress'), replicas, tier: count, config: noConfig }),
+      z.object({ id, kind: z.literal('app-server'), replicas, tier: count, config: z.object({ fanoutFactor: nonNegative }) }),
+      z.object({ id, kind: z.literal('database'), replicas, tier: count, config: noConfig }),
+    ]),
+  ),
+  edges: EdgesSchema,
+})
+
+// Version 1 (M2). It shares every schema except the architecture with the current format.
+// If any other saved shape changes, freeze a full copy here first.
+const RunV1Schema = runSchema(UnplacedArchitectureSchema)
+const SaveV1Schema = z.object({
   contentVersion: count,
   savedAt: z.string(),
   knowledge: KnowledgeSchema,
-  run: RunStateSchema.nullable(),
+  run: RunV1Schema.nullable(),
   settings: SettingsSchema,
 })
 
-// Version 0: the pre-release shape, defined so migrations run from the first release
-// (ADR-0025). It has a run's core figures but no act, bailout or history, and no settings
-// beyond difficulty. It reuses today's Workload and Architecture schemas; if either shape
-// changes, freeze a copy here first.
+// Version 0: the synthetic pre-release shape that exercises migrations from the first
+// release (ADR-0025). It has a run's core figures, but no act, bailout or history, and no
+// settings beyond difficulty.
 const SaveV0Schema = z.object({
-  version: z.literal(0),
   savedAt: z.string(),
   knowledge: z.object({ unlockedConcepts: z.array(z.string()) }),
   settings: z.object({ difficulty: z.enum(DIFFICULTIES) }),
@@ -226,25 +254,24 @@ const SaveV0Schema = z.object({
       cashCents: cents,
       reputation: fraction,
       workload: WorkloadSchema,
-      architecture: ArchitectureSchema,
+      architecture: UnplacedArchitectureSchema,
     })
     .nullable(),
 })
 
-function migrateV0(save: z.infer<typeof SaveV0Schema>): unknown {
+function migrateV0(save: z.output<typeof SaveV0Schema>): z.output<typeof SaveV1Schema> {
   return {
-    version: 1,
     contentVersion: 0,
     savedAt: save.savedAt,
     knowledge: { unlockedConcepts: save.knowledge.unlockedConcepts, checkHistory: [] },
-    settings: { ...DEFAULT_SETTINGS, difficulty: save.settings.difficulty },
     run: save.run && runFromV0(save.run),
+    settings: { ...DEFAULT_SETTINGS, difficulty: save.settings.difficulty },
   }
 }
 
-function runFromV0(run: NonNullable<z.infer<typeof SaveV0Schema>['run']>): RunState {
+function runFromV0(run: NonNullable<z.output<typeof SaveV0Schema>['run']>): z.output<typeof RunV1Schema> {
   // A v0 run's past is unknown, so its act starts now: a rollback returns here.
-  const checkpoint: RunCheckpoint = {
+  const checkpoint = {
     cashCents: run.cashCents,
     reputation: run.reputation,
     workload: run.workload,
@@ -257,19 +284,63 @@ function runFromV0(run: NonNullable<z.infer<typeof SaveV0Schema>['run']>): RunSt
   return { ...checkpoint, seed: run.seed, turn: run.turn, actStart: checkpoint, history: [], archive: EMPTY_ARCHIVE }
 }
 
-type Migration = (save: unknown) => Result<unknown, string>
+function migrateV1(save: z.output<typeof SaveV1Schema>): Omit<SaveFile, 'version'> {
+  const run = save.run
+  if (!run) return { ...save, run: null }
+  return {
+    ...save,
+    run: {
+      ...run,
+      architecture: placeNodes(run.architecture),
+      builtArchitecture: placeNodes(run.builtArchitecture),
+      actStart: {
+        ...run.actStart,
+        architecture: placeNodes(run.actStart.architecture),
+        builtArchitecture: placeNodes(run.actStart.builtArchitecture),
+      },
+    },
+  }
+}
+
+// Gives a positionless architecture a flow layout (ADR-0028).
+function placeNodes(architecture: z.output<typeof UnplacedArchitectureSchema>): Architecture {
+  const at = layoutByFlow(
+    architecture.nodes.map((node) => node.id),
+    architecture.edges,
+  )
+  return { nodes: architecture.nodes.map((node) => ({ ...node, position: at(node.id) })), edges: architecture.edges }
+}
+
+type Migration = (save: unknown) => Result<Readonly<Record<string, unknown>>, string>
+
+function migration<S extends z.ZodType>(
+  schema: S,
+  migrate: (save: z.output<S>) => Readonly<Record<string, unknown>>,
+): Migration {
+  return (save) => {
+    const parsed = schema.safeParse(save)
+    return parsed.success ? { ok: true, value: migrate(parsed.data) } : { ok: false, error: z.prettifyError(parsed.error) }
+  }
+}
 
 /**
- * MIGRATIONS[n] turns a version-n save into version n + 1. Append one per version bump, add
- * a fixture for the old version, and never edit or remove an entry: old saves still pass
- * through every step.
+ * MIGRATIONS[n] turns a version-n save into version n + 1; the runner stamps the version.
+ * Append one per format change, add a fixture for the old version, and never edit or remove
+ * an entry: old saves still pass through every step.
  */
-export const MIGRATIONS: readonly Migration[] = [
-  (save) => {
-    const parsed = SaveV0Schema.safeParse(save)
-    return parsed.success ? { ok: true, value: migrateV0(parsed.data) } : { ok: false, error: z.prettifyError(parsed.error) }
-  },
-]
+export const MIGRATIONS: readonly Migration[] = [migration(SaveV0Schema, migrateV0), migration(SaveV1Schema, migrateV1)]
+
+/** Schema version of the save document, not the app version. One past the last migration. */
+export const SAVE_VERSION = MIGRATIONS.length
+
+const SaveFileSchema: z.ZodType<SaveFile> = z.object({
+  version: z.literal(SAVE_VERSION),
+  contentVersion: count,
+  savedAt: z.string(),
+  knowledge: KnowledgeSchema,
+  run: RunStateSchema.nullable(),
+  settings: SettingsSchema,
+})
 
 /** A save document for the current state, stamped with the current versions. */
 export function createSave(
@@ -312,11 +383,11 @@ export function migrateSave(data: unknown): Result<SaveFile, SaveReadError> {
   }
   let current = data
   for (let from = version; from < SAVE_VERSION; from++) {
-    const migration = MIGRATIONS[from]
-    if (!migration) return readError('invalid', `no migration from version ${from}`)
-    const migrated = migration(current)
+    const step = MIGRATIONS[from]
+    if (!step) return readError('invalid', `no migration from version ${from}`)
+    const migrated = step(current)
     if (!migrated.ok) return readError('invalid', `as version ${from}: ${migrated.error}`)
-    current = migrated.value
+    current = { ...migrated.value, version: from + 1 }
   }
   const parsed = SaveFileSchema.safeParse(current)
   return parsed.success ? { ok: true, value: parsed.data } : readError('invalid', z.prettifyError(parsed.error))

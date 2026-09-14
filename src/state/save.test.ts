@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { createRun, simulateTurn, type ComponentNode, type RunState } from '../engine'
 import { TEST_CATALOG, playHeadless, unwrap } from '../engine/test-helpers'
 import v0Fixture from './fixtures/save-v0.json?raw'
+import v1Fixture from './fixtures/save-v1.json?raw'
 import {
   CORRUPT_KEY_PREFIX,
   DEFAULT_KNOWLEDGE,
@@ -77,12 +78,19 @@ describe('save round-trip (07-TESTING §4)', () => {
   it('stays under 100 KB for a 50-node architecture with a full history (01-ARCHITECTURE §7)', () => {
     const middle = Array.from(
       { length: 48 },
-      (_, index): ComponentNode => ({ id: `app-${index}`, kind: 'app-server', replicas: 1, tier: 0, config: { fanoutFactor: 1 } }),
+      (_, index): ComponentNode => ({
+        id: `app-${index}`,
+        kind: 'app-server',
+        replicas: 1,
+        tier: 0,
+        config: { fanoutFactor: 1 },
+        position: { col: index % 7, row: 1 + Math.floor(index / 7) },
+      }),
     )
     const nodes: ComponentNode[] = [
-      { id: 'ingress', kind: 'ingress', replicas: 1, tier: 0, config: {} },
+      { id: 'ingress', kind: 'ingress', replicas: 1, tier: 0, config: {}, position: { col: 0, row: 0 } },
       ...middle,
-      { id: 'db', kind: 'database', replicas: 1, tier: 0, config: {} },
+      { id: 'db', kind: 'database', replicas: 1, tier: 0, config: {}, position: { col: 0, row: 9 } },
     ]
     const architecture = {
       nodes,
@@ -99,7 +107,12 @@ describe('save round-trip (07-TESTING §4)', () => {
 })
 
 describe('migrations (01-ARCHITECTURE §7)', () => {
-  it('has one migration per past version', () => {
+  it('keeps a fixture for every past version (07-TESTING §4)', () => {
+    const fixtures = import.meta.glob<string>('./fixtures/save-v*.json', { query: '?raw', import: 'default', eager: true })
+    const versions = Object.keys(fixtures)
+      .map((path) => Number(/save-v(\d+)\.json$/.exec(path)?.[1]))
+      .sort((a, b) => a - b)
+    expect(versions).toEqual(Array.from({ length: SAVE_VERSION }, (_, version) => version))
     expect(MIGRATIONS).toHaveLength(SAVE_VERSION)
   })
 
@@ -117,6 +130,11 @@ describe('migrations (01-ARCHITECTURE §7)', () => {
     expect(run.act).toBe(1)
     expect(run.builtArchitecture).toEqual(run.architecture)
     expect(run.history).toEqual([])
+    expect(run.architecture.nodes.map((node) => [node.id, node.position])).toEqual([
+      ['ingress', { col: 0, row: 0 }],
+      ['app', { col: 0, row: 1 }],
+      ['db', { col: 0, row: 2 }],
+    ])
     // A v0 run's past is unknown, so the migrated act starts where the save left off.
     expect(run.actStart).toEqual({
       cashCents: run.cashCents,
@@ -136,6 +154,37 @@ describe('migrations (01-ARCHITECTURE §7)', () => {
     const result = unwrap(simulateTurn(run, { difficulty: 'senior', catalog: TEST_CATALOG }))
     expect(result.turn).toBe(8)
     expect(result.economy.setupCostCents).toBe(0)
+  })
+
+  it('migrates the v1 fixture by laying out every architecture and changing nothing else', () => {
+    const original: {
+      knowledge: unknown
+      settings: unknown
+      run: { turn: number; cashCents: number; history: unknown; architecture: { nodes: unknown; edges: unknown } }
+    } = JSON.parse(v1Fixture)
+    const save = unwrap(parseSave(v1Fixture))
+    const run = save.run
+    if (!run) throw new Error('the fixture has a run')
+    expect(save.version).toBe(SAVE_VERSION)
+    expect(save.knowledge).toEqual(original.knowledge)
+    expect(save.settings).toEqual(original.settings)
+    expect(run.cashCents).toBe(original.run.cashCents)
+    expect(run.history).toEqual(original.run.history)
+    expect(run.architecture.edges).toEqual(original.run.architecture.edges)
+    expect(run.architecture.nodes.map(({ id, kind, replicas, tier, config }) => ({ id, kind, replicas, tier, config }))).toEqual(
+      original.run.architecture.nodes,
+    )
+    for (const architecture of [run.architecture, run.builtArchitecture, run.actStart.architecture, run.actStart.builtArchitecture]) {
+      expect(architecture.nodes.map((node) => node.position)).toEqual([
+        { col: 0, row: 0 },
+        { col: 0, row: 1 },
+        { col: 0, row: 2 },
+      ])
+    }
+
+    const next = unwrap(simulateTurn(run, { difficulty: 'junior', catalog: TEST_CATALOG }))
+    expect(next.turn).toBe(original.run.turn + 1)
+    expect(next.economy.setupCostCents).toBe(0)
   })
 
   it('moves a stored v0 save to the current key', () => {

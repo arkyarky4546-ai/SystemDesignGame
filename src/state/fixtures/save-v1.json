@@ -1,0 +1,446 @@
+{
+  "version": 1,
+  "contentVersion": 0,
+  "savedAt": "2026-09-14T15:00:00.000Z",
+  "knowledge": {
+    "unlockedConcepts": [
+      "client-server-basics",
+      "latency-and-throughput"
+    ],
+    "checkHistory": [
+      {
+        "conceptId": "latency-and-throughput",
+        "attemptNumber": 1,
+        "correct": 4,
+        "total": 5,
+        "passed": true,
+        "missedQuestionIds": [
+          "lat-thru-q03"
+        ]
+      }
+    ]
+  },
+  "run": {
+    "cashCents": 1310271,
+    "reputation": 0.9400000000000002,
+    "workload": {
+      "meanRps": 46.52164419128848,
+      "peakMultiplier": 2.5,
+      "readFraction": 0.8,
+      "staticFraction": 0.3,
+      "keySkew": 0.2,
+      "payloadKb": 50
+    },
+    "architecture": {
+      "nodes": [
+        {
+          "id": "ingress",
+          "kind": "ingress",
+          "replicas": 1,
+          "tier": 0,
+          "config": {}
+        },
+        {
+          "id": "app",
+          "kind": "app-server",
+          "replicas": 1,
+          "tier": 1,
+          "config": {
+            "fanoutFactor": 1
+          }
+        },
+        {
+          "id": "db",
+          "kind": "database",
+          "replicas": 1,
+          "tier": 1,
+          "config": {}
+        }
+      ],
+      "edges": [
+        {
+          "from": "ingress",
+          "to": "app"
+        },
+        {
+          "from": "app",
+          "to": "db"
+        }
+      ]
+    },
+    "builtArchitecture": {
+      "nodes": [
+        {
+          "id": "ingress",
+          "kind": "ingress",
+          "replicas": 1,
+          "tier": 0,
+          "config": {}
+        },
+        {
+          "id": "app",
+          "kind": "app-server",
+          "replicas": 1,
+          "tier": 1,
+          "config": {
+            "fanoutFactor": 1
+          }
+        },
+        {
+          "id": "db",
+          "kind": "database",
+          "replicas": 1,
+          "tier": 1,
+          "config": {}
+        }
+      ],
+      "edges": [
+        {
+          "from": "ingress",
+          "to": "app"
+        },
+        {
+          "from": "app",
+          "to": "db"
+        }
+      ]
+    },
+    "act": 1,
+    "bailoutAvailable": true,
+    "growthPenaltyTurns": 0,
+    "seed": 2026,
+    "turn": 12,
+    "actStart": {
+      "cashCents": 300000,
+      "reputation": 0.7,
+      "workload": {
+        "meanRps": 1,
+        "peakMultiplier": 2.5,
+        "readFraction": 0.8,
+        "staticFraction": 0.3,
+        "keySkew": 0.2,
+        "payloadKb": 50
+      },
+      "architecture": {
+        "nodes": [
+          {
+            "id": "ingress",
+            "kind": "ingress",
+            "replicas": 1,
+            "tier": 0,
+            "config": {}
+          },
+          {
+            "id": "app",
+            "kind": "app-server",
+            "replicas": 1,
+            "tier": 0,
+            "config": {
+              "fanoutFactor": 1
+            }
+          },
+          {
+            "id": "db",
+            "kind": "database",
+            "replicas": 1,
+            "tier": 0,
+            "config": {}
+          }
+        ],
+        "edges": [
+          {
+            "from": "ingress",
+            "to": "app"
+          },
+          {
+            "from": "app",
+            "to": "db"
+          }
+        ]
+      },
+      "builtArchitecture": {
+        "nodes": [
+          {
+            "id": "ingress",
+            "kind": "ingress",
+            "replicas": 1,
+            "tier": 0,
+            "config": {}
+          },
+          {
+            "id": "app",
+            "kind": "app-server",
+            "replicas": 1,
+            "tier": 0,
+            "config": {
+              "fanoutFactor": 1
+            }
+          },
+          {
+            "id": "db",
+            "kind": "database",
+            "replicas": 1,
+            "tier": 0,
+            "config": {}
+          }
+        ],
+        "edges": [
+          {
+            "from": "ingress",
+            "to": "app"
+          },
+          {
+            "from": "app",
+            "to": "db"
+          }
+        ]
+      },
+      "act": 1,
+      "bailoutAvailable": true,
+      "growthPenaltyTurns": 0
+    },
+    "history": [
+      {
+        "turn": 1,
+        "meanRps": 1.3108345498163512,
+        "peakRps": 3.277086374540878,
+        "users": 13.10834549816351,
+        "p99Ms": 87.94928466993886,
+        "errorRate": 0,
+        "utilization": {
+          "app": 0.0655,
+          "db": 0.041
+        },
+        "revenueCents": 11416,
+        "costCents": 6817,
+        "setupCostCents": 0,
+        "sloMet": true,
+        "cashCents": 304599,
+        "reputation": 0.72,
+        "events": []
+      },
+      {
+        "turn": 2,
+        "meanRps": 1.6888683823989425,
+        "peakRps": 4.222170955997356,
+        "users": 16.888683823989425,
+        "p99Ms": 89.52951885631926,
+        "errorRate": 0,
+        "utilization": {
+          "app": 0.0844,
+          "db": 0.0528
+        },
+        "revenueCents": 14709,
+        "costCents": 6909,
+        "setupCostCents": 0,
+        "sloMet": true,
+        "cashCents": 312399,
+        "reputation": 0.74,
+        "events": []
+      },
+      {
+        "turn": 3,
+        "meanRps": 2.1408165124734615,
+        "peakRps": 5.352041281183654,
+        "users": 21.408165124734612,
+        "p99Ms": 91.49850008521648,
+        "errorRate": 0,
+        "utilization": {
+          "app": 0.107,
+          "db": 0.0669
+        },
+        "revenueCents": 18645,
+        "costCents": 7018,
+        "setupCostCents": 0,
+        "sloMet": true,
+        "cashCents": 324026,
+        "reputation": 0.76,
+        "events": []
+      },
+      {
+        "turn": 4,
+        "meanRps": 2.8695997300722644,
+        "peakRps": 7.173999325180661,
+        "users": 28.69599730072264,
+        "p99Ms": 94.87218444612046,
+        "errorRate": 0,
+        "utilization": {
+          "app": 0.1435,
+          "db": 0.0897
+        },
+        "revenueCents": 24992,
+        "costCents": 7194,
+        "setupCostCents": 0,
+        "sloMet": true,
+        "cashCents": 341824,
+        "reputation": 0.78,
+        "events": []
+      },
+      {
+        "turn": 5,
+        "meanRps": 3.8247993097104134,
+        "peakRps": 9.561998274276034,
+        "users": 38.24799309710413,
+        "p99Ms": 99.71129127317283,
+        "errorRate": 0,
+        "utilization": {
+          "app": 0.1912,
+          "db": 0.1195
+        },
+        "revenueCents": 33311,
+        "costCents": 7425,
+        "setupCostCents": 0,
+        "sloMet": true,
+        "cashCents": 367710,
+        "reputation": 0.8,
+        "events": []
+      },
+      {
+        "turn": 6,
+        "meanRps": 5.470865309099114,
+        "peakRps": 13.677163272747785,
+        "users": 54.70865309099114,
+        "p99Ms": 109.39977715847593,
+        "errorRate": 0,
+        "utilization": {
+          "app": 0.2735,
+          "db": 0.171
+        },
+        "revenueCents": 47646,
+        "costCents": 7824,
+        "setupCostCents": 0,
+        "sloMet": true,
+        "cashCents": 407532,
+        "reputation": 0.8200000000000001,
+        "events": []
+      },
+      {
+        "turn": 7,
+        "meanRps": 7.61010566016229,
+        "peakRps": 19.025264150405725,
+        "users": 76.1010566016229,
+        "p99Ms": 125.45744510787844,
+        "errorRate": 0,
+        "utilization": {
+          "app": 0.3805,
+          "db": 0.2378
+        },
+        "revenueCents": 66277,
+        "costCents": 8341,
+        "setupCostCents": 0,
+        "sloMet": true,
+        "cashCents": 465468,
+        "reputation": 0.8400000000000001,
+        "events": []
+      },
+      {
+        "turn": 8,
+        "meanRps": 10.499427692201804,
+        "peakRps": 26.24856923050451,
+        "users": 104.99427692201803,
+        "p99Ms": 157.45827928054064,
+        "errorRate": 0,
+        "utilization": {
+          "app": 0.525,
+          "db": 0.3281
+        },
+        "revenueCents": 91441,
+        "costCents": 9040,
+        "setupCostCents": 0,
+        "sloMet": true,
+        "cashCents": 547869,
+        "reputation": 0.8600000000000001,
+        "events": []
+      },
+      {
+        "turn": 9,
+        "meanRps": 14.562125479218576,
+        "peakRps": 36.40531369804644,
+        "users": 145.62125479218574,
+        "p99Ms": 253.95398579502927,
+        "errorRate": 0,
+        "utilization": {
+          "app": 0.7281,
+          "db": 0.4551
+        },
+        "revenueCents": 126823,
+        "costCents": 10023,
+        "setupCostCents": 0,
+        "sloMet": true,
+        "cashCents": 664669,
+        "reputation": 0.8800000000000001,
+        "events": []
+      },
+      {
+        "turn": 10,
+        "meanRps": 21.110921231193352,
+        "peakRps": 52.777303077983376,
+        "users": 211.1092123119335,
+        "p99Ms": 159.35588748111556,
+        "errorRate": 0,
+        "utilization": {
+          "app": 0.3518,
+          "db": 0.6597
+        },
+        "revenueCents": 183858,
+        "costCents": 15107,
+        "setupCostCents": 60000,
+        "sloMet": true,
+        "cashCents": 773420,
+        "reputation": 0.9000000000000001,
+        "events": []
+      },
+      {
+        "turn": 11,
+        "meanRps": 31.2905268446011,
+        "peakRps": 78.22631711150275,
+        "users": 312.905268446011,
+        "p99Ms": 146.0822057616193,
+        "errorRate": 0,
+        "utilization": {
+          "app": 0.5215,
+          "db": 0.3129
+        },
+        "revenueCents": 272513,
+        "costCents": 23570,
+        "setupCostCents": 90000,
+        "sloMet": true,
+        "cashCents": 932363,
+        "reputation": 0.9200000000000002,
+        "events": []
+      },
+      {
+        "turn": 12,
+        "meanRps": 46.52164419128848,
+        "peakRps": 116.3041104782212,
+        "users": 465.21644191288476,
+        "p99Ms": 277.1708681582338,
+        "errorRate": 0,
+        "utilization": {
+          "app": 0.7754,
+          "db": 0.4652
+        },
+        "revenueCents": 405163,
+        "costCents": 27255,
+        "setupCostCents": 0,
+        "sloMet": true,
+        "cashCents": 1310271,
+        "reputation": 0.9400000000000002,
+        "events": []
+      }
+    ],
+    "archive": {
+      "turns": 0,
+      "revenueCents": 0,
+      "costCents": 0,
+      "setupCostCents": 0,
+      "sloMetTurns": 0,
+      "peakUsers": 0
+    }
+  },
+  "settings": {
+    "difficulty": "junior",
+    "reducedMotion": false,
+    "showHints": true
+  }
+}
