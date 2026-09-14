@@ -82,14 +82,16 @@ migration array, and export/import. Also the failure states of
 
 ---
 
-## [ ] M3 — Canvas
+## [x] M3 — Canvas
 
 **Read:** `05-UI-DESIGN.md` §2, §4, `01-ARCHITECTURE.md` §5, §9
 
 The biggest UI risk, isolated into its own milestone. Grid-snapped SVG nodes,
 orthogonal edges, drag to place, click-drag to connect, select to inspect,
 delete. Utilization renders as fill level. Connection validity enforced from
-`ComponentDef.validConnections` with a reason shown on invalid attempts.
+`ComponentDef.validConnections` with a reason shown on invalid attempts. M3 also
+starts the component definitions (ADR-0027), and gives nodes saved grid
+positions, which moves saves to v2 (ADR-0028).
 
 **Acceptance:**
 - Place, connect, reconfigure, and delete work with mouse and with keyboard
