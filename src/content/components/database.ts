@@ -7,7 +7,14 @@ export const database = {
   kind: 'database',
   displayName: 'Database',
   placeable: true,
-  tiers: [{ label: 'Small' }, { label: 'Medium' }, { label: 'Large' }, { label: 'Extra large' }],
+  // Placeholder figures until M7 (ADR-0033): a little more capacity than the app server of the
+  // same size, so either tier can be the bottleneck.
+  tiers: [
+    { label: 'Small', capacityRps: 15, serviceTimeMs: 6, setupCostCents: 150_00, runningCostPerTurnCents: 30_00 },
+    { label: 'Medium', capacityRps: 50, serviceTimeMs: 6, setupCostCents: 600_00, runningCostPerTurnCents: 80_00 },
+    { label: 'Large', capacityRps: 200, serviceTimeMs: 5, setupCostCents: 1_800_00, runningCostPerTurnCents: 200_00 },
+    { label: 'Extra large', capacityRps: 600, serviceTimeMs: 5, setupCostCents: 4_500_00, runningCostPerTurnCents: 450_00 },
+  ],
   validConnections: {
     upstream: ['app-server'],
     downstream: [],

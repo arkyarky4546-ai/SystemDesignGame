@@ -9,8 +9,24 @@ export const COMPONENT_KINDS = ['ingress', 'app-server', 'database'] as const
 export type ComponentKind = (typeof COMPONENT_KINDS)[number]
 
 /**
- * A component definition (03-CONTENT-SCHEMA §5). This holds only the fields the canvas
- * reads (ADR-0027). M5 adds `description`, `gatedBy` and `configSchema`, and M7 adds each
+ * One size of a component (03-CONTENT-SCHEMA §5). The figures are placeholders until M7
+ * balances them (ADR-0033).
+ */
+export type ComponentTier = {
+  readonly label: string
+  /** Throughput one instance sustains, rps. */
+  readonly capacityRps: number
+  /** Mean time to serve one request with no queueing, ms. */
+  readonly serviceTimeMs: number
+  /** One-time cost per instance, charged on the first turn it runs, integer cents. */
+  readonly setupCostCents: number
+  /** Cost per instance per turn, integer cents. */
+  readonly runningCostPerTurnCents: number
+}
+
+/**
+ * A component definition (03-CONTENT-SCHEMA §5). This holds only the fields the game reads
+ * (ADR-0027). M5 adds `description`, `gatedBy` and `configSchema`, and M7 balances each
  * tier's figures.
  */
 export type ComponentDef = {
@@ -18,8 +34,11 @@ export type ComponentDef = {
   readonly displayName: string
   /** Whether the player can place and remove it. Ingress is where traffic arrives, so it is always present. */
   readonly placeable: boolean
-  /** Size options, smallest first. A node's `tier` indexes this list. Empty for kinds without sizes. */
-  readonly tiers: readonly { readonly label: string }[]
+  /**
+   * Size options, smallest first. A node's `tier` indexes this list. Empty for kinds without
+   * sizes. §5's `failureRatePerTurn` joins when failures are modeled (02-SIMULATION §5.7).
+   */
+  readonly tiers: readonly ComponentTier[]
   readonly validConnections: {
     /** Kinds this component accepts requests from. */
     readonly upstream: readonly ComponentKind[]

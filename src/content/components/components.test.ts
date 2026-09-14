@@ -32,4 +32,21 @@ describe('component definitions', () => {
     const reasons = COMPONENT_KINDS.flatMap((kind) => Object.values(COMPONENT_DEFS[kind].validConnections.refusedDownstream))
     for (const reason of reasons) expect(reason).not.toMatch(/!/)
   })
+
+  it('size every resource with positive figures in whole cents, growing with size (ADR-0033)', () => {
+    expect(COMPONENT_DEFS.ingress.tiers).toEqual([])
+    for (const kind of COMPONENT_KINDS.filter((each) => each !== 'ingress')) {
+      const { tiers } = COMPONENT_DEFS[kind]
+      expect(tiers.length, kind).toBeGreaterThan(0)
+      tiers.forEach((tier, index) => {
+        const name = `${kind} ${tier.label}`
+        expect(tier.capacityRps, name).toBeGreaterThan(0)
+        expect(tier.serviceTimeMs, name).toBeGreaterThan(0)
+        expect(Number.isSafeInteger(tier.setupCostCents) && tier.setupCostCents >= 0, name).toBe(true)
+        expect(Number.isSafeInteger(tier.runningCostPerTurnCents) && tier.runningCostPerTurnCents >= 0, name).toBe(true)
+        const smaller = tiers[index - 1]
+        if (smaller) expect(tier.capacityRps, name).toBeGreaterThan(smaller.capacityRps)
+      })
+    }
+  })
 })
