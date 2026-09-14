@@ -576,3 +576,223 @@ start of M2.
   that range.
 - A service meeting its SLO earns 1.5× what the old formula paid. M9's balance tuning
   starts from the new numbers.
+
+---
+
+## ADR-0023 — M2 turn contract: service level, setup costs, growth noise
+2026-09-14 · Status: accepted · Extends ADR-0020
+
+**Context.** M2 adds `02-SIMULATION.md` §5 phases 2, 8, 9 and 11 on top of M1's
+resolver. The spec leaves some details open:
+- §6 and §7 read one p99 and one error rate, but the resolver reports three request
+  classes.
+- §6's cash formula charges `oneTimeSetupCosts` without saying when a change counts as
+  new.
+- §3 clamps growth to `[−0.5g, +3g]` without saying whether that bounds the noise or the
+  total, and asks for a normal draw.
+- §6's `storageCents` and §7's `staleRate` have nothing to compute from yet.
+
+**Decision.**
+- **Signature.** `simulateTurn(run, { difficulty, catalog })` returns
+  `Result<TurnResult, TickError>`.
+  - `TurnResult` is M1's `TickResult` plus `service`, `economy`, `reputation`, `users`,
+    `events` and `nextRun`.
+  - Seed and turn come from the run.
+  - Difficulty comes from settings, so a switch applies from the next turn.
+  - The code is in `engine/run.ts` and `engine/economy.ts`.
+- **Service level.**
+  - Error rate weights each class by its share of requests. That is exactly the
+    fraction of all requests dropped.
+  - p99 is the worst p99 among classes that carry traffic. Percentiles don't average,
+    and a blend's p99 never exceeds its worst class's.
+- **Setup costs.** `RunState.builtArchitecture` is what ran last turn. A turn charges
+  setup for the difference, matched by node id:
+  - A new node, or one whose kind or tier changed, pays for every instance.
+  - A node that only gained replicas pays for the added ones.
+  - Removing or shrinking refunds nothing.
+- **Growth noise.** The clamp bounds the noise: `g = base + clamp(σ·z, −0.5·base,
+  +3·base)`. Total growth stays between 0.5× and 4× base, so only reputation can shrink
+  traffic.
+- **Normal draw.** `nextNormal` standardizes the sum of four uniform draws (Irwin–Hall).
+- **Rounding.** Revenue and bandwidth round to whole cents where they're computed.
+  Running and setup costs are integers already.
+- **Deferred.** These wait for the milestones that give them inputs:
+  - `storageCents` is 0 until a data-size model exists.
+  - `staleRate` joins `sloMet` when replicas can serve stale reads.
+  - §6's CDN offload term arrives with the CDN.
+  - Component failures (§5.7), `bottleneck` and per-node `status` are out of M2.
+
+**Alternatives.**
+- A traffic-weighted average of class p99s: not a percentile of anything, and it hides a
+  slow class behind a fast one.
+- Charging setup when a component is placed: the store would compute money, which
+  `01-ARCHITECTURE.md` §4 rules out. Placing and then undoing would also cost money.
+- Clamping total growth to `[−0.5g, +3g]`: noise could shrink traffic at perfect service,
+  blurring the reputation signal the player is meant to read.
+- Box–Muller: an exact normal, but it needs `Math.log` and `Math.cos`. ECMAScript leaves
+  those implementation-approximated, so an exported save could replay differently in
+  another browser.
+
+**Consequences.**
+- Every class still reports identical metrics (ADR-0020), so the aggregation rule has no
+  visible effect until topologies route classes differently.
+- Irwin–Hall's tails stop at ±3.46σ. The clamp's lower bound binds long before that.
+- M4 adds `bottleneck` and per-node `status` along with their warning thresholds.
+
+---
+
+## ADR-0024 — Users, acts and failure states
+2026-09-14 · Status: accepted
+
+**Context.** The roadmap names "user churn" for M2. `00-GAME-DESIGN.md` §8–9 define:
+- acts by user count
+- a once-per-act investor bailout
+- rollback to the start of the act
+
+`02-SIMULATION.md` has no user model, and no milestone was assigned failure states. At
+the start of M2 the human chose to build failure states in M2. They also chose to trigger
+the reputation-floor rollback on users rather than on reputation.
+
+**Decision.**
+- **Users** are derived: `users = meanRps / BALANCE.traffic.meanRpsPerUser`, at 0.1 rps
+  (one request every ten seconds) per active user. A new run's 10 users are 1 rps. Churn
+  is the §3/§7 loop: when `(1 + g) × reputationModifier < 1`, traffic shrinks.
+- **Acts** come from `BALANCE.acts.usersToEnter` (1k, 100k, 5M and 100M users) and never
+  go down.
+- **Checkpoint.** `RunState.actStart` holds what a rollback restores: cash, reputation,
+  workload, both architectures, act, bailout flag and growth penalty. Seed, turn counter
+  and history are not restored. Time keeps moving, the history shows the collapse, and
+  later turns draw fresh noise.
+- **End-of-turn order.**
+  1. If users fall below `churnFloorOfActStart` (10%) of the act's starting users, roll
+     back (`churn`).
+  2. If cash is below zero and the bailout is unused, bail out. Cash becomes
+     `bailoutCashCents`, reputation drops by 0.25, and growth is halved for 4 turns.
+  3. If cash is below zero and the bailout is spent, roll back (`bankruptcy`).
+  4. Unless the run rolled back, crossing a threshold enters the new act. That resets the
+     bailout and makes this state the new checkpoint.
+
+  Each event is recorded in `TurnResult.events` and in the turn's history entry.
+
+**Alternatives.**
+- Users as separate state with their own churn rate: a second growth model to balance
+  against §3, with nothing in the spec to derive it from.
+- Roll back when reputation hits 0: §7's severity is uncapped, so one saturated week
+  would trigger it.
+- Restoring the turn counter on rollback: replays identical noise, and makes turn numbers
+  ambiguous in history and in the balance harness.
+- Failure states in a later milestone: `RunState` would change shape after save v1
+  exists.
+
+**Consequences.**
+- `meanRpsPerUser`, starting cash beyond Intern and Junior, and every number in
+  `BALANCE.failure` are placeholders for M9.
+- A collapse to reputation 0 recovers slowly. Each good turn adds only 0.02, and Junior
+  traffic shrinks until reputation passes about 0.37, roughly 18 good turns. A churn
+  rollback is therefore likely after a collapse even with perfect service. Flagged for M9.
+- Under §7's formula, low reputation shrinks traffic fastest on Intern (×0.65 a turn at
+  reputation 0) and slowest on Staff (×0.75). That is the reverse of
+  `00-GAME-DESIGN.md` §6, where churn is slow on Intern. Flagged for M9.
+
+---
+
+## ADR-0025 — Save format v1: keys, migrations, quarantine, export
+2026-09-14 · Status: accepted
+
+**Context.** `01-ARCHITECTURE.md` §7 fixes localStorage, versioned keys, migrations,
+quarantine, base64 export and a 100 KB budget. It leaves open:
+- how an older key is found
+- what v0 is, since nothing has shipped
+- how a save is validated
+- how 50 turns of per-node metrics fit the budget
+
+**Decision.**
+- **Keys.** The save lives at `nines.save.v1`.
+  - Loading checks v1, then each older key down to v0.
+  - A migrated save is rewritten under the current key before the old key is removed.
+  - Keys newer than the build are left alone, so an older build never destroys a newer
+    save.
+- **Validation.** Zod schemas in `state/save.ts`, each annotated with the type it
+  mirrors, so typecheck fails if they drift. Keys follow the engine's order, so a parsed
+  save re-serializes byte-identically.
+- **Migrations.** `MIGRATIONS[n]` turns version n into n + 1 and is never edited. Each
+  one validates its input against that version's schema first.
+- **v0 is synthetic.** It is a pre-release shape defined only so the migration path and
+  a fixture (`src/state/fixtures/save-v0.json`) exist from the first release. No build
+  wrote it. It has core run figures but no act, bailout, history, content version, or
+  hint and motion settings.
+- **Quarantine.**
+  - A save that fails to parse, validate or migrate is copied to
+    `nines.save.corrupt.<ISO timestamp>`, then the original is removed. That includes a
+    save from a future version.
+  - A key collision appends `.N`.
+  - If storage refuses the copy, the original stays.
+  - The store reports it as `ui.saveProblem`.
+- **`run: null` is valid:** no run in progress. `07-TESTING.md` §4's "a null run"
+  corruption case is read as a `null` document.
+- **Export.** The save JSON's UTF-8 bytes, base64-encoded. Import runs the same migration
+  and validation, and quarantines nothing because nothing was stored.
+- **Size.**
+  - History keeps `PERSISTENCE.historyTurns` (50) turns. Older turns roll into running
+    totals.
+  - History rounds per-node utilization to 1/10,000. At full precision, a 50-node save
+    measured 110 KB.
+- **Contents.**
+  - Knowledge: unlocked concept ids, plus check attempts (concept, attempt number, score,
+    passed, missed question ids).
+  - Settings: difficulty, `reducedMotion`, `showHints`.
+  - `CONTENT_VERSION` is 0 until content exists.
+- **Dependencies.** Storage and the clock are injected, so the state layer tests without
+  a browser.
+
+**Alternatives.**
+- Hand-written type guards: Zod is already approved and validates content.
+- One unversioned key with a version field inside: §7 names versioned keys, and separate
+  keys protect a newer save from an older build.
+- Deleting an unreadable save: it may be the only copy of progress that a later fix could
+  recover.
+- Full precision with fewer history turns: §7 names 50 turns.
+
+**Consequences.**
+- Changing a saved shape means a version bump, a migration and a fixture for the old
+  version (`07-TESTING.md` §4). M6 may do this when checks exist.
+- The v0 schema reuses today's `Workload` and `Architecture` schemas. The first change to
+  either must freeze a copy for v0.
+
+---
+
+## ADR-0026 — Numbers that aren't balance, and enforcing the constant rule
+2026-09-14 · Status: accepted · Extends ADR-0007
+
+**Context.** ADR-0007 puts every tunable number in `balance.ts`, and M2 must prove no
+balance constant appears elsewhere. The engine and state layers also need numbers that
+aren't tuning:
+- unit conversions: requests per thousand, KB per GB
+- save limits
+- PRNG and hash constants
+
+**Decision.**
+- **Config files.** Each kind of number has its own file in `src/config/`:
+  - `balance.ts`: tuning only
+  - `units.ts`: unit conversions
+  - `persistence.ts`: save limits
+  - `difficulty.ts`: the list of modes
+
+  Balance values with no spec source are marked "Placeholder".
+- **Enforcement.** `src/config/balance-constants.test.ts` scans every non-test source in
+  `src/engine/` and `src/state/`, with comments and strings stripped. Code may use the
+  literals 0 and 1; anything else fails. There are two exemptions:
+  - `engine/rng.ts`, whose constants define the algorithms
+  - the 2 in `engine/resolve.ts`'s `ln 100 = 2·ln 10`
+
+**Alternatives.**
+- Units inside `BALANCE`: mixes definitions with values a sweep might change.
+- A shell grep: can't tell code from comments and strings, so it either misses numbers or
+  fails on "§5.2".
+- Also scanning `ui/` and `content/`: neither has numbers today. UI layout sizes and
+  `ComponentDef` tier figures (ADR-0020) are legitimately numeric, so each needs its own
+  rule. Deferred to M3 and M5.
+
+**Consequences.**
+- New engine and state files are scanned automatically.
+- Numbers inside a template literal's `${…}` escape the scan.
