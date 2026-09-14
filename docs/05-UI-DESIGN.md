@@ -128,6 +128,13 @@ motivation to learn comes from seeing the locked thing you want.
 peak *before* deciding to advance. Planning against a forecast is the actual
 skill being taught; hiding it turns the game into trial and error.
 
+**First-run guidance (M4a, ADR-0038).** A new run opens "How a week works": above the three
+columns from 900px, and first in the panel under the canvas below that, so the canvas keeps its
+height. Its five steps name what to look at by the labels on screen, and a header button reopens
+it. The terms a player meets in the first week ("/s", capacity, utilization, p99)
+are dotted-underlined buttons that show a one-sentence definition in place, by click, tap or
+keyboard.
+
 ## 5. Weekly report
 
 Appears after Advance. Four panels, one paragraph.
