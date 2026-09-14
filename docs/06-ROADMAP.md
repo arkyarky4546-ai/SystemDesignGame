@@ -60,13 +60,15 @@ built on top.
 
 ---
 
-## [ ] M2 — Economy, reputation, and the run loop
+## [x] M2 — Economy, reputation, and the run loop
 
 **Read:** `02-SIMULATION.md` §3, §6, §7, `01-ARCHITECTURE.md` §4, §6, §7
 
 Traffic growth, revenue, costs, cash, reputation, user churn. `balance.ts` with
 every constant. The Zustand store, `RunState`, save/load with versioning and the
-migration array, and export/import.
+migration array, and export/import. Also the failure states of
+`00-GAME-DESIGN.md` §8 (bailout and rollback), assigned here at the start of M2
+(ADR-0024).
 
 **Acceptance:**
 - A run advances 20 turns headlessly with plausible numbers on every difficulty.
