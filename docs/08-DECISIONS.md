@@ -309,3 +309,114 @@ deleted id and the library crashes on a history view.
 
 **Consequences.** The bank only grows on disk. At ~1.3 KB per question this is
 irrelevant for years.
+
+---
+
+## ADR-0016 — Build-toolchain packages beyond the approved list
+2026-09-14 · Status: accepted
+
+**Context.** M0 needs React, TypeScript and Tailwind under Vite, linted by ESLint.
+The approved list in `01-ARCHITECTURE.md` §1 names those tools but not the glue
+packages that connect them, so M0 cannot be built from the list alone.
+
+**Decision.** Add five dev dependencies:
+- `typescript-eslint`: ESLint cannot parse `.ts`/`.tsx` without it, so the layer
+  rule could not lint the engine at all.
+- `@tailwindcss/vite`: Tailwind v4 needs a separate integration package
+  (`@tailwindcss/vite`, `@tailwindcss/postcss` or `@tailwindcss/cli`). The Vite
+  plugin fits this stack directly.
+- `@vitejs/plugin-react`: Vite's official React plugin (JSX transform and Fast
+  Refresh).
+- `@types/react`, `@types/react-dom`: React ships no type declarations, and strict
+  mode with no `any` needs them.
+
+Pin `typescript` to `~6.0.3` instead of the current 7.0.2. typescript-eslint 8.70
+declares `typescript >=4.8.4 <6.1.0`, and no stable typescript-eslint release
+supports TypeScript 7.
+
+**Alternatives.**
+- Vite's built-in JSX handling instead of `@vitejs/plugin-react`: no Fast
+  Refresh, and not the documented React path.
+- `@tailwindcss/postcss`, or Tailwind v3 with `postcss` and `autoprefixer`: both
+  still add unlisted packages, and v3 is the older line.
+- TypeScript 7 with an alpha or canary typescript-eslint: rejected for stability.
+- Deliberately not added:
+  - `tsx` (Node runs `.ts` directly, see ADR-0018).
+  - `@eslint/js`, `globals` and the react-hooks lint plugins.
+  - `jsdom` (the shell's render test uses `react-dom/server`).
+  - `@types/node` (typecheck passes without it).
+
+**Consequences.** Five more packages to keep current. Revisit the TypeScript pin
+once typescript-eslint supports 7.x; bumping TypeScript alone will break
+`npm run lint`.
+
+---
+
+## ADR-0017 — Layer rule follows 01-ARCHITECTURE; arrows mean "anything to the right"
+2026-09-14 · Status: accepted
+
+**Context.** `CLAUDE.md` gives the dependency direction as `ui → engine →
+content`. `01-ARCHITECTURE.md` §3 and the M0 roadmap entry give `ui → state →
+engine → content`. §3 says "arrows only point right" but doesn't say whether a
+layer may skip one, e.g. `ui/` importing `engine/` directly.
+
+**Decision.** Enforce the four-layer chain from `01-ARCHITECTURE.md`, which is
+narrower in scope. A layer may import any layer to its right and never one to its
+left. `eslint.config.js` does this with `no-restricted-imports`:
+- `src/engine/` may not import `react`, `react-dom`, `zustand`, `state/` or `ui/`.
+- `src/content/` may not import `react`, `react-dom`, `zustand`, `engine/`,
+  `state/` or `ui/`.
+- `src/state/` may not import `ui/`.
+
+`src/config/` is outside the chain and importable from every layer.
+
+**Alternatives.**
+- Adjacent-only imports (ui may import only state): contradicted by M6, where
+  the lesson demo slider "updates live from the real engine" and lesson diagrams
+  render engine `Architecture` values.
+- `CLAUDE.md`'s three-layer chain: it omits `state/`, which §3 defines.
+
+**Consequences.**
+- UI may call the engine directly, so "the store never computes simulation
+  values" (§4) stays a convention, not a lint rule.
+- The patterns match any path segment named `engine`, `state` or `ui`. A future
+  folder with one of those names elsewhere would trip the rule; rename the folder
+  rather than weaken the rule.
+- Proven in M0 with probe files that failed lint and were then deleted.
+
+---
+
+## ADR-0018 — Tool scripts are placeholders until their milestone, run by Node directly
+2026-09-14 · Status: accepted
+
+**Context.** M0 requires every npm script named in the README to exist and exit
+zero, and the definition of done runs `validate` and `screen` on every milestone.
+The real tools arrive in M5, M5a, M5b and M9. The README names `npm run review`,
+but no doc names its source file.
+
+**Decision.** These tool files exist from M0, and each prints the milestone that
+implements it and exits 0:
+- `tools/validate-content.ts`
+- `tools/generate-questions.ts`
+- `tools/screen-questions.ts`
+- `tools/balance-sim.ts`
+- `tools/review.ts`
+
+npm scripts run them as `node tools/<name>.ts`, using Node's built-in TypeScript
+type stripping (on by default since Node 22.18, so `engines.node` is
+`>=22.18.0`). `tsconfig.json` sets `erasableSyntaxOnly` so tool code stays
+strippable.
+
+**Alternatives.**
+- `tsx` or `ts-node`: an unapproved dependency for something Node now does itself.
+- Compiling tools with `tsc` first: an emit step and output directory for
+  dev-only scripts.
+- Omitting the scripts until their milestones: fails M0's "all scripts exit zero".
+
+**Consequences.**
+- `validate` and `screen` pass trivially until M5 and M5a, so those
+  definition-of-done checks prove nothing until then. Those milestones must
+  replace the placeholders, not wrap them.
+- Type stripping forbids enums, namespaces and parameter properties in `tools/`,
+  and relative imports there must include the `.ts` extension.
+- `review.ts` is a provisional name; M5b may rename it.
