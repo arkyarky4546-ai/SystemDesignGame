@@ -81,12 +81,16 @@ export const BASE_WORKLOAD: Workload = {
   payloadKb: 40,
 }
 
+// The engine ignores positions, so fixtures share the origin unless a test cares.
+const ORIGIN = { col: 0, row: 0 }
+
 export const ingressNode = (id: NodeId = 'ingress'): ComponentNode => ({
   id,
   kind: 'ingress',
   replicas: 1,
   tier: 0,
   config: {},
+  position: ORIGIN,
 })
 
 export const appNode = (id: NodeId, fanoutFactor = 1): ComponentNode => ({
@@ -95,6 +99,7 @@ export const appNode = (id: NodeId, fanoutFactor = 1): ComponentNode => ({
   replicas: 1,
   tier: 0,
   config: { fanoutFactor },
+  position: ORIGIN,
 })
 
 export const databaseNode = (id: NodeId): ComponentNode => ({
@@ -103,6 +108,7 @@ export const databaseNode = (id: NodeId): ComponentNode => ({
   replicas: 1,
   tier: 0,
   config: {},
+  position: ORIGIN,
 })
 
 export const edge = (from: NodeId, to: NodeId): Edge => ({ from, to })

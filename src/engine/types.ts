@@ -3,8 +3,9 @@
 // engine functions never modify their inputs.
 
 import type { Difficulty } from '../config/difficulty'
+import type { ComponentKind } from '../content/schema'
 
-export type { Difficulty }
+export type { ComponentKind, Difficulty }
 
 export type NodeId = string
 
@@ -29,8 +30,7 @@ export type Workload = {
   readonly payloadKb: number
 }
 
-/** Kind-specific configuration, keyed by kind so a node's `kind` and `config` always agree. */
-export type ComponentConfigByKind = {
+type ConfigShapes = {
   readonly ingress: Readonly<Record<string, never>>
   readonly 'app-server': {
     /** Downstream queries issued per request served, unitless (02-SIMULATION §5.1). */
@@ -39,7 +39,15 @@ export type ComponentConfigByKind = {
   readonly database: Readonly<Record<string, never>>
 }
 
-export type ComponentKind = keyof ComponentConfigByKind
+/**
+ * Kind-specific configuration, keyed by kind so a node's `kind` and `config` always agree.
+ * The kinds themselves are content (ADR-0027). A kind with no config shape here fails
+ * typecheck.
+ */
+export type ComponentConfigByKind = { readonly [K in ComponentKind]: ConfigShapes[K] }
+
+/** A node's cell on the canvas grid, as non-negative integers. The simulation ignores it (ADR-0028). */
+export type GridPosition = { readonly col: number; readonly row: number }
 
 /** Kinds with capacity and latency. Ingress is the traffic source, not a resource. */
 export type ResourceKind = Exclude<ComponentKind, 'ingress'>
@@ -57,6 +65,8 @@ export type ComponentNode = {
     /** Size within the kind: an index into the catalog's tiers for that kind. */
     readonly tier: number
     readonly config: ComponentConfigByKind[K]
+    /** Where the node sits on the canvas. Saved with the architecture so layout survives rollbacks. */
+    readonly position: GridPosition
   }
 }[ComponentKind]
 

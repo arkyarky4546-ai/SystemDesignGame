@@ -85,6 +85,25 @@ export function resolveLinearPath(architecture: Architecture): Result<LinearPath
   return { ok: true, value: path }
 }
 
+/**
+ * Whether adding the edge `from → to` would close a cycle, a self-loop included. Graph
+ * structure only, no units. The canvas uses it to refuse the connection at build time
+ * (02-SIMULATION §4).
+ */
+export function createsCycle(edges: readonly Edge[], from: NodeId, to: NodeId): boolean {
+  if (from === to) return true
+  const outbound = outboundAdjacency(edges)
+  const seen = new Set<NodeId>()
+  const pending = [to]
+  for (let id = pending.pop(); id !== undefined; id = pending.pop()) {
+    if (id === from) return true
+    if (seen.has(id)) continue
+    seen.add(id)
+    pending.push(...(outbound.get(id) ?? []))
+  }
+  return false
+}
+
 function fail(error: TopologyError): Result<never, TopologyError> {
   return { ok: false, error }
 }

@@ -24,6 +24,7 @@ export {
 } from './resolve'
 export { createRng, nextFloat, nextNormal, rngForTurn, type Rng } from './rng'
 export { EMPTY_ARCHIVE, createRun, grownMeanRps, simulateTurn } from './run'
-export { resolveLinearPath, type LinearPath } from './topology'
+export { layoutByFlow } from './layout'
+export { createsCycle, resolveLinearPath, type LinearPath } from './topology'
 export { REQUEST_CLASSES } from './types'
 export type * from './types'

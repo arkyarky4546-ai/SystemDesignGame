@@ -15,6 +15,7 @@ import {
   usersForMeanRps,
   type PricedNode,
 } from './economy'
+import { layoutByFlow } from './layout'
 import { simulateTick } from './resolve'
 import { nextNormal, rngForTurn, type Rng } from './rng'
 import type {
@@ -64,24 +65,27 @@ export function createRun(options: { readonly seed: number; readonly difficulty:
   return { ...start, seed: options.seed >>> 0, turn: 0, actStart: start, history: [], archive: EMPTY_ARCHIVE }
 }
 
-/** ingress → app server → database, all at their base tier. */
+/** ingress → app server → database, all at their base tier, laid out top to bottom. */
 function starterArchitecture(): Architecture {
+  const edges = [
+    { from: 'ingress', to: 'app' },
+    { from: 'app', to: 'db' },
+  ]
+  const at = layoutByFlow(['ingress', 'app', 'db'], edges)
   return {
     nodes: [
-      { id: 'ingress', kind: 'ingress', replicas: 1, tier: 0, config: {} },
+      { id: 'ingress', kind: 'ingress', replicas: 1, tier: 0, config: {}, position: at('ingress') },
       {
         id: 'app',
         kind: 'app-server',
         replicas: 1,
         tier: 0,
         config: { fanoutFactor: BALANCE.starter.appFanoutFactor },
+        position: at('app'),
       },
-      { id: 'db', kind: 'database', replicas: 1, tier: 0, config: {} },
+      { id: 'db', kind: 'database', replicas: 1, tier: 0, config: {}, position: at('db') },
     ],
-    edges: [
-      { from: 'ingress', to: 'app' },
-      { from: 'app', to: 'db' },
-    ],
+    edges,
   }
 }
 

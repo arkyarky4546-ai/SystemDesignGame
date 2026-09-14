@@ -35,12 +35,13 @@ function randomLinearInput(index: number): TickInput {
       replicas: 1,
       tier: i,
       config: { fanoutFactor: sample.between(0, 4) },
+      position: { col: 0, row: i + 1 },
     }),
   )
   const nodes: ComponentNode[] = [
-    { id: 'ingress', kind: 'ingress', replicas: 1, tier: 0, config: {} },
+    { id: 'ingress', kind: 'ingress', replicas: 1, tier: 0, config: {}, position: { col: 0, row: 0 } },
     ...appServers,
-    { id: 'db', kind: 'database', replicas: 1, tier: 0, config: {} },
+    { id: 'db', kind: 'database', replicas: 1, tier: 0, config: {}, position: { col: 0, row: appServers.length + 1 } },
   ]
   const edges = nodes.flatMap((node, i) => {
     const next = nodes[i + 1]
