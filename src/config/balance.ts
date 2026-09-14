@@ -105,6 +105,15 @@ export const BALANCE = {
     churnFloorOfActStart: 0.1,
   },
 
+  forecast: {
+    /**
+     * Half-width of the forecast's likely range of next turn's peak, in standard deviations
+     * of the growth noise (ADR-0032). Placeholder, chosen so a real draw rarely lands
+     * outside it.
+     */
+    rangeSigmas: 2,
+  },
+
   status: {
     /** Utilization from which a node shows pressure, 0..1 (05-UI-DESIGN §2: amber from 0.75). */
     warningUtilization: 0.75,

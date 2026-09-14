@@ -17,11 +17,13 @@ export {
 export {
   meanResponseTimeMs,
   nodeCapacityRps,
+  nodeStatus,
   p50LatencyMs,
   p99LatencyMs,
   simulateTick,
   utilization,
 } from './resolve'
+export { forecastTraffic, planTurn } from './plan'
 export { createRng, nextFloat, nextNormal, rngForTurn, type Rng } from './rng'
 export { EMPTY_ARCHIVE, createRun, grownMeanRps, simulateTurn } from './run'
 export { layoutByFlow } from './layout'

@@ -3,9 +3,11 @@ import { resolveLinearPath } from './topology'
 import type {
   ClassMetrics,
   ComponentCatalog,
+  EdgeFlow,
   InputError,
   NodeId,
   NodeMetrics,
+  NodeStatus,
   ResourceNode,
   Result,
   TickError,
@@ -64,6 +66,16 @@ export function p99LatencyMs(meanMs: number): number {
 }
 
 /**
+ * A node's load band from its utilization u (0..1): warning and saturated start at the
+ * `BALANCE.status` thresholds, inclusive (05-UI-DESIGN §2).
+ */
+export function nodeStatus(u: number): NodeStatus {
+  if (u >= BALANCE.status.saturatedUtilization) return 'saturated'
+  if (u >= BALANCE.status.warningUtilization) return 'warning'
+  return 'healthy'
+}
+
+/**
  * Resolves one turn at peak load for a linear architecture (02-SIMULATION §5 phases 1
  * and 3–6; ADR-0020). Pure: the same input always gives the same output and is never
  * modified. Rates are rps, latencies ms, error rates 0..1.
@@ -75,16 +87,21 @@ export function simulateTick(input: TickInput): Result<TickResult, TickError> {
   const path = resolveLinearPath(input.architecture)
   if (!path.ok) return path
 
-  const hops: { readonly node: ResourceNode; readonly stats: TierStats }[] = []
+  const hops: { readonly node: ResourceNode; readonly stats: TierStats; readonly from: NodeId }[] = []
+  let upstream: NodeId | null = null
   for (const node of path.value) {
-    if (node.kind === 'ingress') continue
-    const stats = tierStatsFor(node, input.catalog)
-    if (!stats.ok) return stats
-    hops.push({ node, stats: stats.value })
+    if (node.kind !== 'ingress') {
+      const stats = tierStatsFor(node, input.catalog)
+      if (!stats.ok) return stats
+      // A validated path always starts at ingress, so every resource node has an upstream.
+      hops.push({ node, stats: stats.value, from: upstream ?? node.id })
+    }
+    upstream = node.id
   }
 
   const peakRps = input.workload.meanRps * input.workload.peakMultiplier
   const perNode: [NodeId, NodeMetrics][] = []
+  const perEdge: EdgeFlow[] = []
   let flowRps = peakRps
   // How many queries one original request makes at the current hop.
   let queriesPerRequest = 1
@@ -92,7 +109,8 @@ export function simulateTick(input: TickInput): Result<TickResult, TickError> {
   let p50Ms = 0
   let p99Ms = 0
 
-  for (const { node, stats } of hops) {
+  for (const { node, stats, from } of hops) {
+    perEdge.push({ from, to: node.id, rps: flowRps })
     const metrics = resolveNode(flowRps, stats, node.replicas)
     perNode.push([node.id, metrics])
 
@@ -126,9 +144,29 @@ export function simulateTick(input: TickInput): Result<TickResult, TickError> {
       workload: input.workload,
       peakRps,
       perNode: Object.fromEntries(perNode),
+      perEdge,
       perClass: { 'static-read': classMetrics, 'dynamic-read': classMetrics, write: classMetrics },
+      bottleneck: findBottleneck(perNode),
     },
   }
+}
+
+// §9 names the highest-utilization node above the warning threshold. Utilization is capped
+// at U_MAX, so two overloaded nodes can tie. Ranking by inbound ÷ capacity keeps them apart,
+// and the strict comparison keeps the node nearer ingress on an exact tie: its drops are
+// what the nodes after it never saw (ADR-0031).
+function findBottleneck(perNode: readonly (readonly [NodeId, NodeMetrics])[]): NodeId | null {
+  let bottleneck: NodeId | null = null
+  let highestLoad = 0
+  for (const [nodeId, metrics] of perNode) {
+    if (metrics.status === 'healthy') continue
+    const load = metrics.inboundRps / metrics.capacityRps
+    if (bottleneck === null || load > highestLoad) {
+      bottleneck = nodeId
+      highestLoad = load
+    }
+  }
+  return bottleneck
 }
 
 function resolveNode(inboundRps: number, stats: TierStats, replicas: number): NodeMetrics {
@@ -146,6 +184,7 @@ function resolveNode(inboundRps: number, stats: TierStats, replicas: number): No
     meanMs,
     p50Ms: p50LatencyMs(meanMs),
     p99Ms: p99LatencyMs(meanMs),
+    status: nodeStatus(u),
   }
 }
 

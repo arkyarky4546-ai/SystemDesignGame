@@ -95,14 +95,19 @@ function starterArchitecture(): Architecture {
  * scaled by last turn's reputation. Growth noise is the turn's first random draw.
  */
 export function grownMeanRps(run: RunState, difficulty: Difficulty, rng: Rng): number {
+  return meanRpsAfterGrowth(run, difficulty, nextNormal(rng).value)
+}
+
+/**
+ * This turn's mean traffic, rps, with the growth noise's standard normal draw given as `z`
+ * (unitless). `grownMeanRps` passes the turn's real draw and the forecast passes fixed
+ * ones, so both run the same arithmetic in the same order.
+ */
+export function meanRpsAfterGrowth(run: RunState, difficulty: Difficulty, z: number): number {
   const { baseGrowthPerTurn, growthSigma, growthNoiseMinOfBase, growthNoiseMaxOfBase } = BALANCE.traffic
   const base = baseGrowthPerTurn[difficulty]
   // ADR-0023 reads §3's [−0.5g, +3g] as a clamp on the noise term alone.
-  const noise = clamp(
-    nextNormal(rng).value * growthSigma[difficulty],
-    growthNoiseMinOfBase * base,
-    growthNoiseMaxOfBase * base,
-  )
+  const noise = clamp(z * growthSigma[difficulty], growthNoiseMinOfBase * base, growthNoiseMaxOfBase * base)
   const slowdown = run.growthPenaltyTurns > 0 ? BALANCE.failure.bailoutGrowthMultiplier : 1
   // §3's eventModifier stays 1 until incidents exist.
   return run.workload.meanRps * (1 + (base + noise) * slowdown) * reputationModifier(run.reputation)
@@ -264,7 +269,8 @@ function archiveTurn(archive: HistoryArchive, turn: TurnSummary): HistoryArchive
   }
 }
 
-function priceNodes(architecture: Architecture, catalog: PricedCatalog): Result<readonly PricedNode[], InputError> {
+/** Each resource node with its tier's figures, or the first node whose tier is missing or mispriced. */
+export function priceNodes(architecture: Architecture, catalog: PricedCatalog): Result<readonly PricedNode[], InputError> {
   const priced: PricedNode[] = []
   for (const node of architecture.nodes) {
     if (node.kind === 'ingress') continue

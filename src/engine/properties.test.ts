@@ -86,9 +86,13 @@ describe(`engine invariants across ${CASE_COUNT} generated linear architectures 
       const result = resolve(randomLinearInput(index))
       const metrics = [
         ...Object.values(result.perNode),
+        ...result.perEdge,
         ...REQUEST_CLASSES.map((requestClass) => result.perClass[requestClass]),
       ]
-      for (const value of metrics.flatMap((metric) => Object.values(metric))) {
+      // Status and edge endpoints are labels, not metrics.
+      const numbers = metrics.flatMap((metric) => Object.values(metric)).filter((value) => typeof value === 'number')
+      expect(numbers.length, `case ${index}`).toBeGreaterThan(0)
+      for (const value of numbers) {
         expect(value, `case ${index}`).toBeGreaterThanOrEqual(0)
       }
     }

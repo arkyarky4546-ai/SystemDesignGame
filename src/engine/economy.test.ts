@@ -117,6 +117,8 @@ describe('serviceLevel (ADR-0023)', () => {
     workload: { ...BASE_WORKLOAD, readFraction, staticFraction },
     peakRps: 0,
     perNode: {},
+    perEdge: [],
+    bottleneck: null,
     perClass,
   })
   const metrics = (p99Ms: number, errorRate: number): ClassMetrics => ({ p50Ms: p99Ms / 2, p99Ms, errorRate })

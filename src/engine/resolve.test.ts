@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { BALANCE } from '../config/balance'
-import { meanResponseTimeMs, p50LatencyMs, p99LatencyMs, simulateTick } from './resolve'
+import { meanResponseTimeMs, nodeStatus, p50LatencyMs, p99LatencyMs, simulateTick } from './resolve'
 import { deepFreeze, edge, linearInput, metricsFor, unwrap } from './test-helpers'
 import { REQUEST_CLASSES, type ComponentNode, type TickInput } from './types'
 
@@ -183,5 +183,59 @@ describe('simulateTick input errors', () => {
   it('rejects a workload fraction outside 0..1', () => {
     const input: TickInput = { ...base, workload: { ...base.workload, readFraction: 1.5 } }
     expect(simulateTick(input)).toEqual({ ok: false, error: { kind: 'invalid-workload', field: 'readFraction' } })
+  })
+})
+
+describe('node status, edge flow and the bottleneck (02-SIMULATION §9, ADR-0031)', () => {
+  const { warningUtilization, saturatedUtilization } = BALANCE.status
+  const tier = (capacityRps: number) => ({ capacityRps, serviceTimeMs: 10 })
+  const tick = (peakRps: number, appRps: number, databaseRps: number, fanoutFactor = 1) =>
+    unwrap(simulateTick(linearInput({ peakRps, app: tier(appRps), database: tier(databaseRps), fanoutFactor })))
+
+  it('bands utilization at the status thresholds, inclusive', () => {
+    expect(nodeStatus(0)).toBe('healthy')
+    expect(nodeStatus(warningUtilization - 1e-9)).toBe('healthy')
+    expect(nodeStatus(warningUtilization)).toBe('warning')
+    expect(nodeStatus(saturatedUtilization - 1e-9)).toBe('warning')
+    expect(nodeStatus(saturatedUtilization)).toBe('saturated')
+    expect(nodeStatus(BALANCE.queueing.maxUtilization)).toBe('saturated')
+  })
+
+  it('reports each node’s status from its utilization', () => {
+    const result = tick(80, 100, 1_000)
+    expect(metricsFor(result, 'app').status).toBe(nodeStatus(0.8))
+    expect(metricsFor(result, 'db').status).toBe('healthy')
+  })
+
+  it('puts what each hop served, after fanout, on the edge into the next hop', () => {
+    const result = tick(100, 60, 1_000_000, 2)
+    expect(result.perEdge).toEqual([
+      { from: 'ingress', to: 'app', rps: 100 },
+      { from: 'app', to: 'db', rps: 120 },
+    ])
+    for (const flow of result.perEdge) expect(flow.rps).toBe(metricsFor(result, flow.to).inboundRps)
+  })
+
+  it('has no bottleneck when every node is healthy', () => {
+    expect(tick(10, 1_000, 1_000).bottleneck).toBeNull()
+  })
+
+  it('names the most loaded node at warning or above', () => {
+    // app at 80/100, database at 80/90.
+    expect(tick(80, 100, 90).bottleneck).toBe('db')
+  })
+
+  it('ranks nodes capped at U_MAX by how far past capacity they are', () => {
+    // app gets 100 against 50 (2×); the database gets app's 50 against 40 (1.25×).
+    const appWorse = tick(100, 50, 40)
+    expect(metricsFor(appWorse, 'app').utilization).toBe(metricsFor(appWorse, 'db').utilization)
+    expect(appWorse.bottleneck).toBe('app')
+    // app gets 100 against 90 (1.1×); the database gets 90 against 30 (3×).
+    expect(tick(100, 90, 30).bottleneck).toBe('db')
+  })
+
+  it('gives an exact tie to the node nearer ingress, whose drops the next node never saw', () => {
+    // app gets 100 against 50 (2×); the database gets 50 against 25 (2×).
+    expect(tick(100, 50, 25).bottleneck).toBe('app')
   })
 })

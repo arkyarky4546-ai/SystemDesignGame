@@ -110,6 +110,12 @@ export type TickInput = {
   readonly catalog: ComponentCatalog
 }
 
+/**
+ * How loaded a node is, from its utilization against `BALANCE.status` (02-SIMULATION §9).
+ * §9's `failed` arrives with component failures (§5.7).
+ */
+export type NodeStatus = 'healthy' | 'warning' | 'saturated'
+
 /** One resource node resolved at peak load. */
 export type NodeMetrics = {
   /** Load arriving at the node, rps. */
@@ -126,7 +132,11 @@ export type NodeMetrics = {
   readonly meanMs: number
   readonly p50Ms: number
   readonly p99Ms: number
+  readonly status: NodeStatus
 }
+
+/** Load one edge carries at peak, rps: everything its source served and sent on, after fanout. */
+export type EdgeFlow = { readonly from: NodeId; readonly to: NodeId; readonly rps: number }
 
 /** End-to-end metrics for one request class at peak load. */
 export type ClassMetrics = {
@@ -139,16 +149,25 @@ export type ClassMetrics = {
 }
 
 /**
- * The M1 subset of 02-SIMULATION §9 (ADR-0020). Status, bottleneck, economy, reputation,
- * events and nextRun arrive with the milestones that compute them.
+ * The resolver's part of 02-SIMULATION §9 (ADR-0020, ADR-0031). Economy, reputation, events
+ * and nextRun are added by `simulateTurn`.
  */
 export type TickResult = {
   readonly turn: number
   readonly workload: Workload
   /** meanRps × peakMultiplier: the load every latency and error figure is resolved at, rps. */
   readonly peakRps: number
+  /** Keyed by node id. Iteration order isn't path order for numeric-looking ids, so use `perEdge` for order. */
   readonly perNode: Readonly<Record<NodeId, NodeMetrics>>
+  /** Every edge on the request path, in path order from ingress. */
+  readonly perEdge: readonly EdgeFlow[]
   readonly perClass: Readonly<Record<RequestClass, ClassMetrics>>
+  /**
+   * The most loaded node at warning or above, or null when every node is healthy (§9).
+   * Ranked by inbound ÷ capacity, so nodes capped at U_MAX still order by how far past
+   * capacity they are. A tie goes to the node nearer ingress (ADR-0031).
+   */
+  readonly bottleneck: NodeId | null
 }
 
 export type TopologyError =
@@ -301,6 +320,31 @@ export type ReputationResult = {
   readonly sloMet: boolean
   /** max(p99 / p99Target, errorRate / errorRateTarget), unitless. At least 1 when an SLO is missed. */
   readonly severity: number
+}
+
+/** Next turn's traffic before its random draw (ADR-0032). */
+export type TrafficForecast = {
+  /** The turn forecast: the run's next. */
+  readonly turn: number
+  /** Mean traffic with no growth noise, rps. */
+  readonly meanRps: number
+  /** Peak traffic with no growth noise, rps. */
+  readonly peakRps: number
+  /** Peak with the growth noise `BALANCE.forecast.rangeSigmas` standard deviations low, clamped as the real draw is, rps. */
+  readonly lowPeakRps: number
+  /** Peak with the growth noise `BALANCE.forecast.rangeSigmas` standard deviations high, clamped as the real draw is, rps. */
+  readonly highPeakRps: number
+}
+
+/** What the player can know before Advance: traffic and money in, never projected load (ADR-0032). */
+export type TurnPlan = {
+  readonly forecast: TrafficForecast
+  /** Running cost of the planned architecture for one turn, integer cents. Exact. */
+  readonly runningCents: number
+  /** One-time setup the next Advance charges for what changed since last turn, integer cents. Exact. */
+  readonly setupCents: number
+  /** Egress at the forecast's mean traffic with nothing dropped, integer cents. An estimate. */
+  readonly bandwidthCents: number
 }
 
 /** Everything one Advance produces (02-SIMULATION §9). */
