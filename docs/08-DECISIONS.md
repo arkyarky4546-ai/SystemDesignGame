@@ -537,3 +537,42 @@ table.
   server, so the game pushes players toward more headroom than a real system needs.
   That's acceptable, because sizing for headroom is the lesson.
 - Wording of latency claims is a review point at M5a, M7 and M7b.
+
+---
+
+## ADR-0022 — The quality multiplier caps at the SLO
+2026-09-14 · Status: accepted
+
+**Context.** `02-SIMULATION.md` §6 defined `qualityMultiplier = clamp(1.2 − 0.4 ×
+p99/p99Target, 0.5, 1.2)`. p99 is never negative, so the expression never exceeds 1.2
+and the upper clamp could never bind. That contradicted:
+- the prose, which says gold-plating latency past the SLO earns nothing
+- M2's criterion "qualityMultiplier clamps at both ends"
+
+As written, meeting the SLO exactly paid 0.8×, and every millisecond under the target
+earned more, all the way to p99 = 0.
+
+**Decision.** Raise the intercept to 1.6: `clamp(1.6 − 0.4 × p99/p99Target, 0.5, 1.2)`.
+The multiplier is:
+- 1.2× at or under the target
+- 1.0× at 1.5× the target
+- 0.8× at 2× the target
+- 0.5× from 2.75× the target
+
+The four numbers live in `BALANCE.economy.qualityMultiplier`. The human chose this at the
+start of M2.
+
+**Alternatives.**
+- Intercept 1.4, capping at half the target (1.0× at the target): still pays for beating
+  the SLO, which the prose rules out.
+- Keep the formula and rewrite the prose: leaves the upper clamp as dead code and keeps
+  rewarding gold-plating.
+
+**Consequences.**
+- Below the target, latency has no economic effect: 50 ms and 300 ms pay the same.
+  Reputation's `sloMet` is binary too, so nothing rewards latency under the SLO. That is
+  the intended lesson.
+- Missing the SLO by up to 50% still pays at least 1.0×. Reputation loss is what punishes
+  that range.
+- A service meeting its SLO earns 1.5× what the old formula paid. M9's balance tuning
+  starts from the new numbers.

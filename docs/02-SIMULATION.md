@@ -302,12 +302,13 @@ revenueCents    = servedRps × secondsPerTurn / 1000
                   × revenuePerThousandRequestsCents
                   × qualityMultiplier
 
-qualityMultiplier = clamp(1.2 − 0.4 × (p99 / p99Target), 0.5, 1.2)
+qualityMultiplier = clamp(1.6 − 0.4 × (p99 / p99Target), 0.5, 1.2)
 ```
 
 Fast service is worth more than slow service, and the multiplier is capped both
-directions so gold-plating latency past the SLO earns nothing. Over-optimizing
-is its own trap.
+directions. The cap binds exactly at the SLO, so gold-plating latency past the
+SLO earns nothing. Above the target, revenue falls linearly to the 0.5 floor,
+reached at 2.75× the target. Over-optimizing is its own trap. ADR-0022.
 
 ```
 costCents = Σ nodes [ runningCostPerTurnCents(kind, tier) × replicas ]
