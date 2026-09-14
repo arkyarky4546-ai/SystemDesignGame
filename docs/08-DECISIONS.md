@@ -1288,3 +1288,44 @@ highest-utilization node and one node that wasn't the problem. Open questions:
 - The headless numbers come from one Windows laptop with uncapped frames. Whether the
   animation is satisfying or annoying by turn 30 (`07-TESTING.md` §8) is the human's call at
   the checkpoint.
+
+---
+
+## ADR-0037 — Minimal first-run guidance moves ahead of M5, as M4a
+2026-09-14 · Status: accepted
+
+**Context.** At the M4 checkpoint the human found the loop "very not intuitive" and asked
+where the learning and the tutorial are. Under the roadmap:
+- lessons, checks and unlocks arrive in M6 and M7
+- first-run onboarding arrives in M10
+
+So nothing on screen explains what to look at or what to do. M4's checkpoint asks whether the
+loop is interesting with no content. A player who can't operate a week can't answer that:
+"unexplained" and "boring" look the same. Later checkpoints (M5b, M7b, M9) have the same
+problem.
+
+**Decision.** The human chose to add M4a before M5: the smallest in-game help that lets a new
+player run one week.
+- A short "How a week works" guide on a new run, dismissible and reopenable.
+- One-sentence pointers on the empty inspector and the forecast line saying what to compare.
+- One-sentence definitions of p99, utilization, capacity and "/s" where they first appear.
+
+M4a is not lessons: concepts are still taught in M6 and M7. It keeps ADR-0032 (nothing
+projects next week's load), changes no save format, and adds no dependency. M4's checkpoint
+question is asked again at the end of M4a. M10 keeps the rest of onboarding and builds on this
+guide.
+
+**Alternatives.**
+- Keep the roadmap order and judge the loop from written instructions outside the game: the
+  checkpoint would test the instructions, and every later checkpoint would have the same gap.
+- Fold guidance into M6: several milestones of content work would come before anyone can
+  judge the loop, which is the risk M4's checkpoint exists to catch.
+- Pull the Tier 1 lesson on capacity forward: it depends on M5's schema and M6's lesson flow,
+  so it isn't small.
+
+**Consequences.**
+- M5 starts after M4a and its checkpoint.
+- The guide and definitions make claims about the game and its model, so their copy is flagged
+  for review in M4a's summary.
+- If the loop still isn't interesting with guidance, the redesign question from M4 comes up
+  before any content is written.
