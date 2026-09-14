@@ -1329,3 +1329,121 @@ guide.
   for review in M4a's summary.
 - If the loop still isn't interesting with guidance, the redesign question from M4 comes up
   before any content is written.
+
+---
+
+## ADR-0038 — The week guide and definitions in place
+2026-09-14 · Status: accepted · Extends ADR-0037
+
+**Context.** M4a asks for:
+- a "How a week works" guide on a new run, reopenable from the header, whose steps name
+  on-screen elements by their visible labels
+- one-sentence definitions of p99, utilization, capacity and "/s" where they first appear,
+  reachable without hover
+- no save format change and no new dependency
+
+Four details were open:
+- whether the guide covers the screen or sits beside it
+- how closing it is remembered without a save change
+- where "first appear" is, since that depends on what the player does first
+- how a test knows what the guide names
+
+**Decision.**
+- **A panel, not a dialog.** Nothing goes inert, so the player can look at, and use, what a step
+  names while reading it. Where it sits follows `05-UI-DESIGN.md` §9's layouts:
+  - 900px and up: above the catalog, canvas and inspector, scrolling within 40% of the viewport
+    height. Its five steps sit in one row from 1280px.
+  - Below 900px: first in the panel under the canvas, which already scrolls. In headless Chrome,
+    a banner above the canvas left the canvas 97px tall at 600 × 900, and at 400 × 800 it
+    squeezed out the component list that editing happens in.
+- **Focus.** Opened from the header, the guide moves focus to its heading, because below 900px it
+  is far from the button in tab order. When a new run opens it, focus stays where it is.
+- **Opening and closing.** `ui.guideOpen` lives in the store and is never saved.
+  - Starting a run opens it, and so does loading or importing a run still at week 0.
+  - It stays open until closed: by "Close guide", by Escape inside it, or by the header's
+    "How a week works" button, a disclosure with `aria-expanded`.
+  - Closing from inside moves focus to that button.
+- **Copy as data.** `ui/components/week-guide-copy.ts` writes each step as text and labels. Each
+  label carries its visible text and where it's shown:
+  - the canvas screen as a run opens
+  - the inspector with a component selected
+  - the weekly report
+
+  A test walks one week and finds each label outside the guide at that point.
+- **Definitions.** `ui/glossary.ts` holds one sentence per term.
+  - A `Term` is a button in the words already on screen, with a dotted underline.
+  - Click, tap, Enter or Space shows the definition below its `TermGroup`, in a polite live
+    region. Each group shows one at a time, and pressing the term again hides it.
+  - Where a term first appears depends on the path, so it's defined at every label a player can
+    meet in the first week:
+    - "/s" and capacity on the forecast line
+    - capacity in the empty inspector
+    - capacity, utilization and p99 in a selected component's figures
+    - p99 on the report's p99 latency chart
+    - capacity, utilization and p99 in the report's Components at peak table
+    - capacity and p99 in the guide
+  - "/s" is defined only on the forecast line, which is always above the canvas.
+- **A claim pinned to the model.** Step 3 says every request passes through the app server and
+  the database. That holds while an app server makes one database query per request, so the
+  guide's test pins `BALANCE.starter.appFanoutFactor` at 1.
+
+**Alternatives.**
+- A modal tour: it covers what it describes, and pointing at elements needs positioning code or
+  a library.
+- Tooltips: hover can't be reached by keyboard or touch.
+- The native `popover` attribute: placing it beside its term needs anchor positioning or
+  measuring code. An inline disclosure needs neither.
+- Remembering that the guide was closed, in the save or under a second storage key: a save
+  format change, or a second persistence path beside ADR-0025. After a reload at week 0, closing
+  it again costs one click.
+- Defining terms only in the guide: once it's closed, the definitions are gone.
+
+**Consequences.**
+- A reload before the first Advance shows the guide again.
+- Pushing the bottom sheets' content down exposed an M3 layout bug. Their screen-reader-only
+  Catalog and Inspector headings are absolutely positioned. Nothing in the sheet was positioned,
+  so the headings were placed against the page. Once they sat below the fold, the whole page
+  scrolled 182px at 600 × 900. The sheet is now `relative`, and headless Chrome measures the page
+  at exactly the viewport's height with the guide open or closed. jsdom can't lay out, so no test
+  covers it.
+- Some figure labels and table headers are now buttons, and screen readers announce them as
+  buttons.
+- The guide and the definitions make claims about the model, so their copy is flagged for review.
+- M10's onboarding builds on this guide. Changing how many queries an app server makes needs new
+  step copy.
+
+---
+
+## ADR-0039 — Timing tests run after the rest of the suite
+2026-09-14 · Status: accepted · Extends ADR-0036
+
+**Context.** M4's render-time test asserts that React commits a resolved 50-node turn with a
+median under 16 ms (ADR-0036). During M4a it began failing most full runs, with medians of
+16.4–18.0 ms. On the same machine, measured alone over 15 turns:
+- M4's code: medians of 8.6, 8.6 and 9.5 ms
+- M4a's code: medians of 9.2, 9.3 and 9.1 ms
+
+With Vitest's results cache cleared, the full suite still failed two runs in three. With file
+parallelism off, it passed both runs, taking 15 s instead of 5 s. Other jsdom test files running
+alongside the timing test were spending its budget, and M4a added two of them.
+
+**Decision.** `vite.config.ts` splits the suite into two Vitest projects.
+- `unit` holds every test file except the timing tests, and runs in parallel as before.
+- `timing` holds `state/turn-performance.test.ts` and `ui/turn-render-performance.test.tsx`.
+  - `sequence.groupOrder: 1` starts it after `unit` has finished.
+  - `fileParallelism: false` runs its files one at a time.
+
+The 16 ms budget and both assertions are unchanged. Afterwards, five full runs of `npm run test`
+passed, with the timing files reported last.
+
+**Alternatives.**
+- Raising the budget, or retrying the test: it would pass for the wrong reason, and M4's criterion
+  is 16 ms.
+- Turning off file parallelism for the whole suite: every run takes three times as long.
+- A separate timing script: the definition of done runs `npm run test`, which would stop checking
+  M4's criterion.
+
+**Consequences.**
+- A new test that asserts a wall-clock budget must be added to `TIMING_TESTS`.
+- The timing files still share the machine with anything else that's running, as ADR-0036 noted
+  for CI.
