@@ -3,6 +3,9 @@ import { formatCompact, formatDollars, formatReputation } from '../format'
 import type { TurnPlayback } from '../turn-playback'
 import { AnimatedNumber } from './AnimatedNumber'
 
+// Users are derived from traffic and fractional; the bar counts whole people.
+const formatUsers = (users: number) => formatCompact(Math.round(users))
+
 type StatusBarProps = {
   readonly run: RunState
   readonly playback: TurnPlayback | null
@@ -34,7 +37,7 @@ export function StatusBar({ run, playback }: StatusBarProps) {
           <AnimatedNumber
             value={users}
             from={before ? usersForMeanRps(before.workload.meanRps) : undefined}
-            format={formatCompact}
+            format={formatUsers}
             playback={playback}
             className="text-ink-bright"
           />{' '}

@@ -22,6 +22,8 @@ const HEIGHT = 120
 const MARGIN = { top: 10, right: 12, bottom: 22, left: 64 }
 const Y_TICKS = 3
 const MARKER = 4
+// Height a 12px label needs above the target line.
+const LABEL_ROOM = 14
 
 /**
  * A line over weeks (01-ARCHITECTURE §5: hand-written SVG, d3-scale for the arithmetic).
@@ -73,7 +75,13 @@ export function LineChart({ points, label, formatTick, target }: LineChartProps)
             strokeWidth={1}
             strokeDasharray="4 3"
           />
-          <text x={WIDTH - MARGIN.right} y={y(target.value) - 4} textAnchor="end" className="fill-pressure text-xs">
+          {/* Above the line when there's room, otherwise just below it, so the top edge never clips it. */}
+          <text
+            x={WIDTH - MARGIN.right}
+            y={y(target.value) - MARGIN.top < LABEL_ROOM ? y(target.value) + LABEL_ROOM : y(target.value) - 4}
+            textAnchor="end"
+            className="fill-pressure text-xs"
+          >
             {target.label}
           </text>
         </g>
