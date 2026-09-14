@@ -78,6 +78,18 @@ differently. For `bailoutGrowthPenaltyTurns` after an investor bailout (§7.2),
 `reputationModifier` is defined in §7. `eventModifier` is 1 except during
 scripted incidents.
 
+### Forecast
+
+Before Advance the player sees next turn's peak as an estimate. It is the growth formula
+above with the noise term at zero. A likely range sets the noise
+`BALANCE.forecast.rangeSigmas` standard deviations either side, clamped as the real draw is.
+At 2σ, the real peak lands inside the range on about 98% of turns, and every miss is above it.
+On Intern there's no noise, so the range collapses to the exact value.
+
+The forecast also gives next turn's exact running and setup costs, and bandwidth estimated at
+the forecast's mean. Projected load, latency and revenue are deliberately not shown: sizing
+against the forecast is the skill being taught. ADR-0032.
+
 ## 4. The architecture graph
 
 ```ts
@@ -429,6 +441,7 @@ type TickResult = {
     droppedRps: number
     status: 'healthy' | 'warning' | 'saturated' | 'failed'
   }>
+  perEdge: { from: NodeId; to: NodeId; rps: number }[] // path order
   perClass: Record<RequestClass, {
     p50Ms: number; p99Ms: number; errorRate: number; staleRate: number
   }>
@@ -439,6 +452,14 @@ type TickResult = {
   nextRun: RunState
 }
 ```
+
+`status` is warning from `BALANCE.status.warningUtilization` and saturated from
+`saturatedUtilization`, both inclusive. `failed` arrives with §5.7.
+
+The bottleneck is ranked by inbound ÷ capacity rather than capped utilization, so nodes past
+capacity still order by how far past they are. An exact tie goes to the node nearer ingress.
+`perEdge` carries what arrives at each edge's target, which the canvas draws as stroke
+weight. ADR-0031.
 
 `bottleneck` exists because the weekly report's plain-language observation is
 generated from it, and because "which thing is the problem" is the question the
