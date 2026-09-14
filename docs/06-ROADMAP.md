@@ -131,6 +131,37 @@ turns. The question to answer is: is the loop interesting with no content in it
 at all? If it isn't, stop and redesign — do not proceed to write 234 questions
 on top of a boring loop.
 
+**Checkpoint outcome, 2026-09-14.** The loop couldn't be judged without any guidance, so M4a
+was added before M5 (ADR-0037).
+
+---
+
+## [ ] M4a — First-run guidance
+
+**Read:** `05-UI-DESIGN.md` §4, §5, §8, `00-GAME-DESIGN.md` §3, ADR-0032, ADR-0035, ADR-0037
+
+Added at the M4 checkpoint. The smallest in-game help that lets a new player run one week:
+what to look at, what to compare, what to press. Not lessons: concepts are still taught in M6
+and M7, and M10 keeps the rest of onboarding.
+
+**Acceptance:**
+- A new run shows a short "How a week works" guide before the first Advance. It can be
+  dismissed and reopened from the header, with the mouse and with the keyboard alone.
+- Every step names an on-screen element by its visible label: the forecast line, a component
+  on the canvas, the inspector's size and capacity, Advance week, the weekly report. A test
+  asserts each label the guide names exists on screen.
+- The empty inspector and the forecast line each say, in one sentence, what to compare them
+  with.
+- p99, utilization, capacity and "/s" each have a one-sentence definition where they first
+  appear, reachable by keyboard and touch rather than hover alone.
+- Nothing projects next week's load (ADR-0032 stands), saves don't change version, and no
+  dependency is added.
+- All new copy follows `05-UI-DESIGN.md` §8 and is listed in the session summary for review.
+
+**🔶 Human checkpoint.** M4's question, now answerable: play ten weeks using only what's on
+screen. Is the loop interesting with no content in it? If it isn't, stop and redesign before
+M5.
+
 ---
 
 ## [ ] M5 — Content pipeline
@@ -317,7 +348,7 @@ becomes fair.
 
 ## [ ] M10 — Ship Tier 1
 
-Title screen, settings, first-run onboarding, 404, deploy.
+Title screen, settings, first-run onboarding that builds on M4a's guide, 404, deploy.
 
 **Acceptance:**
 - Deployed to `workers.dev` and loading.
