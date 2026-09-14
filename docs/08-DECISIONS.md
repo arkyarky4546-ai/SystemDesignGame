@@ -502,3 +502,38 @@ aren't specified anywhere.
   differently.
 - The independence assumption, and summing latency once per hop despite fanout, are
   review points for the M1 checkpoint.
+
+---
+
+## ADR-0021 — Keep the single-queue latency model and teach it as one
+2026-09-14 · Status: accepted · Extends ADR-0005
+
+**Context.** The M1 checkpoint reviewed `W = serviceTime / (1 − u)`. That formula is
+exact for M/M/1: one server, Poisson arrivals, exponential service times. The game's
+app servers and databases are closer to multi-worker queues (M/M/c). A tier's
+`capacityRps` and `serviceTimeMs` are independent, so a tier can already imply several
+workers. For M/M/c with the same per-request service time, latency stays near the
+service time until utilization is much higher. M2's economy and reputation both read
+p99, so changing the model after M2 means rework.
+
+**Decision.** Keep M/M/1 as ADR-0005 specifies. The human chose this at the M1
+checkpoint. Lessons and derived questions present its numbers as properties of the
+game's single-queue model:
+- May be taught as true of real systems: waiting time grows without bound as
+  utilization approaches 1, the tail sits far above the median, and systems are sized
+  for peak.
+- Must be worded as model-specific: "latency doubles at 50% utilization" and "p99 is
+  about 4.6× the mean". These hold for M/M/1's exponential response time, not for
+  measured multi-worker servers.
+
+**Alternatives.** M/M/c (Erlang C) gives more realistic numbers for multi-worker
+servers. But it cannot be explained in one sentence, which `02-SIMULATION.md` §0
+requires. It would also supersede ADR-0005 and change `07-TESTING.md` §2's named-curve
+table.
+
+**Consequences.**
+- `07-TESTING.md` §2's named-curve assertions stand unchanged.
+- The model overstates latency at moderate utilization compared with a multi-worker
+  server, so the game pushes players toward more headroom than a real system needs.
+  That's acceptable, because sizing for headroom is the lesson.
+- Wording of latency claims is a review point at M5a, M7 and M7b.
