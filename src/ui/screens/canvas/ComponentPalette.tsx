@@ -8,6 +8,8 @@ type ComponentPaletteProps = {
   readonly onDrop: (kind: ComponentKind, client: { clientX: number; clientY: number }) => void
   /** Placed without a pointer: next to the selection, or in the first free cell. */
   readonly onPlace: (kind: ComponentKind) => void
+  /** Keeps the heading for screen readers only, where a surrounding sheet already shows it. */
+  readonly headingHidden?: boolean
 }
 
 // Screen pixels a press must travel before it counts as a drag.
@@ -20,7 +22,7 @@ type Drag = { kind: ComponentKind; pointerId: number; startX: number; startY: nu
  * items and prices. Dragging follows the pointer with a ghost moved directly in the DOM.
  * A click or Enter places the component without a drag.
  */
-export function ComponentPalette({ onDrop, onPlace }: ComponentPaletteProps) {
+export function ComponentPalette({ onDrop, onPlace, headingHidden = false }: ComponentPaletteProps) {
   const drag = useRef<Drag | null>(null)
   const ghost = useRef<HTMLDivElement | null>(null)
   const suppressClick = useRef(false)
@@ -64,7 +66,7 @@ export function ComponentPalette({ onDrop, onPlace }: ComponentPaletteProps) {
   return (
     <section aria-labelledby="palette-heading" className="flex flex-col gap-3">
       <div>
-        <h2 id="palette-heading" className="text-sm font-medium text-ink-bright">
+        <h2 id="palette-heading" className={headingHidden ? 'sr-only' : 'text-sm font-medium text-ink-bright'}>
           Components
         </h2>
         <p className="mt-1 text-xs leading-relaxed">Drag one onto the canvas, or press Enter to place it next to the selection.</p>

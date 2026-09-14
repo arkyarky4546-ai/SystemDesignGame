@@ -12,7 +12,8 @@ const GUTTER_X = (CELL_WIDTH - NODE_WIDTH) / 2
 const GUTTER_Y = (CELL_HEIGHT - NODE_HEIGHT) / 2
 /** Empty cells kept beyond the furthest node, so there is always somewhere to drop. */
 const SPARE_CELLS = 2
-const MIN_COLS = 6
+// Five columns (840px) fit the canvas column at 1440px without a scrollbar.
+const MIN_COLS = 5
 const MIN_ROWS = 5
 
 export type Point = { readonly x: number; readonly y: number }

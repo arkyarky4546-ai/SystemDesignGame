@@ -381,7 +381,7 @@ export function ArchitectureCanvas(props: ArchitectureCanvasProps) {
       width={width * zoom}
       height={height * zoom}
       viewBox={`0 0 ${width} ${height}`}
-      className="block touch-none select-none"
+      className="block touch-none select-none focus-visible:outline-none"
       data-connecting={connectFrom ?? undefined}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}

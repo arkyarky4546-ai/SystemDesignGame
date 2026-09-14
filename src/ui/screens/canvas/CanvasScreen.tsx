@@ -127,7 +127,10 @@ export function CanvasScreen({ store }: { readonly store: StoreApi<GameStore> })
             {message?.text}
           </p>
         </div>
-        <div className="min-h-0 flex-1 overflow-auto">{canvas}</div>
+        {/* The focus ring goes on the visible viewport. The SVG can be larger than its scroll area. */}
+        <div className="min-h-0 flex-1 overflow-auto outline-flow has-[svg:focus-visible]:outline-2 has-[svg:focus-visible]:-outline-offset-2">
+          {canvas}
+        </div>
       </main>
 
       {wide && <aside className="overflow-y-auto border-l border-panel-line p-4">{inspector}</aside>}
@@ -136,11 +139,23 @@ export function CanvasScreen({ store }: { readonly store: StoreApi<GameStore> })
         <div className="max-h-[45dvh] shrink-0 overflow-y-auto border-t border-panel-line bg-panel-raised">
           <details open>
             <summary className={PANEL_HEADING}>Components</summary>
-            <div className="px-4 pb-4">{palette}</div>
+            <div className="px-4 pb-4">
+              <ComponentPalette onDrop={onDrop} onPlace={onPlace} headingHidden />
+            </div>
           </details>
           <details open className="border-t border-panel-line">
             <summary className={PANEL_HEADING}>Inspector</summary>
-            <div className="px-4 pb-4">{inspector}</div>
+            <div className="px-4 pb-4">
+              <NodeInspector
+                architecture={architecture}
+                utilization={utilization}
+                selection={selection}
+                onChange={onChange}
+                onSelect={setSelection}
+                onMessage={setMessage}
+                headingHidden
+              />
+            </div>
           </details>
         </div>
       )}

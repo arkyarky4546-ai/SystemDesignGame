@@ -21,6 +21,8 @@ type NodeInspectorProps = {
   readonly onChange: (architecture: Architecture, announcement: string) => void
   readonly onSelect: (selection: CanvasSelection) => void
   readonly onMessage: (message: CanvasMessage) => void
+  /** Keeps the empty-state heading for screen readers only, where a surrounding sheet already shows it. */
+  readonly headingHidden?: boolean
 }
 
 const BUTTON = 'rounded border border-panel-line px-2 py-1 text-xs text-ink-bright hover:border-flow disabled:opacity-50'
@@ -80,7 +82,7 @@ export function NodeInspector(props: NodeInspectorProps) {
   if (!node) {
     return (
       <section aria-labelledby="inspector-heading" className="flex flex-col gap-2">
-        <h2 id="inspector-heading" className="text-sm font-medium text-ink-bright">
+        <h2 id="inspector-heading" className={props.headingHidden ? 'sr-only' : 'text-sm font-medium text-ink-bright'}>
           Inspector
         </h2>
         <p className="text-sm">Select a component to change its size and connections.</p>

@@ -18,7 +18,10 @@ type CanvasNodeProps = {
 }
 
 const FILL_CLASS = { unknown: '', healthy: 'fill-flow', warning: 'fill-pressure', saturated: 'fill-fault' } as const
-const LEVEL_WORD = { unknown: 'no load measured yet', healthy: 'healthy', warning: 'under pressure', saturated: 'saturated' } as const
+// A dark outline behind node text keeps it readable over fills and the saturation hatch.
+const HALO = { strokeWidth: 3, strokeLinejoin: 'round', paintOrder: 'stroke' } as const
+
+const LEVEL_WORD ={ unknown: 'no load measured yet', healthy: 'healthy', warning: 'under pressure', saturated: 'saturated' } as const
 
 /**
  * One component on the canvas, drawn as a vessel: its utilization fills it from the
@@ -64,13 +67,13 @@ export const CanvasNode = memo(function CanvasNode(props: CanvasNodeProps) {
             )}
           </g>
         )}
-        <text x={10} y={24} className="fill-ink-bright text-sm font-medium">
+        <text x={10} y={24} className="fill-ink-bright stroke-panel-raised text-sm font-medium" {...HALO}>
           {name}
         </text>
-        <text x={10} y={48} className="fill-ink text-xs">
+        <text x={10} y={48} className="fill-ink stroke-panel-raised text-xs" {...HALO}>
           {tierLabel}
         </text>
-        <text x={NODE_WIDTH - 10} y={48} textAnchor="end" className={`num text-xs ${level === 'saturated' ? 'fill-fault' : 'fill-ink-bright'}`}>
+        <text x={NODE_WIDTH - 10} y={48} textAnchor="end" className="num fill-ink-bright stroke-panel-raised text-xs font-medium" {...HALO}>
           {reading}
         </text>
       </g>
