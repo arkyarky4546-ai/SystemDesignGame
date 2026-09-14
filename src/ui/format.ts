@@ -46,9 +46,12 @@ export function formatCountChange(value: number): string {
   return text === '0' || text.startsWith(MINUS) ? text : `+${text}`
 }
 
+/** The unit on every traffic figure. The glossary defines it by the same text. */
+export const RPS_UNIT = '/s'
+
 /** Traffic in rps: "2.5/s", "143/s", "5.12k/s". */
 export function formatRps(rps: number): string {
-  return `${formatCompact(rps)}/s`
+  return `${formatCompact(rps)}${RPS_UNIT}`
 }
 
 /** Latency: "940 ms", "11,135 ms". */

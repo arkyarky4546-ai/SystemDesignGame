@@ -1,6 +1,7 @@
 import { useId, type Ref } from 'react'
 import type { Architecture, Result, TickError, TrafficForecast, TurnPlan } from '../../../engine'
-import { formatCompact, formatDollars, formatRps } from '../../format'
+import { Term, TermGroup } from '../../components/Term'
+import { RPS_UNIT, formatCompact, formatDollars, formatRps } from '../../format'
 import { describeTurnError } from './turn-copy'
 
 type ForecastLineProps = {
@@ -12,21 +13,28 @@ type ForecastLineProps = {
 /**
  * Next week's peak, shown before the player decides to advance (05-UI-DESIGN §4). Planning
  * against it is the skill being taught. The range is where a real week's growth usually
- * lands (ADR-0032); on Intern growth has no noise, so there's no range.
+ * lands (ADR-0032); on Intern growth has no noise, so there's no range. It says what to compare
+ * the peak with, and defines /s, which a new run shows here before anywhere else (M4a).
  */
 export function ForecastLine({ forecast, lastPeakRps }: ForecastLineProps) {
   const exact = forecast.lowPeakRps === forecast.highPeakRps
   return (
-    <p className="num text-sm text-ink-bright">
-      Forecast for week {forecast.turn}: {exact ? '' : 'about '}
-      {formatRps(forecast.peakRps)} at peak
-      {!exact && (
-        <span className="text-ink">
-          , likely {formatCompact(forecast.lowPeakRps)}–{formatRps(forecast.highPeakRps)}
-        </span>
-      )}
-      {lastPeakRps !== undefined && <span className="text-ink"> · last week {formatRps(lastPeakRps)}</span>}
-    </p>
+    <TermGroup>
+      <p className="num text-sm text-ink-bright">
+        Forecast for week {forecast.turn}: {exact ? '' : 'about '}
+        {formatCompact(forecast.peakRps)}
+        <Term id="per-second">{RPS_UNIT}</Term> at peak
+        {!exact && (
+          <span className="text-ink">
+            , likely {formatCompact(forecast.lowPeakRps)}–{formatRps(forecast.highPeakRps)}
+          </span>
+        )}
+        {lastPeakRps !== undefined && <span className="text-ink"> · last week {formatRps(lastPeakRps)}</span>}
+      </p>
+      <p className="text-xs">
+        Compare the peak with each component’s <Term id="capacity">capacity</Term> in the inspector.
+      </p>
+    </TermGroup>
   )
 }
 

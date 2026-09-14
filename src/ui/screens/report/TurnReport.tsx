@@ -5,6 +5,7 @@ import { usersForMeanRps } from '../../../engine'
 import type { LastTurn } from '../../../state/store'
 import { nodeName } from '../../canvas/copy'
 import { ChartPanel } from '../../charts/ChartPanel'
+import { Term, TermGroup } from '../../components/Term'
 import {
   formatCompact,
   formatCount,
@@ -85,6 +86,7 @@ export function TurnReport({ lastTurn, onClose }: TurnReportProps) {
         <div className="grid gap-3 min-[600px]:grid-cols-2">
           <ChartPanel
             title="p99 latency"
+            titleTerm="p99"
             value={formatMs(result.service.p99Ms)}
             note={`target ${formatMs(p99TargetMs)}`}
             overTarget={result.service.p99Ms > p99TargetMs}
@@ -158,58 +160,60 @@ export function TurnReport({ lastTurn, onClose }: TurnReportProps) {
 
         <div className="flex flex-col gap-2">
           <h3 className="text-sm font-medium text-ink-bright">Components at peak</h3>
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[36rem] text-xs">
-              <thead>
-                <tr className="text-left text-ink-bright">
-                  <th scope="col" className="py-1 font-medium">
-                    Component
-                  </th>
-                  <th scope="col" className="py-1 font-medium">
-                    Size
-                  </th>
-                  <th scope="col" className="py-1 text-right font-medium">
-                    Received
-                  </th>
-                  <th scope="col" className="py-1 text-right font-medium">
-                    Capacity
-                  </th>
-                  <th scope="col" className="py-1 text-right font-medium">
-                    Utilization
-                  </th>
-                  <th scope="col" className="py-1 text-right font-medium">
-                    p99
-                  </th>
-                  <th scope="col" className="py-1 text-right font-medium">
-                    Turned away
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {path.map((nodeId) => {
-                  const metrics = result.perNode[nodeId]
-                  const node = ran.nodes.find((each) => each.id === nodeId)
-                  if (!metrics || !node) return null
-                  return (
-                    <tr key={nodeId} className="border-t border-panel-line">
-                      <th scope="row" className="py-1 text-left font-normal">
-                        {nodeName(ran, nodeId)}
-                      </th>
-                      <td className="py-1">{COMPONENT_DEFS[node.kind].tiers[node.tier]?.label}</td>
-                      <td className="num py-1 text-right">{formatRps(metrics.inboundRps)}</td>
-                      <td className="num py-1 text-right">{formatRps(metrics.capacityRps)}</td>
-                      <td className="num py-1 text-right">
-                        {metrics.status === 'saturated' ? '▲ ' : ''}
-                        {formatUtilization(metrics.utilization)}
-                      </td>
-                      <td className="num py-1 text-right">{formatMs(metrics.p99Ms)}</td>
-                      <td className="num py-1 text-right">{metrics.droppedRps > 0 ? formatRps(metrics.droppedRps) : '0'}</td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>
+          <TermGroup>
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[36rem] text-xs">
+                <thead>
+                  <tr className="text-left text-ink-bright">
+                    <th scope="col" className="py-1 font-medium">
+                      Component
+                    </th>
+                    <th scope="col" className="py-1 font-medium">
+                      Size
+                    </th>
+                    <th scope="col" className="py-1 text-right font-medium">
+                      Received
+                    </th>
+                    <th scope="col" className="py-1 text-right font-medium">
+                      <Term id="capacity">Capacity</Term>
+                    </th>
+                    <th scope="col" className="py-1 text-right font-medium">
+                      <Term id="utilization">Utilization</Term>
+                    </th>
+                    <th scope="col" className="py-1 text-right font-medium">
+                      <Term id="p99">p99</Term>
+                    </th>
+                    <th scope="col" className="py-1 text-right font-medium">
+                      Turned away
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {path.map((nodeId) => {
+                    const metrics = result.perNode[nodeId]
+                    const node = ran.nodes.find((each) => each.id === nodeId)
+                    if (!metrics || !node) return null
+                    return (
+                      <tr key={nodeId} className="border-t border-panel-line">
+                        <th scope="row" className="py-1 text-left font-normal">
+                          {nodeName(ran, nodeId)}
+                        </th>
+                        <td className="py-1">{COMPONENT_DEFS[node.kind].tiers[node.tier]?.label}</td>
+                        <td className="num py-1 text-right">{formatRps(metrics.inboundRps)}</td>
+                        <td className="num py-1 text-right">{formatRps(metrics.capacityRps)}</td>
+                        <td className="num py-1 text-right">
+                          {metrics.status === 'saturated' ? '▲ ' : ''}
+                          {formatUtilization(metrics.utilization)}
+                        </td>
+                        <td className="num py-1 text-right">{formatMs(metrics.p99Ms)}</td>
+                        <td className="num py-1 text-right">{metrics.droppedRps > 0 ? formatRps(metrics.droppedRps) : '0'}</td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </TermGroup>
         </div>
 
         <div>

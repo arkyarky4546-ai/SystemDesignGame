@@ -4,7 +4,9 @@ import { setupCostCents, type Architecture, type ComponentNode, type Edge, type 
 import { connect, connectionRefusal, disconnect, findNode, removeNode, setTier, type Edit } from '../../../state/architecture'
 import type { CanvasMessage, CanvasSelection } from '../../canvas/ArchitectureCanvas'
 import { describeConnectionRefusal, describeEditRefusal, nodeName } from '../../canvas/copy'
+import { Term, TermGroup } from '../../components/Term'
 import { formatDollars, formatMs, formatRps, formatUtilization } from '../../format'
+import type { TermId } from '../../glossary'
 
 type NodeInspectorProps = {
   /** What the next Advance will run: the player's plan. */
@@ -84,7 +86,12 @@ export function NodeInspector(props: NodeInspectorProps) {
         <h2 id="inspector-heading" className={props.headingHidden ? 'sr-only' : 'text-sm font-medium text-ink-bright'}>
           Inspector
         </h2>
-        <p className="text-sm">Select a component to see its load and change its size and connections.</p>
+        <TermGroup>
+          <p className="text-sm">Select a component to see its load and change its size and connections.</p>
+          <p className="mt-2 text-sm">
+            Compare its <Term id="capacity">capacity</Term> with the peak in the forecast above the canvas.
+          </p>
+        </TermGroup>
       </section>
     )
   }
@@ -157,7 +164,7 @@ function NodeDetails(
 
       {tier && (
         <Figures title="At this size">
-          <Figure label="Capacity" value={formatRps(tier.capacityRps)} />
+          <Figure label="Capacity" term="capacity" value={formatRps(tier.capacityRps)} />
           <Figure label="Service time" value={formatMs(tier.serviceTimeMs)} />
           <Figure label="Running cost" value={`${formatDollars(tier.runningCostPerTurnCents * node.replicas)} a week`} />
           {setup > 0 && <Figure label="Setup when you advance" value={formatDollars(setup)} />}
@@ -175,9 +182,9 @@ function NodeDetails(
           {metrics ? (
             <>
               <Figure label="Received" value={formatRps(metrics.inboundRps)} />
-              <Figure label="Capacity" value={formatRps(metrics.capacityRps)} />
-              <Figure label="Utilization" value={formatUtilization(metrics.utilization)} />
-              <Figure label="p99" value={formatMs(metrics.p99Ms)} />
+              <Figure label="Capacity" term="capacity" value={formatRps(metrics.capacityRps)} />
+              <Figure label="Utilization" term="utilization" value={formatUtilization(metrics.utilization)} />
+              <Figure label="p99" term="p99" value={formatMs(metrics.p99Ms)} />
               {metrics.droppedRps > 0 && <Figure label="Turned away" value={formatRps(metrics.droppedRps)} />}
             </>
           ) : (
@@ -265,17 +272,20 @@ function Figures({ title, children }: { readonly title: string; readonly childre
       <h3 id={id} className="text-xs font-medium text-ink-bright">
         {title}
       </h3>
-      <dl aria-labelledby={id} className={FIGURES}>
-        {children}
-      </dl>
+      <TermGroup>
+        <dl aria-labelledby={id} className={FIGURES}>
+          {children}
+        </dl>
+      </TermGroup>
     </div>
   )
 }
 
-function Figure({ label, value }: { readonly label: string; readonly value: string }) {
+/** One labelled figure. A defined term's label opens its definition below the figures (M4a). */
+function Figure({ label, value, term }: { readonly label: string; readonly value: string; readonly term?: TermId }) {
   return (
     <>
-      <dt>{label}</dt>
+      <dt>{term ? <Term id={term}>{label}</Term> : label}</dt>
       <dd className="num text-right text-ink-bright">{value}</dd>
     </>
   )

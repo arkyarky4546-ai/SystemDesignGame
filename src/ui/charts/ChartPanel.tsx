@@ -1,8 +1,12 @@
 import { useId, useState, type ReactNode } from 'react'
+import { TermGroup, TermLabel } from '../components/Term'
+import type { TermId } from '../glossary'
 import { LineChart, type ChartPoint, type ChartTarget } from './LineChart'
 
 type ChartPanelProps = {
   readonly title: string
+  /** A defined term the title starts with, such as p99 in "p99 latency". Its words open the definition. */
+  readonly titleTerm?: TermId
   /** This week's value, formatted. */
   readonly value: string
   /** One line under the value: the target, or the change since last week. */
@@ -33,9 +37,9 @@ export function ChartPanel(props: ChartPanelProps) {
   return (
     <section aria-labelledby={headingId} className="flex min-w-0 flex-col gap-2 rounded border border-panel-line bg-panel-void p-3">
       <div className="flex items-start justify-between gap-2">
-        <div>
+        <TermGroup>
           <h3 id={headingId} className="text-sm font-medium text-ink-bright">
-            {title}
+            {props.titleTerm ? <TermLabel id={props.titleTerm} text={title} /> : title}
           </h3>
           <p className={`num text-xl ${props.overTarget ? 'text-fault' : 'text-ink-bright'}`}>
             {props.overTarget && <span aria-hidden="true">▲ </span>}
@@ -43,12 +47,12 @@ export function ChartPanel(props: ChartPanelProps) {
             {props.overTarget && <span className="sr-only">, over target</span>}
           </p>
           <p className="num text-xs">{props.note}</p>
-        </div>
+        </TermGroup>
         {/* The visible words start the accessible name, so voice control can still find the button. */}
         <button
           type="button"
           aria-label={`${view === 'chart' ? 'Show table' : 'Show chart'} for ${title}`}
-          className={BUTTON}
+          className={`${BUTTON} shrink-0`}
           onClick={() => setView((current) => (current === 'chart' ? 'table' : 'chart'))}
         >
           {view === 'chart' ? 'Show table' : 'Show chart'}
