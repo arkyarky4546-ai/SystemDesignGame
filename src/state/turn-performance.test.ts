@@ -1,37 +1,20 @@
 import { describe, expect, it } from 'vitest'
-import { createRun, planTurn, simulateTurn, type ComponentNode, type Edge, type RunState, type TurnInput } from '../engine'
-import { findLoadFinding } from './report'
+import { planTurn, simulateTurn, type TurnInput } from '../engine'
+import { chainRun } from '../engine/test-helpers'
 import { CONTENT_CATALOG } from './catalog'
+import { findLoadFinding } from './report'
 import { lastResolvedTick } from './selectors'
 
 // 01-ARCHITECTURE §8 and M4's acceptance: turn resolution under 16 ms for a 50-node
 // architecture. This measures everything computed between pressing Advance and rendering:
-// the turn, the report's findings, last week's metrics and next week's plan. The browser's
-// render of the result is measured separately (ADR-0036).
+// the turn, the report's findings, last week's metrics and next week's plan. React's commit
+// of the result is timed in ui/turn-render-performance.test.tsx, and a real browser's frame
+// in ADR-0036.
 
 const NODES = 50
 const FRAME_BUDGET_MS = 16
 const WARMUP_RUNS = 20
 const MEASURED_RUNS = 50
-
-/** ingress → 48 app servers in a chain → database, the largest shape the M1 resolver accepts. */
-export function chainRun(nodeCount: number): RunState {
-  const run = createRun({ seed: 2026, difficulty: 'junior' })
-  const apps = nodeCount - 2
-  const nodes: ComponentNode[] = [{ id: 'ingress', kind: 'ingress', replicas: 1, tier: 0, config: {}, position: { col: 0, row: 0 } }]
-  const edges: Edge[] = []
-  let previous = 'ingress'
-  for (let index = 0; index < apps; index++) {
-    const id = `app-${index}`
-    nodes.push({ id, kind: 'app-server', replicas: 1, tier: index % 4, config: { fanoutFactor: 1 }, position: { col: index % 8, row: 1 + Math.floor(index / 8) } })
-    edges.push({ from: previous, to: id })
-    previous = id
-  }
-  nodes.push({ id: 'db', kind: 'database', replicas: 1, tier: 3, config: {}, position: { col: 0, row: 2 + Math.floor(apps / 8) } })
-  edges.push({ from: previous, to: 'db' })
-  const architecture = { nodes, edges }
-  return { ...run, architecture, builtArchitecture: architecture }
-}
 
 function percentile(samples: readonly number[], fraction: number): number {
   const sorted = [...samples].sort((a, b) => a - b)
@@ -54,8 +37,7 @@ describe('turn resolution speed (M4 acceptance)', () => {
       return result.value
     }
 
-    const first = resolve()
-    expect(Object.keys(first.perNode)).toHaveLength(NODES - 1)
+    expect(Object.keys(resolve().perNode)).toHaveLength(NODES - 1)
     for (let index = 0; index < WARMUP_RUNS; index++) resolve()
     const timings = Array.from({ length: MEASURED_RUNS }, () => {
       const start = performance.now()
@@ -65,6 +47,6 @@ describe('turn resolution speed (M4 acceptance)', () => {
 
     // The 90th percentile rather than the maximum, so one garbage collection on a busy machine
     // can't fail the build. Typical timings are well under a millisecond.
-    expect(percentile(timings, 0.9)).toBeLessThan(FRAME_BUDGET_MS)
+    expect(percentile(timings, 0.9), `timings ${timings.map((ms) => ms.toFixed(3)).join(', ')}`).toBeLessThan(FRAME_BUDGET_MS)
   })
 })

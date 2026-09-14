@@ -69,6 +69,30 @@ export function playHeadless(options: {
   return results
 }
 
+/**
+ * A new Junior run whose architecture is ingress → a chain of app servers → database,
+ * `nodeCount` nodes in all. It's the largest shape the linear resolver accepts, so it's
+ * what turn-resolution timing measures. App server sizes cycle through the first four tiers.
+ */
+export function chainRun(nodeCount: number): RunState {
+  const run = createRun({ seed: 2026, difficulty: 'junior' })
+  const perRow = 8
+  const apps = nodeCount - 2
+  const nodes: ComponentNode[] = [{ ...ingressNode(), position: { col: 0, row: 0 } }]
+  const edges: Edge[] = []
+  let previous = 'ingress'
+  for (let index = 0; index < apps; index++) {
+    const id = `app-${index}`
+    nodes.push({ ...appNode(id), tier: index % 4, position: { col: index % perRow, row: 1 + Math.floor(index / perRow) } })
+    edges.push(edge(previous, id))
+    previous = id
+  }
+  nodes.push({ ...databaseNode('db'), tier: 3, position: { col: 0, row: 2 + Math.floor(apps / perRow) } })
+  edges.push(edge(previous, 'db'))
+  const architecture = { nodes, edges }
+  return { ...run, architecture, builtArchitecture: architecture }
+}
+
 // Shared fixtures for engine tests. The figures are chosen to hit exact utilizations, not
 // to represent game balance.
 
