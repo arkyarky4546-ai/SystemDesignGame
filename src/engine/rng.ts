@@ -27,6 +27,28 @@ export function rngForTurn(seed: number, turn: number): Rng {
   return createRng(fmix32((seed >>> 0) ^ fmix32((turn + 0x9e3779b9) >>> 0)))
 }
 
+const SQRT_3 = 1.7320508075688772
+
+/**
+ * Draws an approximately standard normal value, unitless: mean 0, standard deviation 1,
+ * bounded to ±2√3 ≈ ±3.46. Returns the value and the advanced generator (ADR-0023).
+ *
+ * It standardizes a sum of four uniform draws (Irwin–Hall). Box–Muller would need Math.log
+ * and Math.cos, which ECMAScript leaves implementation-approximated, so a turn could
+ * resolve differently in another browser. Plain arithmetic is bit-identical everywhere.
+ */
+export function nextNormal(rng: Rng): { readonly value: number; readonly rng: Rng } {
+  let current = rng
+  let sum = 0
+  for (let draw = 0; draw < 4; draw++) {
+    const next = nextFloat(current)
+    sum += next.value
+    current = next.rng
+  }
+  // Four uniforms on [0, 1) have mean 2 and variance 4/12 = 1/3.
+  return { value: (sum - 2) * SQRT_3, rng: current }
+}
+
 // MurmurHash3's 32-bit finalizer. It spreads every input bit across the output, so
 // neighboring seeds and turns produce unrelated streams.
 function fmix32(value: number): number {

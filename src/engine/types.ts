@@ -2,6 +2,10 @@
 // rps, latency in ms, fractions and utilization 0..1. Everything is readonly because
 // engine functions never modify their inputs.
 
+import type { Difficulty } from '../config/difficulty'
+
+export type { Difficulty }
+
 export type NodeId = string
 
 /** The request classes the engine resolves paths and metrics for (02-SIMULATION §4). */
@@ -75,6 +79,19 @@ export type TierStats = {
 }
 
 export type ComponentCatalog = { readonly [K in ResourceKind]: readonly TierStats[] }
+
+/** Per-tier prices: the cost half of `ComponentDef.tiers` (03-CONTENT-SCHEMA §5). */
+export type TierCosts = {
+  /** One-time cost per instance, charged on the first turn it runs, integer cents. */
+  readonly setupCostCents: number
+  /** Cost per instance per turn, integer cents. */
+  readonly runningCostPerTurnCents: number
+}
+
+export type TierDef = TierStats & TierCosts
+
+/** Performance and prices for every tier. Assignable to `ComponentCatalog`. */
+export type PricedCatalog = { readonly [K in ResourceKind]: readonly TierDef[] }
 
 export type TickInput = {
   readonly turn: number
@@ -150,9 +167,139 @@ export type InputError =
   | { readonly kind: 'unsupported-replicas'; readonly nodeId: NodeId; readonly replicas: number }
   | { readonly kind: 'unknown-tier'; readonly nodeId: NodeId; readonly tier: number }
   | { readonly kind: 'invalid-tier-stats'; readonly nodeId: NodeId }
+  | { readonly kind: 'invalid-tier-costs'; readonly nodeId: NodeId }
 
 export type TickError = TopologyError | InputError
 
 export type Result<T, E> =
   | { readonly ok: true; readonly value: T }
   | { readonly ok: false; readonly error: E }
+
+/** The part of a run that a rollback restores to the start of the act (00-GAME-DESIGN §8). */
+export type RunCheckpoint = {
+  /** Cash on hand, integer cents. */
+  readonly cashCents: number
+  /** Player reputation, 0..1 (02-SIMULATION §7). */
+  readonly reputation: number
+  /** The last resolved turn's workload. Before turn 1, the run's starting workload. */
+  readonly workload: Workload
+  /** What the next turn runs. The player edits this between turns. */
+  readonly architecture: Architecture
+  /** What ran last turn and is paid for. Setup costs are charged on the difference (ADR-0023). */
+  readonly builtArchitecture: Architecture
+  /** Current act, 1–5. Never decreases. */
+  readonly act: number
+  /** Whether this act's one investor bailout is still unused. */
+  readonly bailoutAvailable: boolean
+  /** Turns of bailout-slowed growth still to come. */
+  readonly growthPenaltyTurns: number
+}
+
+/** One playthrough, as saved and as advanced by `simulateTurn` (01-ARCHITECTURE §4). */
+export type RunState = RunCheckpoint & {
+  /** Run seed, unsigned 32-bit. Turn t draws from rngForTurn(seed, t). */
+  readonly seed: number
+  /** Turns resolved so far: 0 for a new run. Keeps counting through a rollback. */
+  readonly turn: number
+  /** The run as it stood when the current act began. */
+  readonly actStart: RunCheckpoint
+  /** Metrics for the most recent turns, oldest first. */
+  readonly history: readonly TurnSummary[]
+  /** Totals for turns that aged out of `history` (01-ARCHITECTURE §7). */
+  readonly archive: HistoryArchive
+}
+
+export type SimEvent =
+  | { readonly kind: 'act-started'; readonly act: number }
+  | { readonly kind: 'bailout'; readonly cashCents: number }
+  | { readonly kind: 'rollback'; readonly reason: 'bankruptcy' | 'churn'; readonly act: number }
+
+/** One turn's metrics as kept in a run's history. */
+export type TurnSummary = {
+  readonly turn: number
+  /** Mean traffic this turn, rps. */
+  readonly meanRps: number
+  /** Peak traffic this turn, rps. */
+  readonly peakRps: number
+  /** Active users this turn's traffic represents. */
+  readonly users: number
+  /** Service p99 at peak, ms. */
+  readonly p99Ms: number
+  /** Service error rate at peak, 0..1. */
+  readonly errorRate: number
+  /** Peak utilization per resource node, 0..BALANCE.queueing.maxUtilization, rounded to 1 / PERSISTENCE.utilizationScale. */
+  readonly utilization: Readonly<Record<NodeId, number>>
+  readonly revenueCents: number
+  /** Running plus bandwidth costs, cents. */
+  readonly costCents: number
+  readonly setupCostCents: number
+  readonly sloMet: boolean
+  /** Cash at the end of the turn, after any bailout or rollback, cents. */
+  readonly cashCents: number
+  /** Reputation at the end of the turn, after any bailout or rollback, 0..1. */
+  readonly reputation: number
+  readonly events: readonly SimEvent[]
+}
+
+/** Running totals for turns older than the history window. */
+export type HistoryArchive = {
+  readonly turns: number
+  readonly revenueCents: number
+  readonly costCents: number
+  readonly setupCostCents: number
+  readonly sloMetTurns: number
+  /** Most users in any archived turn. */
+  readonly peakUsers: number
+}
+
+export type TurnInput = {
+  /** Difficulty from settings. It may change between any two turns. */
+  readonly difficulty: Difficulty
+  readonly catalog: PricedCatalog
+}
+
+/** Service-wide figures at peak that SLOs, revenue and reputation are judged on (ADR-0023). */
+export type ServiceLevel = {
+  /** Highest p99 among request classes that carry traffic, ms. */
+  readonly p99Ms: number
+  /** Share of all requests dropped, 0..1. */
+  readonly errorRate: number
+}
+
+/** One turn's money (02-SIMULATION §6). All amounts integer cents. */
+export type EconomyResult = {
+  /** Mean traffic that was served rather than dropped, rps. */
+  readonly servedMeanRps: number
+  /** Revenue multiplier from latency, unitless. */
+  readonly qualityMultiplier: number
+  readonly revenueCents: number
+  /** Running plus bandwidth costs. */
+  readonly costCents: number
+  readonly setupCostCents: number
+  /** revenueCents − costCents − setupCostCents. */
+  readonly netCents: number
+  /** Cash after this turn, before any bailout or rollback. */
+  readonly cashCents: number
+  readonly breakdown: { readonly runningCents: number; readonly bandwidthCents: number }
+}
+
+export type ReputationResult = {
+  /** Reputation after this turn's SLO outcome, before any bailout or rollback, 0..1. */
+  readonly value: number
+  /** Change actually applied after clamping to 0..1. */
+  readonly delta: number
+  readonly sloMet: boolean
+  /** max(p99 / p99Target, errorRate / errorRateTarget), unitless. At least 1 when an SLO is missed. */
+  readonly severity: number
+}
+
+/** Everything one Advance produces (02-SIMULATION §9). */
+export type TurnResult = TickResult & {
+  readonly service: ServiceLevel
+  readonly economy: EconomyResult
+  readonly reputation: ReputationResult
+  /** Active users this turn's mean traffic represents. */
+  readonly users: number
+  readonly events: readonly SimEvent[]
+  readonly nextRun: RunState
+}
