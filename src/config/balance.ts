@@ -105,8 +105,15 @@ export const BALANCE = {
     churnFloorOfActStart: 0.1,
   },
 
+  status: {
+    /** Utilization from which a node shows pressure, 0..1 (05-UI-DESIGN §2: amber from 0.75). */
+    warningUtilization: 0.75,
+    /** Utilization from which a node shows as saturated, 0..1 (05-UI-DESIGN §2: red above 0.9). */
+    saturatedUtilization: 0.9,
+  },
+
   starter: {
-    /** Database queries per request on a new run's app server, unitless. Placeholder. */
+    /** Database queries per request on a newly placed app server, the starter included. Unitless. Placeholder. */
     appFanoutFactor: 1,
   },
 } as const

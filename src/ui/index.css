@@ -1,1 +1,66 @@
 @import "tailwindcss";
+@import "@fontsource/ibm-plex-sans/latin-400.css";
+@import "@fontsource/ibm-plex-sans/latin-500.css";
+@import "@fontsource/ibm-plex-sans/latin-600.css";
+@import "@fontsource/ibm-plex-mono/latin-400.css";
+@import "@fontsource/ibm-plex-mono/latin-500.css";
+
+/* Tokens from 05-UI-DESIGN §2. Load is the only saturated color; chrome stays neutral. */
+@theme {
+  --color-panel-void: #0d1117;
+  --color-panel-raised: #161b22;
+  --color-panel-line: #30363d;
+  --color-ink: #c9d1d9;
+  --color-ink-bright: #f0f6fc;
+  --color-flow: #3fb6c8;
+  --color-pressure: #e3a008;
+  --color-fault: #da3633;
+  --color-ledger: #57ab5a;
+
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace;
+
+  /* The type scale is 12 / 14 / 16 / 20 / 28 / 40. Tailwind's defaults already cover the first four. */
+  --text-2xl: 1.75rem;
+  --text-4xl: 2.5rem;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--color-panel-void);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+/* Every number is monospaced with tabular figures, so values don't jitter as they change. */
+.num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Focus rings that survive the reset (01-ARCHITECTURE §9). SVG nodes draw their own ring. */
+:focus-visible {
+  outline: 2px solid var(--color-flow);
+  outline-offset: 2px;
+}
+
+/* Motion is reserved for turn resolution (M4); everywhere else changes are instant. This
+   also covers the OS setting and the in-game override. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0s !important;
+    transition-duration: 0s !important;
+  }
+}
+
+[data-reduced-motion="true"] *,
+[data-reduced-motion="true"] *::before,
+[data-reduced-motion="true"] *::after {
+  animation-duration: 0s !important;
+  transition-duration: 0s !important;
+}
