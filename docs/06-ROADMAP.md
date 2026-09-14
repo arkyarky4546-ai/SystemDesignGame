@@ -10,7 +10,7 @@ milestone technically passed. These are placed where a wrong decision compounds.
 
 ---
 
-## [ ] M0 — Skeleton
+## [x] M0 — Skeleton
 
 **Read:** `CLAUDE.md`, `01-ARCHITECTURE.md`
 
