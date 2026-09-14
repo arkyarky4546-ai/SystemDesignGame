@@ -420,3 +420,85 @@ strippable.
 - Type stripping forbids enums, namespaces and parameter properties in `tools/`,
   and relative imports there must include the `.ts` extension.
 - `review.ts` is a provisional name; M5b may rename it.
+
+---
+
+## ADR-0019 — Functional mulberry32 with per-turn streams
+2026-09-14 · Status: accepted
+
+**Context.** `02-SIMULATION.md` §2 requires mulberry32 or xorshift128, a run seed
+stored in `RunState`, and per-turn streams derived from `hash(seed, t)`. `CLAUDE.md`
+requires engine code to be pure with no mutation, but §5.7's pseudocode draws with a
+stateful `rng.next()`.
+
+**Decision.** Use mulberry32 over a 32-bit state, exposed functionally:
+- `nextFloat(rng)` returns `{ value, rng }` and never modifies the generator it was
+  given.
+- `rngForTurn(seed, turn)` seeds a fresh generator from
+  `fmix32(seed ^ fmix32(turn + 0x9e3779b9))`, using MurmurHash3's 32-bit finalizer. A
+  draw added in one turn therefore cannot shift another turn.
+- Seeds are coerced to unsigned 32-bit.
+
+**Alternatives.**
+- xorshift128: four times the state for no benefit at this scale.
+- A stateful closure (`rng.next()`): matches the pseudocode, but hides mutation
+  inside the engine and makes a replayed turn depend on call order across functions.
+- Deriving turn `t` by advancing one run-wide stream `t` steps: inserting a draw in
+  turn 5 would shift turn 6, which §2 forbids.
+
+**Consequences.** Callers must thread the returned generator through every draw.
+Forgetting to repeats a value, which at least reproduces. mulberry32's period is
+2^32: ample for per-turn streams, and the game needs no cryptographic randomness.
+
+---
+
+## ADR-0020 — M1 tick contract: linear only, typed errors, catalog as input
+2026-09-14 · Status: accepted
+
+**Context.** M1 builds the resolver for ingress → server → database only, before the
+economy (M2), failures, replicas, caches or any content exist. `02-SIMULATION.md` §9's
+`TickResult` includes fields no M1 phase computes, and a few details the resolver needs
+aren't specified anywhere.
+
+**Decision.**
+- **Signature.** `simulateTick(input)` takes `{ turn, architecture, workload, catalog }`
+  and returns `{ ok: true, value: TickResult } | { ok: false, error: TickError }`.
+  Nothing throws.
+- **Result fields.** M1's `TickResult` is the part of §9 that M1 computes: `turn`,
+  `workload`, `perNode`, and `perClass` with `p50Ms`, `p99Ms` and `errorRate`. It adds
+  `peakRps`, plus per-node `servedRps` and `meanMs`. `status`, `bottleneck`,
+  `staleRate`, `economy`, `reputation`, `events` and `nextRun` arrive with the
+  milestones that compute them; their thresholds don't exist yet.
+- **Rejected shapes.** Anything beyond a linear chain gets a typed error instead of a
+  result:
+  - branching or merging edges, and nodes off the path (`unsupported-topology`)
+  - `replicas !== 1` (`unsupported-replicas`), because §5.4 gives database replicas
+    different semantics from multiplying capacity
+- **Ingress.** Ingress is the traffic source: it has no capacity or latency and isn't
+  in `perNode`.
+- **Component figures.** Per-tier `capacityRps` and `serviceTimeMs` are passed in as
+  `catalog`, mirroring `ComponentDef.tiers`, so M1 introduces no game numbers. The only
+  constant added to `balance.ts` is §5.2's `U_MAX` (`queueing.maxUtilization`, 0.995).
+- **Fanout.** `fanoutFactor` is app-server node config.
+- **End-to-end error rate.** §5.2 doesn't define it for a path. Each query's drop is
+  treated as independent, so a class's success fraction is the product over hops of
+  `(1 − hopDropFraction) ^ queriesPerRequest`, where `queriesPerRequest` is the product
+  of the upstream fanouts.
+- **Latency.** p50 and p99 per class are summed once per hop, regardless of fanout, as
+  §5.2 states (ADR-0009).
+
+**Alternatives.**
+- Throwing typed errors: exceptions aren't part of a function's type, so callers
+  could forget to handle one. The union forces them to.
+- Resolving branches by splitting load evenly: produces numbers §5.1's
+  load-balancer rules would later contradict.
+- Summing per-hop drop fractions: can exceed 1 and double-counts.
+- Reading component figures from `balance.ts`: would mean inventing tier numbers
+  that M7 is meant to balance.
+
+**Consequences.**
+- Later milestones widen the topology checks and add fields to `TickResult`.
+- Every request class reports identical metrics until topologies can route classes
+  differently.
+- The independence assumption, and summing latency once per hop despite fanout, are
+  review points for the M1 checkpoint.
