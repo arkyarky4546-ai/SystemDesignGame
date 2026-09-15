@@ -1447,3 +1447,59 @@ passed, with the timing files reported last.
 - A new test that asserts a wall-clock budget must be added to `TIMING_TESTS`.
 - The timing files still share the machine with anything else that's running, as ADR-0036 noted
   for CI.
+
+---
+
+## ADR-0040 — One playable concept as M4b, and a bonus for the first pass
+2026-09-14 · Status: accepted · Amends `00-GAME-DESIGN.md` §4
+
+**Context.** At the M4a checkpoint the human found that the game "runs ok", but there's no way to
+answer system-design questions and learn, which they called the main part. They also wanted
+answering questions to earn money. Under the roadmap:
+- the first check a player can take arrives in M6, after M5, M5a and M5b
+- `00-GAME-DESIGN.md` §4 keeps money and knowledge separate: passing a check unlocks components,
+  and money comes only from serving traffic
+
+The human chose from three reward models and three orderings.
+
+**Decision.**
+- **Reward.** Passing a concept's check unlocks what it gates, as before. The first pass of each
+  concept also pays a one-time cash bonus into the current run.
+  - A retake after passing pays nothing, and neither does practice mode (M6), so questions
+    can't be farmed.
+  - Money still can't unlock a concept.
+  - The amount is a `BALANCE` placeholder in integer cents, paid by a pure engine function and
+    tuned in M9.
+  - Whether a concept has paid is read from `knowledge.checkHistory`, which saves already keep,
+    so the save format doesn't change.
+- **Order.** M4b, before M5, makes one concept playable end to end: `capacity-and-utilization`
+  (`04-CURRICULUM.md` Tier 1).
+  - It has a short lesson and one hand-written batch of 10–15 questions, all `needs-review`.
+  - App server sizes above Small stay locked until its check is passed. The curriculum says the
+    concept unlocks server tier upgrades. Database sizes stay open until `vertical-scaling`
+    exists.
+  - A node already at a locked size, from a run saved before M4b, keeps running at that size.
+  - Its prerequisite, `latency-and-throughput`, doesn't exist yet, so it's waived for now.
+  - M4b writes the parts of `03-CONTENT-SCHEMA.md` it needs as TypeScript types. M5 moves them
+    onto the Zod schema and validator, M6 generalizes the check flow, and M7 writes the rest of
+    Tier 1.
+
+**Alternatives.**
+- Unlocks only, as designed: the human wanted learning to pay in money too.
+- Cash for every correct answer, practice included: questions become a money farm that can
+  replace running the architecture, which `00-GAME-DESIGN.md` §1 argues against.
+- The roadmap's order: questions become playable about four milestones from now.
+- M5 then M6, deferring the generator and review tool: two milestones, but M6's draw rules
+  assume derived questions exist.
+
+**Consequences.**
+- Knowledge outlives runs, so a later run gets no bonus for a concept already passed.
+- A rollback restores the cash its act started with, so a bonus paid during that act is lost.
+  The unlock stays.
+- M4b's check draws only authored questions. `09-QUESTION-BANK.md` §5's mix of authored, derived
+  and diagnose slots starts in M6, once derived questions exist.
+- There's no review tool until M5b, so the human reviews M4b's lesson and questions in their
+  source file at M4b's checkpoint.
+- The curriculum's split between `capacity-and-utilization` (server tier upgrades) and
+  `vertical-scaling` (component tier 1→3 upgrades) is read here as app servers first, databases
+  later. The human confirms that reading at M4b's checkpoint.
