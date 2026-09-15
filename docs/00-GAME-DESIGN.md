@@ -98,6 +98,11 @@ mashes "buy more servers" hits a wall where the bottleneck is the database and
 more servers actively make it worse, and the only way through is to understand
 what a read replica does.
 
+**The first pass pays.** Passing a concept's check for the first time also pays a
+one-time cash bonus into the current run (ADR-0040). A retake after passing and
+practice mode pay nothing, so knowledge can't be farmed for money, and money
+still can't buy a concept.
+
 **Failing a check is not punished.** You can retake it immediately. Questions
 are drawn from a pool so retakes aren't pure memorization. Nothing is lost but
 in-game time, and even that is optional (see difficulty).

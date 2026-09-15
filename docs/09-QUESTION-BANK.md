@@ -306,7 +306,7 @@ Quality degrades measurably at volume in a single pass, and a rejected batch of
 
 Since the derived bank is large and cheap, the library gets a **drill mode**:
 pick a concept, get questions until you stop, no gating, no pass threshold, no
-effect on unlocks. Draws from the full pool with missed-question weighting.
+effect on unlocks or cash (ADR-0040). Draws from the full pool with missed-question weighting.
 
 This is nearly free — the bank and the draw logic already exist — and it's the
 feature that makes the project useful as an exam-prep tool on a phone, not just
