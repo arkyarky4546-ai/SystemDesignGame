@@ -162,6 +162,49 @@ and M7, and M10 keeps the rest of onboarding.
 screen. Is the loop interesting with no content in it? If it isn't, stop and redesign before
 M5.
 
+**Checkpoint outcome, 2026-09-14.** The loop runs, but with no questions there's nothing to learn,
+and learning is the point. M4b was added before M5 to make one concept playable, and a first pass
+now pays a one-time bonus (ADR-0040).
+
+---
+
+## [ ] M4b — First playable concept
+
+**Read:** `03-CONTENT-SCHEMA.md` §1–4, `09-QUESTION-BANK.md` §2.2, §5, §8, `04-CURRICULUM.md`
+Tier 1, `00-GAME-DESIGN.md` §4, §6, `05-UI-DESIGN.md` §6–8, `02-SIMULATION.md` §5.2, §6, ADR-0040
+
+Added at the M4a checkpoint. One concept, `capacity-and-utilization`, playable end to end: read
+the lesson, take the check, unlock bigger app servers, collect the first-pass bonus. It's the
+smallest version of M6's learning flow, built so M5–M7 extend it rather than replace it.
+
+**Acceptance:**
+- App server sizes above Small are locked on a new run. The inspector names the concept that
+  unlocks them and opens its lesson, with the mouse and with the keyboard alone.
+- The lesson follows `03-CONTENT-SCHEMA.md` §2's writing rules: core prose of 250–450 words, key
+  numbers, and at least one misconception. Every claim about the model matches
+  `02-SIMULATION.md` §5.2.
+- One batch of 10–15 authored questions, mixing depths 1–3 and including numeric capacity
+  questions. Every wrong option has a `whyWrong` naming a specific misunderstanding. Each
+  difficulty's eligible pool is at least twice the draw count, asserted. Every item is
+  `needs-review`, or `needs-expert-review` where confidence isn't full.
+- The check follows `05-UI-DESIGN.md` §7: one question at a time, then the explanation and the
+  chosen option's `whyWrong` before moving on, then the score against the difficulty's threshold
+  with Reread the lesson and Retake. Depths and thresholds match `03-CONTENT-SCHEMA.md` §4.
+- A retake draws a different set, with previously missed questions weighted up. The draw is
+  seeded from the attempt, so replaying an attempt gives the same questions.
+- Passing unlocks the sizes permanently, across runs. The first pass pays the bonus into the
+  run's cash, once per concept, through an engine function, in integer cents from a `BALANCE`
+  placeholder. A retake after passing pays nothing. The status bar and the next weekly report
+  show the bonus.
+- A node already at a locked size, from a run saved before M4b, keeps running at it.
+- Saves don't change version, and no dependency is added.
+- All new copy, the lesson and every question are listed in the session summary for review.
+
+**🔶 Human checkpoint.** From a new run, reach the limit of a Small app server, learn the concept,
+pass the check and upgrade. Is answering questions the part that makes the game worth playing?
+Then read the lesson and every question in their source file. This is the first content you'll
+learn from.
+
 ---
 
 ## [ ] M5 — Content pipeline
@@ -169,8 +212,9 @@ M5.
 **Read:** `03-CONTENT-SCHEMA.md` in full
 
 Zod schemas, the content loader, `tools/validate-content.ts` implementing every
-check in §8, and **two hand-written sample concepts** (`capacity-and-utilization`
-and `percentiles`) proving the schema survives contact with real content.
+check in §8, and **two sample concepts** proving the schema survives contact with
+real content: `capacity-and-utilization`, moved from M4b's types onto the schema,
+and a hand-written `percentiles`.
 
 **Acceptance:**
 - `npm run validate` implements all of §8, including the expensive one: running
