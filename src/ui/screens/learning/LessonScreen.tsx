@@ -1,12 +1,19 @@
 import { useEffect, useId, useRef } from 'react'
 import { CONCEPTS } from '../../../content/concepts'
 import type { Block, ConceptId } from '../../../content/schema'
+import type { PricedCatalog } from '../../../engine'
 import { LESSON } from './learning-copy'
+import { LessonDiagram } from './LessonDiagram'
+import { DemoWidget } from './SaturationDemo'
 
 type LessonScreenProps = {
   readonly conceptId: ConceptId
+  /** The tiers a demo resolves against, so its slider shows the game's own figures. */
+  readonly catalog: PricedCatalog
   readonly onTakeCheck: () => void
   readonly onClose: () => void
+  /** Offered when there are questions to drill without a check (09-QUESTION-BANK §9). */
+  readonly onPractice?: () => void
 }
 
 const PRIMARY = 'rounded bg-flow px-4 py-2 text-sm font-medium text-panel-void hover:bg-ink-bright'
@@ -17,7 +24,7 @@ const SECONDARY = 'rounded border border-panel-line px-3 py-2 text-sm text-ink-b
  * and a single primary action at the bottom. Reading needs quiet, so nothing else competes
  * with the prose. `diagram` and `demo` blocks arrive in M6 with the renderers for them.
  */
-export function LessonScreen({ conceptId, onTakeCheck, onClose }: LessonScreenProps) {
+export function LessonScreen({ conceptId, catalog, onTakeCheck, onClose, onPractice }: LessonScreenProps) {
   const concept = CONCEPTS[conceptId]
   const headingId = useId()
   const heading = useRef<HTMLHeadingElement | null>(null)
@@ -38,7 +45,7 @@ export function LessonScreen({ conceptId, onTakeCheck, onClose }: LessonScreenPr
 
         <div className="flex flex-col gap-4">
           {concept.lesson.core.map((block, index) => (
-            <LessonBlock key={index} block={block} />
+            <LessonBlock key={index} block={block} catalog={catalog} />
           ))}
         </div>
 
@@ -73,9 +80,16 @@ export function LessonScreen({ conceptId, onTakeCheck, onClose }: LessonScreenPr
         )}
 
         <div className="flex flex-col gap-2 border-t border-panel-line pt-4">
-          <button type="button" className={`${PRIMARY} self-start`} onClick={onTakeCheck}>
-            {LESSON.takeCheck}
-          </button>
+          <div className="flex flex-wrap items-center gap-2">
+            <button type="button" className={PRIMARY} onClick={onTakeCheck}>
+              {LESSON.takeCheck}
+            </button>
+            {onPractice && (
+              <button type="button" className={SECONDARY} onClick={onPractice}>
+                {LESSON.practise}
+              </button>
+            )}
+          </div>
           <p className="text-xs">{LESSON.checkNote}</p>
         </div>
       </div>
@@ -83,7 +97,7 @@ export function LessonScreen({ conceptId, onTakeCheck, onClose }: LessonScreenPr
   )
 }
 
-function LessonBlock({ block }: { readonly block: Block }) {
+function LessonBlock({ block, catalog }: { readonly block: Block; readonly catalog: PricedCatalog }) {
   switch (block.kind) {
     case 'prose':
       return <p className="text-base leading-relaxed">{block.text}</p>
@@ -102,5 +116,9 @@ function LessonBlock({ block }: { readonly block: Block }) {
           {block.text}
         </aside>
       )
+    case 'diagram':
+      return <LessonDiagram architecture={block.architecture} caption={block.caption} />
+    case 'demo':
+      return <DemoWidget demoId={block.demoId} catalog={catalog} />
   }
 }

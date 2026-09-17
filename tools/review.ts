@@ -6,7 +6,7 @@ import type * as Bank from './bank'
 import type * as BankFiles from './bank-files'
 import type * as Queue from './review-queue'
 import { withModules, type LoadModule } from './vite-modules.ts'
-import type { Concept, ConceptId, Question, QuestionTemplate } from '../src/content/schema'
+import type { Block, Concept, ConceptId, Question, QuestionTemplate } from '../src/content/schema'
 import type { ContentSource } from '../src/content/validate'
 
 // `npm run review` (09-QUESTION-BANK §8). Local only: it lives in tools/, nothing under src/
@@ -154,6 +154,20 @@ function render(item: Queue.ReviewItem, index: number, state: Snapshot) {
   process.stdout.write(`${KEYS}\n> `)
 }
 
+function blockLine(block: Block): string {
+  switch (block.kind) {
+    case 'prose':
+    case 'callout':
+      return block.text
+    case 'formula':
+      return `${block.formula}\n    ${block.explanation}`
+    case 'diagram':
+      return `[diagram: ${block.architecture.nodes.map((node) => node.kind).join(' → ')}] ${block.caption}`
+    case 'demo':
+      return `[demo: ${block.demoId}]`
+  }
+}
+
 function renderQuestion(question: Question, indent: string) {
   console.log(`\n${indent}${question.prompt}`)
   if (question.kind.type === 'numeric') {
@@ -180,10 +194,7 @@ function showLesson(item: Queue.ReviewItem, concepts: readonly Concept[]) {
   const concept = concepts.find((each) => each.id === item.conceptId)
   if (!concept) return
   console.log(`\n  ── ${concept.title} ──`)
-  for (const block of concept.lesson.core) {
-    if (block.kind === 'formula') console.log(`  ${block.formula}\n    ${block.explanation}\n`)
-    else console.log(`  ${block.text}\n`)
-  }
+  for (const block of concept.lesson.core) console.log(`  ${blockLine(block)}\n`)
   for (const fact of concept.lesson.keyNumbers) console.log(`  · ${fact.label}: ${fact.value}`)
   process.stdout.write(`${KEYS}\n> `)
 }

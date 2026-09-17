@@ -1,9 +1,12 @@
 import { useId, useRef, type PointerEvent } from 'react'
 import { COMPONENT_DEFS } from '../../../content/components'
-import { COMPONENT_KINDS, type ComponentKind } from '../../../content/schema'
-import type { PricedCatalog } from '../../../engine'
+import { CONCEPTS } from '../../../content/concepts'
+import { COMPONENT_KINDS, type ComponentDef, type ComponentKind, type ConceptId } from '../../../content/schema'
+import { hasPassed, type Knowledge, type PricedCatalog } from '../../../engine'
+import { lockedTiers } from '../../../state/unlocks'
 import { formatDollars } from '../../format'
 import { capturePointer } from '../../pointer-capture'
+import { LOCKED, lockedSizesLine } from '../learning/learning-copy'
 
 type ComponentPaletteProps = {
   /** Tier prices, from the same catalog the turns resolve against. */
@@ -12,27 +15,47 @@ type ComponentPaletteProps = {
   readonly onDrop: (kind: ComponentKind, client: { clientX: number; clientY: number }) => void
   /** Placed without a pointer: next to the selection, or in the first free cell. */
   readonly onPlace: (kind: ComponentKind) => void
+  /** What the player has learned. A component or a size a concept still gates can't be placed. */
+  readonly knowledge: Knowledge
+  /** Opens the lesson a locked card names. */
+  readonly onOpenConcept: (conceptId: ConceptId) => void
   /** Keeps the heading for screen readers only, where a surrounding sheet already shows it. */
   readonly headingHidden?: boolean
+  /** The component definitions to show. Injectable, so a test can render a gated kind. */
+  readonly defs?: Readonly<Record<ComponentKind, ComponentDef>>
 }
 
 // Screen pixels a press must travel before it counts as a drag.
 const DRAG_THRESHOLD_PX = 5
 
+const LINK = 'underline decoration-flow decoration-dotted underline-offset-4 hover:text-ink-bright'
+
 type Drag = { kind: ComponentKind; pointerId: number; startX: number; startY: number; dragging: boolean }
 
 /**
- * The catalog (05-UI-DESIGN §4): every component the player can place, with what its
- * smallest size costs. Locked components and their gating concepts arrive with concepts in
- * M6. Dragging follows the pointer with a ghost moved directly in the DOM. A click or Enter
- * places the component without a drag.
+ * The catalog (05-UI-DESIGN §4): every component the player can place, with what its smallest
+ * size costs. A component a concept still gates shows as a card naming that concept, with its
+ * lesson one press away; a component whose larger sizes are gated says which sizes and by what
+ * (00-GAME-DESIGN §4). You cannot buy your way past a concept, so the catalog says so rather
+ * than hiding what exists.
+ *
+ * Dragging follows the pointer with a ghost moved directly in the DOM. A click or Enter places
+ * the component without a drag.
  */
-export function ComponentPalette({ catalog, onDrop, onPlace, headingHidden = false }: ComponentPaletteProps) {
+export function ComponentPalette({
+  catalog,
+  onDrop,
+  onPlace,
+  knowledge,
+  onOpenConcept,
+  headingHidden = false,
+  defs = COMPONENT_DEFS,
+}: ComponentPaletteProps) {
   const id = useId()
   const drag = useRef<Drag | null>(null)
   const ghost = useRef<HTMLDivElement | null>(null)
   const suppressClick = useRef(false)
-  const placeable = COMPONENT_KINDS.map((kind) => COMPONENT_DEFS[kind]).filter((def) => def.placeable)
+  const placeable = COMPONENT_KINDS.map((kind) => defs[kind]).filter((def) => def.placeable)
 
   const moveGhost = (event: PointerEvent<HTMLButtonElement>) => {
     if (ghost.current) ghost.current.style.transform = `translate(${event.clientX + 12}px, ${event.clientY + 12}px)`
@@ -81,6 +104,22 @@ export function ComponentPalette({ catalog, onDrop, onPlace, headingHidden = fal
         {placeable.map((def) => {
           const smallest = def.kind === 'ingress' ? undefined : catalog[def.kind][0]
           const priceId = `${id}-${def.kind}-price`
+          const gatedBy = def.gatedBy !== undefined && !hasPassed(knowledge, def.gatedBy) ? def.gatedBy : null
+          if (gatedBy) {
+            return (
+              <li key={def.kind} className="w-full rounded border border-dashed border-panel-line px-3 py-2 text-sm">
+                <p className="text-ink-bright">{def.displayName}</p>
+                <p className="mt-1 text-xs leading-relaxed">
+                  {LOCKED.componentLine(CONCEPTS[gatedBy].title)}{' '}
+                  <button type="button" className={LINK} onClick={() => onOpenConcept(gatedBy)}>
+                    {LOCKED.openLesson}
+                  </button>
+                </p>
+              </li>
+            )
+          }
+          const locked = lockedTiers(knowledge, def.kind)
+          const lockedConcept = locked[0]?.gatedBy
           return (
             <li key={def.kind}>
               <button
@@ -107,6 +146,17 @@ export function ComponentPalette({ catalog, onDrop, onPlace, headingHidden = fal
                   </span>
                 )}
               </button>
+              {lockedConcept && (
+                <p className="mt-1 text-xs leading-relaxed">
+                  {lockedSizesLine(
+                    locked.map((tier) => tier.label),
+                    CONCEPTS[lockedConcept].title,
+                  )}{' '}
+                  <button type="button" className={LINK} onClick={() => onOpenConcept(lockedConcept)}>
+                    {LOCKED.openLesson}
+                  </button>
+                </p>
+              )}
             </li>
           )
         })}

@@ -126,20 +126,20 @@ describe('M4b: one playable concept', () => {
       expect(option.textContent).toContain('locked')
     }
 
-    expect(screen.getByText(/Medium, Large and Extra large need Capacity, utilization, and the cliff\./)).toBeTruthy()
+    expect(within(inspector()).getByText(/Medium, Large and Extra large need Capacity, utilization, and the cliff\./)).toBeTruthy()
   })
 
   it('opens the lesson from the inspector with the mouse', async () => {
     const { user } = setup()
     await selectAppServer(user)
-    await user.click(screen.getByRole('button', { name: 'Open the lesson' }))
+    await user.click(within(inspector()).getByRole('button', { name: 'Open the lesson' }))
     expect(screen.getByRole('heading', { name: CONCEPT.title })).toBeTruthy()
   })
 
   it('opens the lesson from the inspector with the keyboard alone', async () => {
     const { user } = setup()
     await selectAppServer(user)
-    screen.getByRole('button', { name: 'Open the lesson' }).focus()
+    within(inspector()).getByRole('button', { name: 'Open the lesson' }).focus()
     await user.keyboard('{Enter}')
     expect(screen.getByRole('heading', { name: CONCEPT.title })).toBeTruthy()
   })
@@ -147,7 +147,7 @@ describe('M4b: one playable concept', () => {
   it('shows the lesson’s prose, key numbers and misconceptions, then offers the check', async () => {
     const { user } = setup()
     await selectAppServer(user)
-    await user.click(screen.getByRole('button', { name: 'Open the lesson' }))
+    await user.click(within(inspector()).getByRole('button', { name: 'Open the lesson' }))
 
     for (const block of CONCEPT.lesson.core) {
       if (block.kind === 'prose' || block.kind === 'callout') expect(screen.getByText(block.text)).toBeTruthy()
@@ -160,7 +160,7 @@ describe('M4b: one playable concept', () => {
   it('asks one question at a time and shows the chosen option’s whyWrong before moving on', async () => {
     const { user } = setup()
     await selectAppServer(user)
-    await user.click(screen.getByRole('button', { name: 'Open the lesson' }))
+    await user.click(within(inspector()).getByRole('button', { name: 'Open the lesson' }))
     await user.click(screen.getByRole('button', { name: 'Take the check' }))
 
     const [first] = drawnQuestions(1)
@@ -191,7 +191,7 @@ describe('M4b: one playable concept', () => {
   it('fails below the threshold and offers Reread the lesson and Retake', async () => {
     const { user, store } = setup()
     await selectAppServer(user)
-    await user.click(screen.getByRole('button', { name: 'Open the lesson' }))
+    await user.click(within(inspector()).getByRole('button', { name: 'Open the lesson' }))
     await user.click(screen.getByRole('button', { name: 'Take the check' }))
     await takeCheck(user, 1, false)
 
@@ -217,7 +217,7 @@ describe('M4b: one playable concept', () => {
     const startingCash = run().cashCents
 
     await selectAppServer(user)
-    await user.click(screen.getByRole('button', { name: 'Open the lesson' }))
+    await user.click(within(inspector()).getByRole('button', { name: 'Open the lesson' }))
     await user.click(screen.getByRole('button', { name: 'Take the check' }))
     await takeCheck(user, 1, true)
 
@@ -251,7 +251,7 @@ describe('M4b: one playable concept', () => {
   it('pays nothing for a retake after passing, and keeps the unlock', async () => {
     const { user, store, run } = setup()
     await selectAppServer(user)
-    await user.click(screen.getByRole('button', { name: 'Open the lesson' }))
+    await user.click(within(inspector()).getByRole('button', { name: 'Open the lesson' }))
     await user.click(screen.getByRole('button', { name: 'Take the check' }))
     await takeCheck(user, 1, true)
 

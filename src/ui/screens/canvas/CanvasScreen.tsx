@@ -105,6 +105,8 @@ export function CanvasScreen({ store, playback = null, busy = false, onAdvance, 
   if (!run || !plan || !forecast) return <p className="p-4 text-sm">No run in progress.</p>
   const architecture = run.architecture
 
+  const openConcept = (conceptId: ConceptId) => store.getState().openLesson(conceptId)
+
   const place = (kind: ComponentKind, cell: { col: number; row: number }) => {
     const placed = placeNode(architecture, kind, cell)
     if (!placed.ok) {
@@ -159,9 +161,10 @@ export function CanvasScreen({ store, playback = null, busy = false, onAdvance, 
     onSelect: setSelection,
     onMessage: setMessage,
     knowledge,
-    onOpenConcept: (conceptId: ConceptId) => store.getState().openLesson(conceptId),
+    onOpenConcept: openConcept,
   }
-  const palette = <ComponentPalette catalog={catalog} onDrop={onDrop} onPlace={onPlace} />
+  const paletteProps = { catalog, onDrop, onPlace, knowledge, onOpenConcept: openConcept }
+  const palette = <ComponentPalette {...paletteProps} />
   const inspector = <NodeInspector {...inspectorProps} />
 
   return (
@@ -209,7 +212,7 @@ export function CanvasScreen({ store, playback = null, busy = false, onAdvance, 
             <details open>
               <summary className={PANEL_HEADING}>Catalog</summary>
               <div className="px-4 pb-4">
-                <ComponentPalette catalog={catalog} onDrop={onDrop} onPlace={onPlace} headingHidden />
+                <ComponentPalette {...paletteProps} headingHidden />
               </div>
             </details>
             <details open className="border-t border-panel-line">

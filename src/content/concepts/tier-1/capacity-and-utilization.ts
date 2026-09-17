@@ -21,7 +21,7 @@ export const capacityAndUtilization = {
     core: [
       {
         kind: 'prose',
-        text: 'Your app server is turning requests away and nothing about it changed. It was fine last week. Traffic grew by a fifth, you added nothing and removed nothing, and now the weekly report shows p99 in the seconds and a sixth of your users getting an error. Nothing broke. You ran out of headroom, and the last stretch of headroom is worth far more than the first.',
+        text: 'Your app server is turning requests away and nothing about it changed. It was fine last week. Traffic grew by a fifth, and now the weekly report shows p99 in the seconds and a sixth of your users getting an error. Nothing broke. You ran out of headroom, and the last stretch of it is worth far more than the first.',
       },
       {
         kind: 'formula',
@@ -42,6 +42,22 @@ export const capacityAndUtilization = {
       {
         kind: 'prose',
         text: 'Read that as a curve rather than a formula. At 50% utilization a request takes twice its service time. At 90% it takes ten times. At 99% it takes a hundred times. The first half of your capacity is nearly free; the last few percent are where the latency your users actually feel gets decided. Percentiles make it sharper still: response times are spread exponentially around W, so p99 is about 4.6 times the mean. A component with a 12 ms service time running at 90% has a mean of 120 ms and a p99 of about 553 ms.',
+      },
+      { kind: 'demo', demoId: 'saturation' },
+      {
+        kind: 'diagram',
+        architecture: {
+          nodes: [
+            { id: 'ingress', kind: 'ingress', tier: 0 },
+            { id: 'app', kind: 'app-server', tier: 0 },
+            { id: 'db', kind: 'database', tier: 0 },
+          ],
+          edges: [
+            { from: 'ingress', to: 'app' },
+            { from: 'app', to: 'db' },
+          ],
+        },
+        caption: 'Every request crosses both. One the app server turns away never reaches the database.',
       },
       {
         kind: 'callout',

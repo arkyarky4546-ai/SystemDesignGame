@@ -271,7 +271,7 @@ collapses. Fix it now.
 
 ---
 
-## [ ] M6 — Learning flow
+## [x] M6 — Learning flow
 
 **Read:** `05-UI-DESIGN.md` §6–7, `00-GAME-DESIGN.md` §4, §6, `03-CONTENT-SCHEMA.md` §4, §7, `09-QUESTION-BANK.md` §5, §9
 

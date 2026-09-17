@@ -6,6 +6,7 @@ import { CONCEPTS } from './concepts'
 
 export { COMPONENT_DEFS } from './components'
 export { CONCEPTS } from './concepts'
+export { DEMOS } from './demos'
 export { loadQuestions } from './questions'
 export * from './schema'
 

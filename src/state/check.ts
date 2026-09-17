@@ -1,6 +1,6 @@
 import { BALANCE } from '../config/balance'
 import type { Difficulty } from '../config/difficulty'
-import type { Depth, Question } from '../content/schema'
+import type { Depth, Option, Question } from '../content/schema'
 import { missCounts, nextFloat, rngForCheck, type CheckAttempt, type Knowledge, type Rng } from '../engine'
 
 // Drawing and grading one check (03-CONTENT-SCHEMA §4). Pure functions over the concept's
@@ -213,4 +213,59 @@ export function attemptFrom(conceptId: string, attemptNumber: number, outcome: C
     passed: outcome.passed,
     missedQuestionIds: outcome.missedQuestionIds,
   }
+}
+
+/**
+ * The options in the order they are shown, shuffled deterministically from the question id
+ * and the attempt number (09-QUESTION-BANK §6). Replaying an attempt gives the same order,
+ * so nothing about where the answer sits carries information, and the stored files keep
+ * their authoring order.
+ */
+export function shuffledOptions(question: Question, attemptNumber: number): readonly Option[] {
+  if (question.kind.type === 'numeric') return []
+  const options = [...question.kind.options]
+  let rng = rngForCheck(0, question.id, attemptNumber)
+  // Fisher–Yates from the end, so one draw per position and no bias.
+  for (let index = options.length - 1; index > 0; index--) {
+    const draw = nextFloat(rng)
+    rng = draw.rng
+    const swap = Math.floor(draw.value * (index + 1))
+    const here = options[index]
+    const there = options[swap]
+    if (here && there) {
+      options[index] = there
+      options[swap] = here
+    }
+  }
+  return options
+}
+
+/**
+ * A practice draw: any active question of any depth, weighted by what past attempts missed,
+ * with no difficulty filter and no composition rules (09-QUESTION-BANK §9). Practice never
+ * touches unlocks or cash (ADR-0040), so it has nothing to protect against farming.
+ */
+export function drawPractice(options: {
+  readonly pool: readonly Question[]
+  readonly conceptId: string
+  readonly count: number
+  readonly knowledge: Knowledge
+  readonly seed: number
+  /** Rises with each round, so a long session keeps asking new things. */
+  readonly round: number
+}): readonly Question[] {
+  const active = options.pool.filter((question) => question.status === 'active')
+  const misses = missCounts(options.knowledge, options.conceptId)
+  const weightOf = (question: Question) => 1 + (misses[question.id] ?? 0) * BALANCE.check.missedQuestionWeight
+
+  let rng = rngForCheck(options.seed, `${options.conceptId}-practice`, options.round)
+  const drawn: Question[] = []
+  const remaining = [...active]
+  while (drawn.length < options.count && remaining.length > 0) {
+    const picked = takeOne(remaining, weightOf, rng)
+    rng = picked.rng
+    drawn.push(picked.question)
+    remaining.splice(remaining.indexOf(picked.question), 1)
+  }
+  return drawn
 }

@@ -91,8 +91,8 @@ describe('How a week works (M4a acceptance)', () => {
     const { user } = setup()
     await user.tab()
     expect(document.activeElement).toBe(guideButton())
-    await user.tab()
-    expect(document.activeElement).toBe(within(openGuide()).getByRole('button', { name: 'Close guide' }))
+    // Other header controls sit between the two, so tab until the guide's own button has focus.
+    await tabTo(user, () => within(openGuide()).getByRole('button', { name: 'Close guide' }))
 
     // Closing from inside puts focus back on the button that reopens it.
     await user.keyboard('{Enter}')
@@ -102,8 +102,7 @@ describe('How a week works (M4a acceptance)', () => {
     // Opened from the header, the guide takes focus, wherever the layout puts it.
     await user.keyboard('{Enter}')
     expect(document.activeElement).toBe(within(openGuide()).getByRole('heading', { name: WEEK_GUIDE.title }))
-    await user.tab()
-    expect(document.activeElement).toBe(within(openGuide()).getByRole('button', { name: 'Close guide' }))
+    await tabTo(user, () => within(openGuide()).getByRole('button', { name: 'Close guide' }))
     await user.keyboard('{Escape}')
     expect(guide()).toBeNull()
     expect(document.activeElement).toBe(guideButton())
@@ -121,3 +120,12 @@ describe('How a week works (M4a acceptance)', () => {
     expect(BALANCE.starter.appFanoutFactor).toBe(1)
   })
 })
+
+/** Tabs forward until `target` has focus, so a test doesn't depend on how many controls precede it. */
+async function tabTo(user: ReturnType<typeof userEvent.setup>, target: () => HTMLElement) {
+  for (let presses = 0; presses < 20; presses++) {
+    await user.tab()
+    if (document.activeElement === target()) return
+  }
+  throw new Error('never reached the element by tabbing')
+}

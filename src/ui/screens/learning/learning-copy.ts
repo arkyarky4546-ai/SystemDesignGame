@@ -9,6 +9,7 @@ export const LESSON = {
   keyNumbers: 'Worth remembering',
   misconceptions: 'Commonly believed, and wrong',
   takeCheck: 'Take the check',
+  practise: 'Practise without the check',
   /** Under the primary action, so skipping the check is an informed choice. */
   checkNote: 'The check asks five questions. Passing it unlocks the sizes and pays a one-time bonus into this run.',
 } as const
@@ -80,6 +81,8 @@ function capitalize(text: string): string {
 
 export const LOCKED = {
   openLesson: 'Open the lesson',
+  /** A whole component the player hasn't earned yet. */
+  componentLine: (conceptTitle: string) => `This needs ${conceptTitle}.`,
   /** Suffix on a size the player hasn't earned, inside the inspector's size list. */
   optionSuffix: 'locked',
 } as const

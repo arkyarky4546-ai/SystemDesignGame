@@ -2,11 +2,14 @@ import { z } from 'zod'
 import {
   COMPONENT_KINDS,
   CONCEPT_IDS,
+  DEMO_IDS,
   type Block,
   type Check,
   type ComponentDef,
   type ComponentTier,
   type Concept,
+  type DiagramNode,
+  type DiagramSpec,
   type Fact,
   type Lesson,
   type Misconception,
@@ -31,10 +34,19 @@ const cents = z.number().int().nonnegative()
 const positive = z.number().positive()
 const depth = z.union([z.literal(1), z.literal(2), z.literal(3)])
 
+const DiagramNodeSchema: z.ZodType<DiagramNode> = z.object({ id: nonEmpty, kind, tier: z.number().int().nonnegative() })
+
+const DiagramSpecSchema: z.ZodType<DiagramSpec> = z.object({
+  nodes: z.array(DiagramNodeSchema).min(1),
+  edges: z.array(z.object({ from: nonEmpty, to: nonEmpty })),
+})
+
 export const BlockSchema: z.ZodType<Block> = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('prose'), text: nonEmpty }),
   z.object({ kind: z.literal('formula'), formula: nonEmpty, explanation: nonEmpty }),
   z.object({ kind: z.literal('callout'), tone: z.enum(['note', 'warning']), text: nonEmpty }),
+  z.object({ kind: z.literal('diagram'), architecture: DiagramSpecSchema, caption: nonEmpty }),
+  z.object({ kind: z.literal('demo'), demoId: z.enum(DEMO_IDS) }),
 ])
 
 const FactSchema: z.ZodType<Fact> = z.object({

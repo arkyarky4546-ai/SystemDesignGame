@@ -1860,3 +1860,71 @@ that `derived.json` is generated and never hand-edited.
   this size it is not noticeable.
 - Tier 1's queue today is 3 templates, 6 spot checks and 30 authored questions — 39 items. The
   full Tier 1 burden §8 budgets for is about 111.
+
+---
+
+## ADR-0046 — Diagrams and demos as recipes, and where the learning screens live
+2026-09-16 · Status: accepted · Extends ADR-0041
+
+**Context.** M6 finishes the learning flow: every lesson block type, the library, practice
+mode, the saturation demo, option shuffling and the composition rules. Two of those ran into
+the layer rule, and one ran into what `03-CONTENT-SCHEMA.md` §7 actually asks for.
+
+**Decision.**
+
+- **A diagram block holds a recipe, not an `Architecture`.** §2 says the block holds a real
+  `Architecture` value, but `Architecture` lives in `engine/`, and content is the bottom layer
+  — it may not import the engine. The block holds nodes, kinds, tiers and edges; the UI builds
+  the real `Architecture` from it with the same flow layout a migrated save gets.
+  - Nothing is lost: §2's reasons were that a diagram can't drift from what the game can build
+    (it is still drawn by the real canvas component, from a real `Architecture`) and that a
+    diagram can be dropped onto the player's canvas (it still can).
+  - It also takes canvas positions out of an author's hands, which is where they belong.
+
+- **A demo's variable is a union, not a string path.** §7 writes `variable: { path: string }`.
+  A path needs a resolver, and a typo in one is a runtime failure inside a lesson. The union
+  names what can move — the load, or a node's capacity — so a demo that names something
+  nothing reads fails typecheck.
+
+- **Every learning screen replaces the canvas rather than covering it.** The lesson, the check,
+  practice and the library are routes in `ui.learning`, not dialogs. Reading needs quiet
+  (§6), and the canvas is one press away.
+
+- **One `QuestionView` for the check and for practice.** What a question looks like — prompt,
+  inputs, verdict, explanation, the chosen option's `whyWrong` — should not depend on why you
+  are answering it. Option order comes from `(questionId, attemptNumber)` inside that
+  component, so no caller can forget to shuffle.
+
+- **The library shows every concept, passed or not.** 00-GAME-DESIGN §7 makes a point of it:
+  looking things up is the job. A concept that hasn't been passed says so, and says what
+  passing it would unlock, so the library also answers "what is this for". Search runs over
+  every block's words, not just titles.
+
+- **Practice draws from the whole active pool, at every depth.** §5's composition rules are
+  about a check, where something is at stake. Practice has no threshold, no unlock and no cash
+  (ADR-0040), so it has nothing to protect and is the one place a Junior player meets a depth-3
+  question.
+
+- **The catalog names what gates a component.** A kind gated as a whole shows as a card naming
+  its concept with the lesson one press away; a kind whose larger sizes are gated says which
+  and by what. Nothing is hidden — you cannot buy your way past a concept, so the catalog says
+  that rather than pretending the component doesn't exist. No Tier 1 kind is gated as a whole
+  yet, so that path is covered by a test that injects one.
+
+**Alternatives.**
+- Moving `Architecture` into `content/`: a large refactor across every layer, to let a lesson
+  hold a value it can just as well describe.
+- Rendering diagrams with bespoke SVG: they would drift from what the canvas draws, which is
+  the one thing §2 asks the diagram block to prevent.
+- A modal check over the canvas: the check is reading and thinking, and the canvas behind it
+  is noise.
+- Applying §5's composition rules to practice: it would hide exactly the questions practice
+  exists to reach.
+
+**Consequences.**
+- `percentiles` is now reachable in the game, through the library, and offers practice.
+- The header carries the guide, the library and difficulty. The week guide's keyboard test no
+  longer assumes the two are adjacent in tab order.
+- The entry chunk still contains no questions: 142 KB gzipped against M10's 200 KB budget,
+  with each concept's authored and derived questions in their own chunks. A test asserts that
+  no chunk holds two concepts' questions.

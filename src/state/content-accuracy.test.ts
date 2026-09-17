@@ -27,6 +27,10 @@ const blockText = (block: Block): string => {
       return block.text
     case 'formula':
       return `${block.formula} ${block.explanation}`
+    case 'diagram':
+      return block.caption
+    case 'demo':
+      return ''
   }
 }
 

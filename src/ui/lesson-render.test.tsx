@@ -3,6 +3,7 @@ import { cleanup, render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it } from 'vitest'
 import { CONCEPTS } from '../content/concepts'
 import { CONCEPT_IDS } from '../content/schema'
+import { CONTENT_CATALOG } from '../state/catalog'
 import { LessonScreen } from './screens/learning/LessonScreen'
 
 afterEach(cleanup)
@@ -18,7 +19,7 @@ describe.each(CONCEPT_IDS)('the %s lesson renders', (conceptId) => {
   const concept = CONCEPTS[conceptId]
 
   it('shows its title, one-liner and every core block', () => {
-    render(<LessonScreen conceptId={conceptId} onTakeCheck={() => {}} onClose={() => {}} />)
+    render(<LessonScreen conceptId={conceptId} catalog={CONTENT_CATALOG} onTakeCheck={() => {}} onClose={() => {}} />)
 
     expect(screen.getByRole('heading', { name: concept.title })).toBeTruthy()
     expect(screen.getByText(concept.oneLiner)).toBeTruthy()
@@ -38,7 +39,7 @@ describe.each(CONCEPT_IDS)('the %s lesson renders', (conceptId) => {
   })
 
   it('shows every key number and every misconception', () => {
-    render(<LessonScreen conceptId={conceptId} onTakeCheck={() => {}} onClose={() => {}} />)
+    render(<LessonScreen conceptId={conceptId} catalog={CONTENT_CATALOG} onTakeCheck={() => {}} onClose={() => {}} />)
 
     for (const fact of concept.lesson.keyNumbers) {
       expect(screen.getByText(fact.value)).toBeTruthy()
@@ -51,7 +52,7 @@ describe.each(CONCEPT_IDS)('the %s lesson renders', (conceptId) => {
   })
 
   it('offers the check as its only primary action', () => {
-    render(<LessonScreen conceptId={conceptId} onTakeCheck={() => {}} onClose={() => {}} />)
+    render(<LessonScreen conceptId={conceptId} catalog={CONTENT_CATALOG} onTakeCheck={() => {}} onClose={() => {}} />)
     expect(screen.getByRole('button', { name: 'Take the check' })).toBeTruthy()
     expect(screen.getByRole('button', { name: 'Back to canvas' })).toBeTruthy()
   })

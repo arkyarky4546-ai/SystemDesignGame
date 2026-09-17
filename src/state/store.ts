@@ -50,6 +50,10 @@ export type LastTurn = {
 export type LearningView =
   | { readonly kind: 'lesson'; readonly conceptId: ConceptId }
   | { readonly kind: 'check'; readonly conceptId: ConceptId; readonly attemptNumber: number }
+  /** Everything learned, readable whether or not its check was passed (00-GAME-DESIGN §7). */
+  | { readonly kind: 'library' }
+  /** Drill without gating (09-QUESTION-BANK §9). It never touches unlocks or cash. */
+  | { readonly kind: 'practice'; readonly conceptId: ConceptId }
 
 /** Transient state for the screens. Never saved. */
 export type UiState = {
@@ -102,7 +106,10 @@ export type GameActions = {
   readonly openLesson: (conceptId: ConceptId) => void
   /** Opens the next attempt at a concept's check. */
   readonly openCheck: (conceptId: ConceptId) => void
-  /** Returns to the canvas from a lesson or check. */
+  readonly openLibrary: () => void
+  /** Opens practice for a concept. Practice pays nothing and unlocks nothing (ADR-0040). */
+  readonly openPractice: (conceptId: ConceptId) => void
+  /** Returns to the canvas from a lesson, check, library or practice. */
   readonly closeLearning: () => void
   /**
    * Records one finished attempt and pays the first-pass bonus into the run's cash
@@ -247,6 +254,10 @@ export function createGameStore(deps: GameStoreDeps): StoreApi<GameStore> {
         const attemptNumber = nextAttemptNumber(knowledge, conceptId)
         set((state) => ({ ui: { ...state.ui, learning: { kind: 'check', conceptId, attemptNumber } } }))
       },
+
+      openLibrary: () => set((state) => ({ ui: { ...state.ui, learning: { kind: 'library' } } })),
+
+      openPractice: (conceptId) => set((state) => ({ ui: { ...state.ui, learning: { kind: 'practice', conceptId } } })),
 
       closeLearning: () => set((state) => ({ ui: { ...state.ui, learning: null } })),
 

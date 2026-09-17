@@ -75,14 +75,15 @@ export const CONCEPT_IDS = ['capacity-and-utilization', 'percentiles'] as const
 
 export type ConceptId = (typeof CONCEPT_IDS)[number]
 
-/**
- * A lesson block (03-CONTENT-SCHEMA §2). `diagram` and `demo` arrive in M6, which can render
- * them; until then a lesson says in prose what it would otherwise draw.
- */
+/** A lesson block (03-CONTENT-SCHEMA §2). */
 export type Block =
   | { readonly kind: 'prose'; readonly text: string }
   | { readonly kind: 'formula'; readonly formula: string; readonly explanation: string }
   | { readonly kind: 'callout'; readonly tone: 'note' | 'warning'; readonly text: string }
+  /** Rendered by the real canvas component, so a diagram can't show what the game can't build. */
+  | { readonly kind: 'diagram'; readonly architecture: DiagramSpec; readonly caption: string }
+  /** One slider over the real engine (§7). */
+  | { readonly kind: 'demo'; readonly demoId: DemoId }
 
 /** A number worth remembering, with where it comes from. Questions reference these by tag. */
 export type Fact = {
@@ -299,3 +300,55 @@ export function defineTemplate<const S extends readonly ParamSpec[]>(template: {
 }): QuestionTemplate {
   return template as QuestionTemplate
 }
+
+// Lesson diagrams and demos (03-CONTENT-SCHEMA §2, §7). Both describe an architecture as a
+// recipe rather than as a built `Architecture` value: the engine's `Architecture` lives a
+// layer up, and canvas positions are the layout's job rather than an author's (ADR-0046).
+// The UI turns a recipe into a real `Architecture`, so a lesson diagram can still be loaded
+// straight onto the player's canvas.
+
+export type DiagramNode = {
+  readonly id: string
+  readonly kind: ComponentKind
+  /** Index into the kind's `tiers`. */
+  readonly tier: number
+}
+
+export type DiagramEdge = { readonly from: string; readonly to: string }
+
+export type DiagramSpec = {
+  readonly nodes: readonly DiagramNode[]
+  readonly edges: readonly DiagramEdge[]
+}
+
+/** A figure a demo can show, named for the `NodeMetrics` field it reads. */
+export type MetricId = 'utilization' | 'meanMs' | 'p50Ms' | 'p99Ms' | 'errorRate'
+
+/**
+ * One slider over one architecture, with the figures it moves (03-CONTENT-SCHEMA §7). §7
+ * writes the variable as a string path; a union is used instead so the renderer can't be
+ * handed a path nothing reads.
+ */
+export type Demo = {
+  readonly id: string
+  readonly architecture: DiagramSpec
+  readonly variable:
+    | { readonly kind: 'meanRps'; readonly min: number; readonly max: number; readonly step: number; readonly label: string }
+    | {
+        readonly kind: 'capacityRps'
+        readonly nodeId: string
+        readonly min: number
+        readonly max: number
+        readonly step: number
+        readonly label: string
+      }
+  /** The node whose figures are shown. */
+  readonly nodeId: string
+  readonly showMetrics: readonly MetricId[]
+  readonly caption: string
+}
+
+/** Every demo in the game. Adding an id fails typecheck until `DEMOS` has one. */
+export const DEMO_IDS = ['saturation'] as const
+
+export type DemoId = (typeof DEMO_IDS)[number]
