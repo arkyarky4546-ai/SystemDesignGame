@@ -2095,3 +2095,51 @@ can't be written. Beyond that, five things had to be settled:
      the game enforces that. Building it would put two more checks in front of the app
      server's larger sizes.
   3. `vertical-scaling`'s check is arithmetic-only until M7b.
+
+---
+
+## ADR-0049 — M7b's first session: which concept first, what a batch is, and the depth rule
+2026-09-17 · Status: accepted · Extends ADR-0048
+
+**Context.** M7b asks for ~66 authored questions and 6 diagnose questions, in batches of 10–15,
+one concept at a time, across at least four sessions. Three things needed settling at the start.
+- Which concept goes first.
+- How CLAUDE.md's "never generate a concept's entire authored pool in one pass" fits §2.2's
+  8–12 per concept, when a single batch of 10–15 already reaches that.
+- Where M7b's "validation flags any concept whose questions are all one depth" should apply.
+
+**Decision.**
+- **`vertical-scaling` first.** Its check opens database sizes, and ADR-0048 left it asking five
+  derived questions. The other two concepts without authored questions gate nothing, so their
+  gap costs less. It now has a batch of 12, `b-0003-vertical-scaling`. A test asserts its check
+  meets §5 on every difficulty, across 2,000 draws.
+- **One batch per concept per session, and that batch is the concept's authored pool.** This is
+  how M4b and M5 read it (15 each), and the content tests assert one `batchId` per concept. A
+  pool smaller than a batch can't be split into batches. What the rule guards against is volume
+  in one pass, and one concept per session keeps it small.
+- **The depth rule is a validation problem, checked twice.**
+  - It fires when every active question in a pool is one depth.
+  - It fires separately when every authored question is, since templates fix derived depths and
+    a pool can vary while its authored half doesn't.
+  - §7's screener already warns on thin depths; this is the harder line M7b asked for.
+- **Diagnose questions wait for their own session.** They need a `diagnose` question kind, a
+  frozen snapshot rendered through the report charts, and a check by eye (M7b's acceptance).
+  They are separate work from writing a batch.
+  - Tier 1's model can produce only some of §2.3's named pathologies: a saturated component, a
+    masked bottleneck, and a fleet sized for the mean.
+  - The SPOF pathology waits on ADR-0047, like the sixth lesson.
+
+**Alternatives.**
+- Curriculum order, starting with `client-server-basics`: it would leave the one gating check
+  arithmetic-only for another session.
+- Splitting a concept into two batches of 5–6: under §8's 10–15, and a second pass at the same
+  concept is where near-duplicates come from.
+- Checking depth over the authored questions only: a derived-only pool at one depth would pass.
+
+**Consequences.**
+- M7b stays open. Still to do:
+  - an authored batch each for `client-server-basics` and `latency-and-throughput`
+  - the diagnose kind and its 6 questions
+  - `single-point-of-failure`'s batch, blocked on ADR-0047
+- ADR-0048's third point is resolved for `vertical-scaling`, and still stands for the other two.
+- Tier 1 now has 42 authored questions against §3's 66. The bank is 285 questions.

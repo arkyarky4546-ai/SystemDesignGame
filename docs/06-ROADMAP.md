@@ -339,6 +339,13 @@ batch of 15 costs minutes while a bad batch of 200 costs a weekend. A session
 that produces all 66 has produced worse questions than four sessions that
 produce 16 each — this is not negotiable for speed.
 
+**Status (2026-09-17): in progress, session 1 of at least 4.**
+- Done: the `vertical-scaling` batch (12 questions, `b-0003`) and the one-depth validation rule
+  (ADR-0049).
+- Still to do: batches for `client-server-basics` and `latency-and-throughput`, and the
+  `diagnose` kind with its 6 questions.
+- `single-point-of-failure`'s batch waits on ADR-0047.
+
 **Acceptance:**
 - Depth distribution per §6's rubric; validation flags any concept whose
   questions are all one depth.
