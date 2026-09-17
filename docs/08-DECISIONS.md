@@ -1980,3 +1980,118 @@ demonstrate nor let you fix.
   of ADR-0043's separate question about verifying an incident's good responses.
 - M10's "a fresh player can reach turn 20 without reading external instructions" is unaffected;
   its content-review criterion is not.
+
+---
+
+## ADR-0048 — Tier 1's lessons and derived bank, and what waits for M7b and M9
+2026-09-17 · Status: accepted, with three points for the human · Extends ADR-0040, ADR-0044, ADR-0046 · Amends `03-CONTENT-SCHEMA.md` §2 and §7
+
+**Context.** M7 asks for six Tier 1 lessons, both demos, balanced `ComponentDef`s, and ~15
+templates producing ~240 derived questions. ADR-0047 is still open, so `single-point-of-failure`
+can't be written. Beyond that, five things had to be settled:
+- where new template arithmetic comes from without touching `src/engine/`
+- what the lessons' key numbers can be, when M7's only questions are derived ones
+- what "balanced" can mean before M9's harness exists
+- how three concepts with no authored questions behave until M7b
+- two small gaps between `03-CONTENT-SCHEMA.md` and `05-UI-DESIGN.md`
+
+**Decision.**
+
+- **Five lessons, and M7 stays open.** `client-server-basics`, `latency-and-throughput` and
+  `vertical-scaling` join the two that existed. The sixth isn't written (ADR-0047), so M7's
+  first criterion isn't met and M7 isn't checked off.
+  - Prerequisites now follow `04-CURRICULUM.md`, and ADR-0040's waivers are gone.
+  - `CONCEPT_IDS` is in curriculum order, which is the library's order. Ids are what saves
+    key on, so reordering them changes nothing saved.
+
+- **Templates resolve paths through the real resolver.** `TemplateEngine.resolvePath` builds
+  ingress → app servers → database, gives each hop its own catalog tier, and calls
+  `simulateTick`. What reaches the database, what is dropped, what a path completes and its
+  summed p99 all come from the code a week in the game runs. It lives in `tools/bank.ts`
+  because `03-CONTENT-SCHEMA.md` says content must never require touching `src/engine/`.
+  - A template only uses what its concept and that concept's prerequisites teach.
+    `latency-and-throughput` comes before the latency curve, so its questions are about
+    ceilings and drops. `percentiles` doesn't require `capacity-and-utilization`, so its
+    questions start from a mean or a percentile, never a utilization.
+  - 13 new templates join the 3 from M5a: 16 in all, making 243 instances. New templates
+    freeze 15 instances each. The first three keep 16, because lowering a count would drop
+    ids that are already issued.
+
+- **Key numbers are what a derived question can verify.** The acceptance criterion needs
+  every key number referenced by a question, and M7's only new questions are derived.
+  - The three new lessons' key numbers are the game-grounded figures their templates cover.
+  - The real-world reference numbers go in prose and in "go deeper": the latency table, the
+    speed of light in fiber, Little's law, Amdahl's law. No engine function computes them,
+    so no derived question could verify them.
+  - M7b can promote them to key numbers once authored questions cover them.
+
+- **"Balanced" means the gates, not the prices.**
+  - Database sizes above Small are gated on `vertical-scaling`, as ADR-0040 said they would
+    be once it existed.
+  - Capacities and service times are unchanged. Service time barely moving while capacity
+    rises fifty-fold is exactly what the vertical-scaling lesson teaches, and tests now pin
+    the figures the lessons quote.
+  - **Prices are unchanged, and that is a finding for M9.** The placeholder tiers get cheaper
+    per request as they grow: $2.00 per rps a week for a Small app server, $0.60 for Extra
+    large. Real clouds price roughly in proportion to machine size, and throughput often
+    grows more slowly than the machine. A schedule pricing each size at 4× the one below,
+    so cost per request rises, was tried with the headless upgrade bot for 30 turns, seeds 7
+    and 11. It bailed out on every difficulty, in weeks 12–20; today's prices stayed solvent
+    on all of them. That is a balance change needing the harness, not a guess. The lesson
+    therefore says nothing about price per request in the game. It says only what the table
+    supports: each size costs more per week than the one below, and the room is paid for
+    all week.
+
+- **Until M7b, three concepts have no authored questions.** Their checks can't meet
+  `09-QUESTION-BANK.md` §5's authored minimum. The draw already falls back to what the pool
+  holds rather than failing, so those checks ask five derived questions.
+  - `vertical-scaling`'s check therefore opens database sizes on arithmetic alone until M7b.
+    The alternative was to keep the concept's check closed, which would leave databases
+    stuck at Small. A Small database saturates at about 55 users, which the headless Junior
+    runs pass by week 7.
+  - The authored-batch tests now cover the concepts that have an authored pool, and assert
+    which three don't, so none is skipped silently.
+  - M7b should add a validator rule: every concept has at least `minAuthored` eligible
+    authored questions at every difficulty.
+
+- **"Go deeper" gets a summary.** `05-UI-DESIGN.md` §6 asks for each "go deeper" section to
+  be collapsed with a one-line description, and `03-CONTENT-SCHEMA.md` §2 has no field for
+  one. `deeper` becomes `{ summary, blocks }` and renders as a `<details>`. Library search
+  reads it too.
+
+- **The capacity demo holds the load still.** §7's variable gains `loadRps` on its capacity
+  variant, and the widget resizes a copy of the node's tier, so the game's own catalog is
+  never touched. The second Tier 1 demo is `vertical-scaling`. It holds 50/s on the largest
+  app server while the slider resizes it from 40/s to 500/s. Its caption's figures are
+  tested.
+
+- **Smaller points.**
+  - Each concept's derived batch carries its own generation date, so adding four batches
+    left the first one byte-identical.
+  - Template figures are grouped by thousands: "1,842 ms".
+  - The note under Take the check only promises an unlock when the concept opens something.
+
+**Alternatives.**
+- Writing `single-point-of-failure` anyway: ADR-0047.
+- Engine functions for the new arithmetic: content would then require touching the engine.
+- A few authored questions now, to cover real-world key numbers: that is M7b's work, in
+  M7b's batch sizes.
+- Keeping database sizes open until M7b: `vertical-scaling` would exist and gate nothing.
+- Closing a check whose pool has no authored questions: databases stuck at Small until M7b.
+- The 4× price schedule: bankrupts the naive bot everywhere. That needs the harness.
+
+**Consequences.**
+- The bank is 16 templates and 243 derived questions, plus 30 authored: 273 in all. The
+  review queue is 16 templates, 32 spot checks and 30 authored questions. §8 budgets ~24
+  spot checks; each template's 10% rounds up to 2.
+- `npm run screen` reports no errors. Its three warnings say `client-server-basics`,
+  `latency-and-throughput` and `vertical-scaling` have no depth-3 questions. A derived
+  question can't be depth 3 (§6), so M7b's authored questions resolve them.
+- The entry chunk is 148 KB gzipped against M10's 200 KB. The three lessons are in it,
+  since the library reads every lesson; every question is still in a per-concept chunk.
+- **For the human:**
+  1. The price finding above, for M9.
+  2. `03-CONTENT-SCHEMA.md` §1 says prerequisites "must be unlocked first", and nothing in
+     the game enforces that. Building it would put two more checks in front of the app
+     server's larger sizes.
+  3. `vertical-scaling`'s check is arithmetic-only until M7b.

@@ -313,6 +313,11 @@ Six Tier 1 lessons, both demos, balanced `ComponentDef`s, and ~15 derived
 templates covering the arithmetic across all six concepts. Generate the derived
 bank (~240 questions) from them.
 
+**Status (2026-09-17): open, blocked on ADR-0047.** Five of the six lessons, both demos, the
+database gate, 16 templates and 243 derived instances are done (ADR-0048).
+`single-point-of-failure` isn't written, because the game has no failures and no redundancy
+yet. Tier prices are left for M9: see ADR-0048's finding.
+
 **Acceptance:**
 - Every concept has core prose in range, key numbers, and ≥1 misconception.
 - ~15 templates produce ~240 instances, all engine-verified, all screened clean.
