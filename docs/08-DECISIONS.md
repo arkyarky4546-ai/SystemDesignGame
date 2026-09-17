@@ -1592,3 +1592,114 @@ details open, each of which M5–M7 will inherit.
 - M4's `turn-loop` test now starts with the concept already passed, since it covers the turn
   loop rather than the gate.
 - `CONTENT_VERSION` stays 0: concept and question ids exist now, but none has been broken.
+
+---
+
+## ADR-0042 — The content pipeline: schemas, where they run, and how the validator loads TypeScript
+2026-09-16 · Status: accepted · Extends ADR-0041
+
+**Context.** M5 asks for Zod schemas, a content loader, `tools/validate-content.ts` implementing
+every rule in `03-CONTENT-SCHEMA.md` §8, and a second sample concept. Four things had to be
+settled to build it, and one of them is a genuine constraint rather than a preference: content
+is TypeScript with extensionless relative imports, which Node cannot resolve on its own, so
+`node tools/validate-content.ts` cannot simply import `src/content`.
+
+**Decision.**
+
+- **Zod mirrors the hand-written types; it doesn't replace them.** `content/parse.ts` annotates
+  every schema `z.ZodType<T>` against the type in `content/schema.ts`, so typecheck fails if the
+  two drift. This is what `state/save.ts` already does for save files. Inferring the types from
+  Zod instead would have dropped `readonly` from every array and object in the content layer,
+  which is most of what stops a content file being mutated by accident.
+
+- **The shipped bundle never parses content.** `npm run validate` is the guarantee, in CI and in
+  the definition of done. `content/index.ts` and `loadQuestions` repeat the parse behind
+  `import.meta.env.DEV`, so an authoring mistake surfaces while you write it and costs the
+  production bundle nothing.
+
+- **The rules are a pure function over content passed in.** `content/validate.ts` takes a
+  `ContentSource` and returns problems, each naming the file a human should open.
+  `tools/validate-content.ts` is a thin runner that loads the real content and prints. That is
+  what lets `content/validate.test.ts` feed it deliberately broken copies of the real content —
+  a stripped `whyWrong`, a prerequisite cycle, a four-question pool — and assert the message.
+
+- **The runner loads content through Vite's SSR module runner.** `createServer` in middleware
+  mode plus `ssrLoadModule('/src/content/source.ts')` resolves TypeScript and extensionless
+  imports with the same resolver the app builds with. Vite is already a dependency; nothing new
+  was added. The one Node global the runner needs, `process.exitCode`, is declared locally
+  rather than adding `@types/node` for one field.
+
+- **`npm run build` runs the validator.** That is where §1's `needs-review` count prints, and it
+  means a content error fails the build rather than shipping. `needs-review` itself never fails
+  anything — it is counted and printed loudly, as §1 requires.
+
+- **Both gates coexist.** `Concept.unlocks.components` names whole component kinds, per §1;
+  `ComponentTier.gatedBy` names sizes, per ADR-0041. `ComponentDef.gatedBy` is optional rather
+  than required as §5 has it, because every Tier 1 kind is already on the canvas. The validator
+  checks that every gate, at either level, names a concept that exists.
+
+- **The pool rule is checked per difficulty.** §8 asks for `poolSize ≥ 2 × drawCount`. Each
+  difficulty draws a different set of depths (§4), so the rule is applied to each difficulty's
+  eligible pool, and the message names the difficulty that falls short. Staff, which draws
+  depths 2 and 3 only, is the binding case for a Tier 1 concept.
+
+**Alternatives.**
+- Inferring types from Zod: loses `readonly` across the whole content layer.
+- Running the validator as a Vitest suite: `npm run validate` would have to shell into Vitest,
+  and the definition of done already runs both.
+- Adding `tsx` or `vite-node` to run the tool: a dependency, and an ADR, for something Vite's
+  own API already does.
+- Parsing content at import time in the browser: pays a second time for what CI guarantees, in
+  the bundle a player downloads.
+
+**Consequences.**
+- `npm run build` is a little slower and can now fail for a content reason.
+- `percentiles` validates and renders but has no route in the game: it gates nothing, so no
+  inspector names it. M6's library is what reaches every concept, and until then it is only
+  reachable in tests.
+- Adding a concept means adding its id to `CONCEPT_IDS`, its module to `CONCEPTS`, and its
+  loader to the questions registry. All three fail typecheck if one is missed.
+
+---
+
+## ADR-0043 — §8's incident check can't be written against §6's incident schema
+2026-09-16 · Status: open, for the human · Blocks part of M8
+
+**Context.** `03-CONTENT-SCHEMA.md` §8 calls this the most important check in the list:
+
+> Every incident's `successCriteria` is achievable — run the engine against the incident's own
+> `goodResponses` architectures and confirm they pass.
+
+§6 types that field as part of the debrief:
+
+```ts
+debrief: {
+  whatHappened: string
+  whyItHappened: string
+  goodResponses: string[]
+  commonMistakes: string[]
+}
+```
+
+`goodResponses` is prose written for a human to read after the incident. There is nothing in it
+for the engine to run: no architecture, no configuration, nothing machine-readable. As the two
+sections stand, the check §8 calls the most important one cannot be implemented.
+
+No incident exists yet, so nothing is unverified today. M5 implements every other §8 rule and
+reports `incidents engine-verified: 0`.
+
+**Options, for the human to pick at M8.**
+1. **Add a separate field.** `verifiedResponses: Architecture[]` on the incident, checked by the
+   validator, with `goodResponses` staying prose for the debrief. The two can drift.
+2. **Make `goodResponses` structured.** `{ summary: string; architecture: Architecture }[]`, so
+   the prose a player reads and the architecture the validator runs are the same object and
+   cannot disagree. More authoring work per incident, and a schema change to §6.
+
+**Recommendation.** Option 2. §8 calls an unbeatable incident the worst bug this project can
+ship, and option 1 lets the prose and the verified architecture drift apart, which is the exact
+failure mode the check exists to catch.
+
+**Consequences until it's decided.**
+- M5's validator reports the incident check as not applicable rather than passing it silently.
+- M8 cannot be marked complete without resolving this, since its acceptance criterion requires
+  `the-first-outage`'s good responses to verifiably pass.

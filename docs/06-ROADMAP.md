@@ -207,7 +207,7 @@ learn from.
 
 ---
 
-## [ ] M5 — Content pipeline
+## [x] M5 — Content pipeline
 
 **Read:** `03-CONTENT-SCHEMA.md` in full
 
