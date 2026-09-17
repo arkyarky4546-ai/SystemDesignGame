@@ -1932,7 +1932,7 @@ the layer rule, and one ran into what `03-CONTENT-SCHEMA.md` §7 actually asks f
 ---
 
 ## ADR-0047 — Tier 1's sixth concept needs a failure model no milestone builds
-2026-09-16 · Status: open, for the human · Blocks part of M7, M7b and M10
+2026-09-16 · Status: decided 2026-09-17 — the human chose options 1 and 2 together; the milestone is ADR-0050
 
 **Context.** `04-CURRICULUM.md` Tier 1 ends with `single-point-of-failure` — "one of everything
 is zero of something" — whose stated outcome is "identify every SPOF in an architecture on
@@ -2143,3 +2143,80 @@ one concept at a time, across at least four sessions. Three things needed settli
   - `single-point-of-failure`'s batch, blocked on ADR-0047
 - ADR-0048's third point is resolved for `vertical-scaling`, and still stands for the other two.
 - Tier 1 now has 42 authored questions against §3's 66. The bank is 285 questions.
+
+---
+
+## ADR-0050 — Failures and app-server replicas become M6a
+2026-09-17 · Status: accepted · Resolves ADR-0047 · Amends `04-CURRICULUM.md` Tier 1 and Tier 2
+
+**Context.** ADR-0047 asked the human to choose. On 2026-09-17 they chose options 1 and 2
+together: add `02-SIMULATION.md` §5.7's single-node failure, and allow `replicas > 1` on app
+servers. It becomes its own milestone before M7's sixth lesson, as ADR-0047 recommended.
+
+Writing the spec surfaced one thing ADR-0047 didn't: `04-CURRICULUM.md` gives `replicas > 1`
+to Tier 2's `horizontal-scaling`. Building the engine capability alone would still leave a Tier 1
+player unable to add the second server that `single-point-of-failure` teaches — the same
+objection ADR-0047 raised.
+
+**Decision.**
+
+- **A new milestone, M6a — Failures and redundancy,** ahead of M7 in the roadmap, so it is the
+  first unchecked milestone. M7's sixth lesson and M7b's batch for it resume after.
+
+- **Failures are drawn once per turn, outside the resolver.** `simulateTurn` draws them from the
+  run's seeded RNG and passes the result into `simulateTick`, which stays a pure function of its
+  input. That keeps every determinism test intact and `resolve.ts` free of randomness, which
+  CLAUDE.md requires.
+  - A node with one instance that fails is out for `outageDurationTurns`: every request class
+    whose path crosses it goes to an error rate of 1.0.
+  - An app server with `replicas > 1` that loses one runs at `(replicas − 1) ÷ replicas` of its
+    capacity for `recoveryTurns` and keeps serving. That is `healthFactor`, which
+    `nodeCapacityRps` already takes.
+  - Outage state outlives a turn, so the save format gains it, with a version bump and a
+    migration. A save written before M6a loads with nothing failed.
+
+- **App servers only.** The resolver accepts `replicas > 1` for app servers, where §5.2's
+  capacity × replicas is the whole story. Databases keep refusing it with today's typed error
+  until §5.4's read/write routing, replication lag and stale reads are built, which is Tier 3's
+  subject.
+
+- **The unlock splits between the two concepts that teach it.** `single-point-of-failure` opens a
+  second app-server instance — N+1, the fix its own lesson names — and `horizontal-scaling` lifts
+  the cap. Each concept then unlocks something a player can use when they learn it, and neither
+  waits on content that doesn't exist.
+  - This amends Tier 2's row, which gives all of `replicas > 1` to `horizontal-scaling`, and
+    Tier 1's, which gives `single-point-of-failure` only a failure panel. It keeps both.
+
+- **Cascades stay out of scope.** `02-SIMULATION.md` §5.7 and `00-GAME-DESIGN.md` §6 enable them
+  on Staff only, as a bounded fixed-point loop over peers that inherit a failed node's load.
+  With one app server per architecture there are no peers yet; the loop is worth its own
+  milestone once load balancing exists. M6a leaves Staff without cascades and says so.
+
+- **Failure rates are content, durations are balance.** `ComponentTier.failureRatePerTurn`
+  arrives on the sized tiers, as `03-CONTENT-SCHEMA.md` §5 has it. Outage and recovery lengths,
+  and any per-difficulty harshness, are `BALANCE` placeholders for M9.
+  - One acceptance criterion guards the obvious risk: an outage takes a week's error rate to
+    1.0, and §7's severity is uncapped, so a single failure could empty a run's reputation.
+    M6a has to show 20-turn headless runs staying solvent and off the reputation floor on every
+    difficulty, or the rates and the severity term need revisiting before it ships.
+
+**Alternatives.**
+- Failures inside `simulateTick`: it would need an RNG, and the resolver's purity is what makes
+  every balance and determinism test possible.
+- Keeping the curriculum's gate, with `horizontal-scaling` unlocking every replica: Tier 1
+  teaches a fix the player can't buy until Tier 2 content exists, which is ADR-0047's objection.
+- Moving the whole unlock to `single-point-of-failure`: `horizontal-scaling` would then teach
+  scaling out while unlocking nothing.
+- Database replicas now: §5.4's write amplification, lag and stale reads are a milestone of
+  their own, and resolving them wrongly is what M1 refused.
+- Cascades now: no architecture has peers to cascade to yet.
+
+**Consequences.**
+- M7 can finish after M6a: the sixth lesson becomes writable, and its M7b batch and diagnose
+  scenario with it.
+- M8's `node-failure` injection and `the-first-outage` get the model they need. ADR-0043's
+  separate question about verifying an incident's good responses is still open.
+- The save format changes for the first time since M5's work, so the migration list in
+  `01-ARCHITECTURE.md` §7 gains an entry.
+- Tier 1 will show a failure a player cannot prevent until they pass the last concept. That is
+  the lesson: one of everything is zero of something.

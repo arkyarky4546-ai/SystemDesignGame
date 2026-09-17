@@ -305,6 +305,48 @@ Question chunks load via dynamic `import()` per concept, not per tier.
 
 ---
 
+## [ ] M6a — Failures and redundancy
+
+**Read:** `02-SIMULATION.md` §5.2, §5.7, §7, §9, `00-GAME-DESIGN.md` §6, §8,
+`03-CONTENT-SCHEMA.md` §5, `01-ARCHITECTURE.md` §7, ADR-0047, ADR-0050
+
+Added when the human decided ADR-0047. `02-SIMULATION.md` §5.7's single-node failure, and
+`replicas > 1` on app servers. Nothing in this game has ever failed, and redundancy can't be
+built, so Tier 1's last concept teaches a fix the player can't make and M8 has no outage to
+inject. This milestone is the model both need; the content that uses it stays in M7 and M7b.
+
+Cascades are deliberately out of scope (ADR-0050): with one app server there are no peers to
+cascade to, so Staff keeps its other harshness and gains cascades with load balancing.
+
+**Acceptance:**
+- Failures are drawn in `simulateTurn` from the run's seeded RNG and passed into
+  `simulateTick`, which stays pure. The determinism tests still pass untouched, and a test
+  shows two runs on one seed failing identically.
+- `ComponentTier` carries `failureRatePerTurn` for every sized tier, per §5 of the content
+  schema, and outage and recovery lengths are `BALANCE` placeholders.
+- A node with one instance that fails takes every request class crossing it to an error rate
+  of 1.0 for the outage, and recovers on its own. A test covers each.
+- An app server with `replicas > 1` that loses one instance serves at
+  `(replicas − 1) ÷ replicas` of its capacity and keeps running.
+- The resolver accepts `replicas > 1` for app servers and still refuses it for databases with
+  the existing typed error. Setup and running costs already scale per instance; a test shows it.
+- `NodeStatus` gains `failed`. The canvas and the weekly report both show it without relying on
+  colour alone, and the report's observation names the outage.
+- Outage state survives a save and reload: the save version bumps, the migration list in
+  `01-ARCHITECTURE.md` §7 gains an entry, and a save written before M6a loads with nothing
+  failed.
+- `single-point-of-failure` unlocks a second app-server instance; `horizontal-scaling` lifts the
+  cap. `04-CURRICULUM.md`'s Tier 1 and Tier 2 rows are amended to match (ADR-0050).
+- **Balance sanity:** 20-turn headless runs on all four difficulties stay solvent and off the
+  reputation floor with failures enabled. If they don't, the rates or §7's uncapped severity are
+  wrong, and that is reported rather than worked around.
+
+**🔶 Human checkpoint.** Play a run until something fails. Is an outage you couldn't prevent
+legible and fair, or does one bad week undo the run? The answer decides whether §7's severity
+needs a cap before M9.
+
+---
+
 ## [ ] M7 — Tier 1 lessons and templates
 
 **Read:** `04-CURRICULUM.md` Tier 1, `03-CONTENT-SCHEMA.md` §2, `09-QUESTION-BANK.md` §2, §3
@@ -313,10 +355,11 @@ Six Tier 1 lessons, both demos, balanced `ComponentDef`s, and ~15 derived
 templates covering the arithmetic across all six concepts. Generate the derived
 bank (~240 questions) from them.
 
-**Status (2026-09-17): open, blocked on ADR-0047.** Five of the six lessons, both demos, the
+**Status (2026-09-17): open, waiting on M6a.** Five of the six lessons, both demos, the
 database gate, 16 templates and 243 derived instances are done (ADR-0048).
-`single-point-of-failure` isn't written, because the game has no failures and no redundancy
-yet. Tier prices are left for M9: see ADR-0048's finding.
+`single-point-of-failure` isn't written: it needs the failure model and redundancy that M6a
+builds, which the human chose on 2026-09-17 (ADR-0050). Tier prices are left for M9: see
+ADR-0048's finding.
 
 **Acceptance:**
 - Every concept has core prose in range, key numbers, and ≥1 misconception.
@@ -344,7 +387,7 @@ produce 16 each — this is not negotiable for speed.
   (ADR-0049).
 - Still to do: batches for `client-server-basics` and `latency-and-throughput`, and the
   `diagnose` kind with its 6 questions.
-- `single-point-of-failure`'s batch waits on ADR-0047.
+- `single-point-of-failure`'s batch and its diagnose scenario wait on M6a.
 
 **Acceptance:**
 - Depth distribution per §6's rubric; validation flags any concept whose
