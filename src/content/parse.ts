@@ -64,7 +64,7 @@ const MisconceptionSchema: z.ZodType<Misconception> = z.object({
 
 export const LessonSchema: z.ZodType<Lesson> = z.object({
   core: z.array(BlockSchema).min(1),
-  deeper: z.array(BlockSchema).optional(),
+  deeper: z.object({ summary: nonEmpty, blocks: z.array(BlockSchema).min(1) }).optional(),
   keyNumbers: z.array(FactSchema),
   misconceptions: z.array(MisconceptionSchema),
 })

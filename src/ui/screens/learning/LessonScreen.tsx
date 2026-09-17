@@ -2,6 +2,7 @@ import { useEffect, useId, useRef } from 'react'
 import { CONCEPTS } from '../../../content/concepts'
 import type { Block, ConceptId } from '../../../content/schema'
 import type { PricedCatalog } from '../../../engine'
+import { tiersUnlockedBy } from '../../../state/unlocks'
 import { LESSON } from './learning-copy'
 import { LessonDiagram } from './LessonDiagram'
 import { DemoWidget } from './SaturationDemo'
@@ -22,10 +23,13 @@ const SECONDARY = 'rounded border border-panel-line px-3 py-2 text-sm text-ink-b
 /**
  * The lesson screen (05-UI-DESIGN §6): one column at a 68-character measure, no sidebar,
  * and a single primary action at the bottom. Reading needs quiet, so nothing else competes
- * with the prose. `diagram` and `demo` blocks arrive in M6 with the renderers for them.
+ * with the prose. "Go deeper" is collapsed, with a one-line summary so skipping it is an
+ * informed choice.
  */
 export function LessonScreen({ conceptId, catalog, onTakeCheck, onClose, onPractice }: LessonScreenProps) {
   const concept = CONCEPTS[conceptId]
+  const deeper = concept.lesson.deeper
+  const unlocksSomething = concept.unlocks.components.length > 0 || tiersUnlockedBy(conceptId).length > 0
   const headingId = useId()
   const heading = useRef<HTMLHeadingElement | null>(null)
   useEffect(() => heading.current?.focus(), [conceptId])
@@ -48,6 +52,19 @@ export function LessonScreen({ conceptId, catalog, onTakeCheck, onClose, onPract
             <LessonBlock key={index} block={block} catalog={catalog} />
           ))}
         </div>
+
+        {deeper && (
+          <details className="rounded border border-panel-line px-4 py-3">
+            <summary className="cursor-pointer text-sm">
+              <span className="font-medium text-ink-bright">{LESSON.deeper}</span> · {deeper.summary}
+            </summary>
+            <div className="mt-4 flex flex-col gap-4">
+              {deeper.blocks.map((block, index) => (
+                <LessonBlock key={index} block={block} catalog={catalog} />
+              ))}
+            </div>
+          </details>
+        )}
 
         {concept.lesson.keyNumbers.length > 0 && (
           <section className="flex flex-col gap-2">
@@ -90,7 +107,7 @@ export function LessonScreen({ conceptId, catalog, onTakeCheck, onClose, onPract
               </button>
             )}
           </div>
-          <p className="text-xs">{LESSON.checkNote}</p>
+          <p className="text-xs">{LESSON.checkNote(concept.check.drawCount, unlocksSomething)}</p>
         </div>
       </div>
     </section>

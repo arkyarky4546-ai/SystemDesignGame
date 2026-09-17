@@ -1,4 +1,13 @@
-import type { Concept, Params, Question, QuestionTemplate, TemplateEngine } from '../src/content/schema'
+import type {
+  Concept,
+  HopFigures,
+  Params,
+  PathFigures,
+  PathSpec,
+  Question,
+  QuestionTemplate,
+  TemplateEngine,
+} from '../src/content/schema'
 import { QuestionSchema, parseContent } from '../src/content/parse'
 import {
   instancesNeeded,
@@ -7,7 +16,10 @@ import {
   p50LatencyMs,
   p99LatencyMs,
   rngForKey,
+  simulateTick,
   utilization,
+  type ComponentNode,
+  type NodeMetrics,
   type Rng,
 } from '../src/engine'
 
@@ -24,6 +36,58 @@ export const TEMPLATE_ENGINE: TemplateEngine = {
   p50LatencyMs,
   p99LatencyMs,
   instancesNeeded,
+  resolvePath,
+}
+
+/**
+ * A request path, resolved by `simulateTick` exactly as a week in the game would be. Each
+ * hop gets a catalog tier of its own, so a template can give any figures it likes without
+ * touching the game's component balance. A path the resolver refuses is a template bug, so
+ * it throws rather than producing a question.
+ */
+export function resolvePath(path: PathSpec): PathFigures {
+  const position = { col: 0, row: 0 }
+  const apps: ComponentNode[] = path.appServers.map((hop, index) => ({
+    id: `app-${index}`,
+    kind: 'app-server',
+    replicas: 1,
+    tier: index,
+    config: { fanoutFactor: hop.queriesPerRequest },
+    position,
+  }))
+  const nodes: ComponentNode[] = [
+    { id: 'ingress', kind: 'ingress', replicas: 1, tier: 0, config: {}, position },
+    ...apps,
+    { id: 'db', kind: 'database', replicas: 1, tier: 0, config: {}, position },
+  ]
+  const order = nodes.map((node) => node.id)
+  const edges = order.slice(1).map((to, index) => ({ from: order[index] ?? '', to }))
+
+  const tick = simulateTick({
+    turn: 0,
+    architecture: { nodes, edges },
+    // The peak is the load, so the multiplier is 1. Every class shares the one path, so the
+    // mix doesn't change any figure a template reads.
+    workload: { meanRps: path.peakRps, peakMultiplier: 1, readFraction: 1, staticFraction: 0, keySkew: 0, payloadKb: 0 },
+    catalog: { 'app-server': path.appServers, database: [path.database] },
+  })
+  if (!tick.ok) throw new Error(`a template's path doesn't resolve: ${JSON.stringify(tick.error)}`)
+
+  const hop = (id: string): HopFigures => {
+    const metrics: NodeMetrics | undefined = tick.value.perNode[id]
+    if (!metrics) throw new Error(`the resolved path has no node "${id}"`)
+    const { inboundRps, servedRps, droppedRps, utilization: u, meanMs, p50Ms, p99Ms } = metrics
+    return { inboundRps, servedRps, droppedRps, utilization: u, meanMs, p50Ms, p99Ms }
+  }
+  const request = tick.value.perClass['dynamic-read']
+  return {
+    appServers: apps.map((app) => hop(app.id)),
+    database: hop('db'),
+    completedRps: path.peakRps * (1 - request.errorRate),
+    errorRate: request.errorRate,
+    p50Ms: request.p50Ms,
+    p99Ms: request.p99Ms,
+  }
 }
 
 /** Fixed, so regenerating the bank produces the same questions in the same order. */
@@ -51,14 +115,26 @@ export type GenerationOptions = {
 /**
  * The stamp every derived instance carries. It is a constant rather than today's date so that
  * regenerating an unchanged bank produces byte-identical output — a diff on `derived.json`
- * should mean a template changed, not that the clock moved. Bump it by hand when a batch is
- * genuinely regenerated.
+ * should mean a template changed, not that the clock moved.
  */
 export const BANK_STAMP = { generatedAt: '2026-09-16', generator: 'claude-code/opus-5' } as const
 
+/**
+ * The date each concept's derived batch was generated, where it isn't `BANK_STAMP`'s. Each
+ * concept is its own batch, so adding one concept's templates leaves every other batch's
+ * provenance alone. Set a concept's date by hand when its batch is genuinely regenerated.
+ */
+const BATCH_DATES: Readonly<Record<string, string>> = {
+  'client-server-basics': '2026-09-17',
+  'latency-and-throughput': '2026-09-17',
+  percentiles: '2026-09-17',
+  'vertical-scaling': '2026-09-17',
+}
+
 /** The generation options for one concept's derived batch. */
 export function generationOptionsFor(conceptId: string): GenerationOptions {
-  return { ...BANK_STAMP, batchId: `d-${BANK_STAMP.generatedAt}-${conceptId}` }
+  const generatedAt = BATCH_DATES[conceptId] ?? BANK_STAMP.generatedAt
+  return { generatedAt, generator: BANK_STAMP.generator, batchId: `d-${generatedAt}-${conceptId}` }
 }
 
 export type GenerationResult = {

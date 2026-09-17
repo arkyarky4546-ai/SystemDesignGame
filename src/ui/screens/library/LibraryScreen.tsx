@@ -107,7 +107,10 @@ function ConceptCard({
   )
 }
 
-/** Matches a concept's title, one-liner and lesson prose, so searching finds what it says. */
+/**
+ * Matches a concept's title, one-liner and lesson prose, collapsed "go deeper" sections
+ * included, so searching finds what it says.
+ */
 function matchesQuery(concept: Concept, query: string): boolean {
   const needle = query.trim().toLowerCase()
   if (needle === '') return true
@@ -115,6 +118,8 @@ function matchesQuery(concept: Concept, query: string): boolean {
     concept.title,
     concept.oneLiner,
     ...concept.lesson.core.map(searchableText),
+    concept.lesson.deeper?.summary ?? '',
+    ...(concept.lesson.deeper?.blocks ?? []).map(searchableText),
     ...concept.lesson.keyNumbers.map((fact) => `${fact.label} ${fact.value} ${fact.note}`),
     ...concept.lesson.misconceptions.map((item) => `${item.claim} ${item.correction}`),
   ]

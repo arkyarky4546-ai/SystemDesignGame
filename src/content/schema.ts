@@ -104,8 +104,11 @@ export type Misconception = {
 export type Lesson = {
   /** Everyone reads this. 250–450 words (03-CONTENT-SCHEMA §2). */
   readonly core: readonly Block[]
-  /** Optional expansion, collapsed by default (05-UI-DESIGN §6). No length target. */
-  readonly deeper?: readonly Block[]
+  /**
+   * Optional expansion, collapsed by default with a one-line summary of what's inside, so
+   * skipping it is an informed choice (05-UI-DESIGN §6). No length target.
+   */
+  readonly deeper?: { readonly summary: string; readonly blocks: readonly Block[] }
   readonly keyNumbers: readonly Fact[]
   readonly misconceptions: readonly Misconception[]
 }
@@ -223,6 +226,53 @@ export type TemplateEngine = {
   p99LatencyMs: (meanMs: number) => number
   /** Instances needed for a peak in rps at a target utilization 0..1. */
   instancesNeeded: (peakRps: number, perInstanceRps: number, targetUtilization: number) => number
+  /**
+   * Resolves a whole request path with the game's own turn resolver, so a question about
+   * what reaches the database, what is dropped, or what the path's p99 is gets the same
+   * answer a week in the game would.
+   */
+  resolvePath: (path: PathSpec) => PathFigures
+}
+
+/** One component on a path a template resolves. */
+export type PathHop = {
+  /** Throughput the component sustains, rps. */
+  readonly capacityRps: number
+  /** Mean time to serve one request with no queueing, ms. */
+  readonly serviceTimeMs: number
+}
+
+/** A request path as the game resolves it: ingress, one or more app servers, then the database. */
+export type PathSpec = {
+  /** Load arriving from ingress at the busiest hour, rps. */
+  readonly peakRps: number
+  /** App servers in request order, each with the queries it sends on per request it serves. */
+  readonly appServers: readonly (PathHop & { readonly queriesPerRequest: number })[]
+  readonly database: PathHop
+}
+
+/** One component on a resolved path, at peak. Rates are rps, times ms, utilization 0..1. */
+export type HopFigures = {
+  readonly inboundRps: number
+  readonly servedRps: number
+  readonly droppedRps: number
+  readonly utilization: number
+  readonly meanMs: number
+  readonly p50Ms: number
+  readonly p99Ms: number
+}
+
+/** A resolved path at peak. */
+export type PathFigures = {
+  readonly appServers: readonly HopFigures[]
+  readonly database: HopFigures
+  /** Requests that crossed every hop without being dropped, rps. */
+  readonly completedRps: number
+  /** Share of requests dropped somewhere on the path, 0..1. */
+  readonly errorRate: number
+  /** End-to-end p50 and p99, ms: the sum of every hop's, as the game reports them (ADR-0009). */
+  readonly p50Ms: number
+  readonly p99Ms: number
 }
 
 /**
@@ -335,8 +385,11 @@ export type Demo = {
   readonly variable:
     | { readonly kind: 'meanRps'; readonly min: number; readonly max: number; readonly step: number; readonly label: string }
     | {
+        /** The slider resizes one node while the load holds still. */
         readonly kind: 'capacityRps'
         readonly nodeId: string
+        /** The load the node takes the whole time, rps. */
+        readonly loadRps: number
         readonly min: number
         readonly max: number
         readonly step: number

@@ -1,7 +1,7 @@
 import { useId, useMemo, useState } from 'react'
 import { DEMOS } from '../../../content/demos'
 import type { Demo, DemoId, MetricId } from '../../../content/schema'
-import { simulateTick, type NodeMetrics, type PricedCatalog } from '../../../engine'
+import { simulateTick, type Architecture, type NodeMetrics, type PricedCatalog } from '../../../engine'
 import { architectureFor } from '../../../state/diagram'
 import { formatErrorRate, formatMs, formatRps, formatUtilization } from '../../format'
 
@@ -20,12 +20,12 @@ const METRIC_LABEL: Readonly<Record<MetricId, string>> = {
 }
 
 /**
- * The saturation demo (03-CONTENT-SCHEMA §7): one slider, one architecture, figures that
- * update live from the real engine. Drag load towards capacity and watch p99 go vertical —
- * §7 calls it worth more than any three paragraphs, and it is the first demo built.
+ * A lesson demo (03-CONTENT-SCHEMA §7): one slider, one architecture, figures that update
+ * live from the real engine. The slider moves either the load — drag it towards capacity and
+ * watch p99 go vertical — or one node's capacity while the load holds still.
  *
  * Every figure comes from `simulateTick`, so what the slider shows is what a week at that
- * load would actually do.
+ * setting would actually do.
  */
 export function DemoWidget({ demoId, catalog }: DemoWidgetProps) {
   const demo: Demo = DEMOS[demoId]
@@ -34,15 +34,17 @@ export function DemoWidget({ demoId, catalog }: DemoWidgetProps) {
 
   const architecture = useMemo(() => architectureFor(demo.architecture), [demo])
   const metrics = useMemo((): NodeMetrics | null => {
+    const setting = applySetting(demo, architecture, catalog, value)
     const tick = simulateTick({
       turn: 0,
       architecture,
-      // The slider is the load, so the peak multiplier is 1: one number moves at a time.
-      workload: { meanRps: value, peakMultiplier: 1, readFraction: 0.8, staticFraction: 0.3, keySkew: 0.2, payloadKb: 50 },
-      catalog,
+      // The peak multiplier is 1, so the load is exactly what the demo says: one number
+      // moves at a time.
+      workload: { meanRps: setting.loadRps, peakMultiplier: 1, readFraction: 0.8, staticFraction: 0.3, keySkew: 0.2, payloadKb: 50 },
+      catalog: setting.catalog,
     })
     return tick.ok ? (tick.value.perNode[demo.nodeId] ?? null) : null
-  }, [architecture, value, catalog, demo.nodeId])
+  }, [demo, architecture, value, catalog])
 
   return (
     <figure className="flex flex-col gap-3 rounded border border-panel-line bg-panel-raised px-4 py-3">
@@ -73,6 +75,25 @@ export function DemoWidget({ demoId, catalog }: DemoWidgetProps) {
       <figcaption className="text-sm leading-relaxed">{demo.caption}</figcaption>
     </figure>
   )
+}
+
+/**
+ * The load and tiers one slider position resolves against, rps. A capacity slider resizes
+ * only the tier its node sits on, in a copy, so the game's own catalog is never touched.
+ */
+export function applySetting(
+  demo: Demo,
+  architecture: Architecture,
+  catalog: PricedCatalog,
+  value: number,
+): { readonly loadRps: number; readonly catalog: PricedCatalog } {
+  const variable = demo.variable
+  if (variable.kind === 'meanRps') return { loadRps: value, catalog }
+
+  const node = architecture.nodes.find((each) => each.id === variable.nodeId)
+  if (!node || node.kind === 'ingress') return { loadRps: variable.loadRps, catalog }
+  const tiers = catalog[node.kind].map((tier, index) => (index === node.tier ? { ...tier, capacityRps: value } : tier))
+  return { loadRps: variable.loadRps, catalog: { ...catalog, [node.kind]: tiers } }
 }
 
 function formatMetric(metric: MetricId, metrics: NodeMetrics): string {

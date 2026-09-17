@@ -10,8 +10,14 @@ export const LESSON = {
   misconceptions: 'Commonly believed, and wrong',
   takeCheck: 'Take the check',
   practise: 'Practise without the check',
-  /** Under the primary action, so skipping the check is an informed choice. */
-  checkNote: 'The check asks five questions. Passing it unlocks the sizes and pays a one-time bonus into this run.',
+  /** Heads the collapsed "go deeper" section; its one-line summary follows (05-UI-DESIGN §6). */
+  deeper: 'Go deeper',
+  /**
+   * Under the primary action, so skipping the check is an informed choice. Not every concept
+   * opens something, so the note only promises an unlock when there is one.
+   */
+  checkNote: (drawCount: number, unlocksSomething: boolean) =>
+    `The check asks ${drawCount} questions. Passing it ${unlocksSomething ? 'unlocks what this concept gates and ' : ''}pays a one-time bonus into this run.`,
 } as const
 
 export const CHECK = {
