@@ -305,11 +305,19 @@ failed = rng.next() < failureRatePerTurn[kind][tier]
   until manual promotion, which costs a turn. With failover configured: brief
   degradation. The difference between those two numbers is worth a lesson.
 
+Failures are drawn once per turn by `simulateTurn`, never inside the resolver:
+the draw is keyed by the run's seed, the node's id and the turn, and the result
+is passed into `simulateTick` as input. That keeps the resolver a pure function
+and keeps `Math.random` out of `src/engine/` (ADR-0051). Keying per node means
+adding or removing a component never shifts another component's luck.
+
 **Cascades (Staff difficulty only, per §6 of the game design doc).** When a node
 fails, its load redistributes to surviving peers. If that pushes them past
 capacity, they fail too. Implement as a bounded fixed-point loop — max 10
 iterations, log if it doesn't converge — and never as recursion without a depth
-cap.
+cap. **Not built yet, deliberately:** with one app server per architecture there
+are no peers to cascade to, so this waits for load balancing. Staff keeps its
+other harshness in the meantime (ADR-0050).
 
 ## 6. Economy
 
@@ -367,6 +375,12 @@ reputation(t+1) = clamp(reputation(t) + delta, 0, 1)
 
 Asymmetry is deliberate: `lossPerBadTurn` is roughly 3× `gainPerGoodTurn`.
 Trust is lost faster than it's earned, which is both true and good game design.
+
+**Open: severity has no cap, and §5.7 can now reach the top of it.** A total
+outage takes `errorRate` to 1.0, so `severity` is `1 ÷ errorRateTarget` — 100 at
+today's target — and one week empties reputation. M6a measured what that does to
+a run and reports it; the decision belongs to M6a's checkpoint (ADR-0053). Do
+not add a cap here without it.
 
 ```
 reputationModifier = 0.6 + 0.8 × reputation    // range [0.6, 1.4]
@@ -454,7 +468,10 @@ type TickResult = {
 ```
 
 `status` is warning from `BALANCE.status.warningUtilization` and saturated from
-`saturatedUtilization`, both inclusive. `failed` arrives with §5.7.
+`saturatedUtilization`, both inclusive. `failed` means no instance is left
+serving (§5.7): such a node reports capacity 0, utilization 0 and no latency,
+because requests are refused rather than queued. A node that lost an instance
+but kept others reports its load band as usual, with `failedInstances` above 0.
 
 The bottleneck is ranked by inbound ÷ capacity rather than capped utilization, so nodes past
 capacity still order by how far past they are. An exact tie goes to the node nearer ingress.

@@ -188,6 +188,17 @@ preserved under `nines.save.corrupt.{timestamp}` and the player gets a clear
 message rather than a white screen. Test: a fixture save from every past version
 loads successfully.
 
+Every version shipped so far, and what moved it. Append a row with each format
+change; never edit or remove one, because old saves still pass through every
+step.
+
+| Version | Added | What a migration fills in |
+|---|---|---|
+| 0 | The synthetic pre-release shape, so migrations are exercised from the first release (ADR-0025) | — |
+| 1 | M2's format: acts, bailout state, turn history, archive, full settings | Act starts where the save left off; empty history |
+| 2 | M3's node positions on the canvas (ADR-0028) | A flow layout for a positionless architecture |
+| 3 | M6a's outages: which instances are down and for how long (ADR-0051) | Nothing failed, in the run and in the act's checkpoint |
+
 Export/import as a base64 string in settings, so progress can move between
 browsers without a backend.
 

@@ -318,6 +318,13 @@ inject. This milestone is the model both need; the content that uses it stays in
 Cascades are deliberately out of scope (ADR-0050): with one app server there are no peers to
 cascade to, so Staff keeps its other harshness and gains cascades with load balancing.
 
+**Status (2026-09-17): built, and blocked on the balance criterion below.** The model, the
+unlocks, the save migration and the UI are done and tested (ADR-0051, ADR-0052). The last
+criterion is **not met**: one outage in a run's first ten weeks empties reputation and the
+run never recovers, because §7's `severity` has no upper bound. That is reported in
+**ADR-0053** with two options and a recommendation, and it is the question this milestone's
+checkpoint asks. M6a is not checked off until the human chooses.
+
 **Acceptance:**
 - Failures are drawn in `simulateTurn` from the run's seeded RNG and passed into
   `simulateTick`, which stays pure. The determinism tests still pass untouched, and a test

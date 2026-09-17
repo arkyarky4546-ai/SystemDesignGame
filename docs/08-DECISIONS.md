@@ -2220,3 +2220,199 @@ objection ADR-0047 raised.
   `01-ARCHITECTURE.md` §7 gains an entry.
 - Tier 1 will show a failure a player cannot prevent until they pass the last concept. That is
   the lesson: one of everything is zero of something.
+
+---
+
+## ADR-0051 — How a failure is drawn, carried and saved
+2026-09-17 · Status: accepted · Implements ADR-0050 · Amends `02-SIMULATION.md` §5.7, §9 and `01-ARCHITECTURE.md` §7
+
+**Context.** M6a builds `02-SIMULATION.md` §5.7. ADR-0050 settled what failures do; four
+mechanical questions were left.
+- Where the random draw lives, given that `resolve.ts` may hold no randomness.
+- What one node's outage is, as a piece of data the resolver can take as input.
+- What a node with nothing left serving reports, when `u = inbound ÷ 0` is not a number.
+- How a gate can name `single-point-of-failure` before that concept exists.
+
+**Decision.**
+
+- **One draw per node, keyed by seed, node id and turn.** `simulateTurn` calls `drawFailures`,
+  which draws each resource node from `rngForKey(seed, nodeId, turn)` and hands the result to
+  `simulateTick` as input. The resolver stays pure and the determinism tests were not touched.
+  - Keying per node rather than walking one turn generator means adding, removing or
+    re-ordering a component never shifts another component's luck. It is the same guarantee
+    §2 already gives turns, for the same reason: a player who builds something shouldn't
+    change the weather.
+  - Ingress never draws. It is where traffic arrives, not a machine.
+
+- **An outage is `{ nodeId, failedInstances, turnsRemaining }`.** One shape covers both of
+  §5.7's cases, because `healthFactor` is `(replicas − failedInstances) ÷ replicas`: one of
+  one down is 0 and a total outage, one of three is 2/3 and survivable. §5.2 already took a
+  `healthFactor`, so the resolver needed no new arithmetic.
+  - `turnsRemaining` counts the turn it was drawn in, so a one-turn outage covers exactly one
+    week. It counts down at the start of each following turn and recovers on its own.
+  - An outage for a node that is no longer in the architecture is dropped, so removing a
+    broken component clears it.
+
+- **A node with no instance left reports no utilization and no latency.** Capacity 0, served
+  0, everything dropped, p50, p99 and mean all 0, and `status: 'failed'`. Requests to a
+  machine that is down are refused, not queued: there is no queue to wait in, so no M/M/1
+  figure is meaningful. This also avoids dividing by zero, and keeps every recorded
+  utilization a real fraction, so the save schema didn't change shape.
+  - `failed` outranks every overloaded node as the bottleneck. A node that is down *is* the
+    problem.
+  - The weekly report says the outage and deliberately says nothing about load. Everything
+    downstream saw no traffic, so calling one of them "not the problem" would teach the player
+    to look in the wrong place — the opposite of what that paragraph is for.
+
+- **A gate may name a concept the curriculum has only promised.** `PLANNED_CONCEPT_IDS` holds
+  `single-point-of-failure` and `horizontal-scaling` with their 04-CURRICULUM titles, and
+  `ComponentDef.replicaGates` may name one. Nothing can pass a concept with no check, so such
+  a gate is shut; when M7 writes the lesson, the id moves to `CONCEPT_IDS` and the gate opens
+  with no other change.
+  - The inspector shows the instance count as a control that is present and disabled, with a
+    line naming what would open it — the same way a size the player hasn't earned is listed
+    and disabled. Nothing is dead code and M7 wires no new UI.
+
+- **Saves go to v3, with a v2 fixture.** Outages live on `RunCheckpoint`, so a rollback
+  restores them with the architecture they were drawn against and no outage outlives its
+  node. A save written before M6a loads with nothing failed, in the run and in the act's
+  checkpoint. `01-ARCHITECTURE.md` §7 now lists every version and what moved it.
+
+- **Smaller points.**
+  - `TierRisk.failureRatePerTurn` joins `TierStats` and `TierCosts` in `TierDef`, required
+    rather than optional: a size with no stated rate would silently promise hardware that
+    never fails. `NO_FAILURES` in the test helpers is the explicit way to ask for that.
+  - `serviceLevel` now divides the weighted error rate by the sum of the class shares instead
+    of assuming that sum is 1. The shares are products of fractions, so they sum to 1 only
+    within rounding; a real weighted mean makes a total outage read as exactly 1.0 rather
+    than a hair under it.
+
+**Alternatives.**
+- Failures inside `simulateTick`: it would need a generator, and the resolver's purity is
+  what makes every balance and determinism test possible.
+- One turn generator walked across nodes: a node skipped because it was already down would
+  shift every later node's draw, so editing the architecture would change other nodes' luck.
+- Reporting a failed node at `U_MAX` and 200× its service time: a fabricated latency for a
+  machine serving nothing, and it puts an absurd number in front of the player.
+- Adding `single-point-of-failure` to `CONCEPT_IDS` with a placeholder lesson: it would ship
+  content nobody wrote, which is the one thing CLAUDE.md forbids outright.
+- A `failedNodes` list in `TurnSummary` for the canvas: the run already keeps the outages the
+  week ran with, and `lastResolvedTick` re-resolves from them, so the save stays smaller.
+
+**Consequences.**
+- Save v3. Migration 2 → 3 adds empty outages; `save-v2.json` is the new fixture.
+- `NodeStatus` has four members. Every exhaustive switch over it was updated.
+- The M2 headless-run test now runs on `NO_FAILURES`. Its subject is the run loop's
+  arithmetic over 20 turns, which is what it was written to check; failures are covered by
+  `failures.test.ts`, including the finding in ADR-0053.
+- The entry chunk is 150 KB gzipped against M10's 200 KB, up from 148 KB.
+
+---
+
+## ADR-0052 — Failure rates are content, and fall as the box gets bigger
+2026-09-17 · Status: accepted · Implements ADR-0050
+
+**Context.** `03-CONTENT-SCHEMA.md` §5 puts `failureRatePerTurn` on the tier, which makes it
+content rather than balance. M6a had to pick the first figures, and the roadmap asks for
+20-turn runs that stay solvent. Real per-instance hardware failure rates are on the order of
+a few percent a *year*; a weekly rate that low would mean a Tier 1 player never sees an
+outage, and `single-point-of-failure` would teach a lesson the game never demonstrates.
+
+**Decision.**
+- **The ordering is the content; the magnitudes are M9's.** A bigger, dearer instance fails
+  less often than a small one, and a managed database fails less often than an app server of
+  the same size. Those two statements are what the lesson rests on, and they are what the
+  tests pin.
+- **First figures, per instance per week:** app server 2% / 1.5% / 1% / 0.8% from Small to
+  Extra large; database 1.2% / 0.9% / 0.6% / 0.5%.
+  - With the starter architecture this is about a 3.2% chance of an outage in any week, so a
+    player meets one roughly every thirty weeks and comfortably inside Act 1.
+  - That is far harsher than real hardware and deliberately so: a game week has to show in
+    one sitting what a fleet shows in a year. **The lesson text must not quote these as
+    industry figures**, and `single-point-of-failure` should say where the real numbers sit.
+- **No rate may be zero.** The content schema refuses it. Hardware that cannot fail is
+  exactly the misconception `single-point-of-failure` exists to correct.
+- **Outage and recovery lengths stay balance.** `outageDurationTurns` is 1 — the shortest an
+  outage can be, since a turn is a week — and `recoveryTurns` is 2, because nobody is paged
+  at 3am for a service that stayed up, so a redundant instance is replaced at a working pace.
+
+**Alternatives.**
+- Realistic weekly rates (~0.05%): the feature would be invisible and the concept
+  unteachable in play.
+- A single rate for every size: it would waste the one place the catalog can say that cheap
+  hardware is less reliable, which is a real tradeoff and a good lesson.
+- Rates in `BALANCE`: §5 of the content schema puts them on the tier, and ADR-0050 agreed.
+
+**Consequences.**
+- `TEST_CATALOG` carries the same shape of figures, so engine tests exercise real rates.
+- These numbers are the first input to M9's harness, and the most likely thing it changes.
+
+---
+
+## ADR-0053 — Finding: one unpreventable outage ends a run, and that is §7's severity
+2026-09-17 · Status: **open — needs the human's decision at M6a's checkpoint** · Raised by ADR-0050's balance criterion
+
+**Context.** M6a's last acceptance criterion: "20-turn headless runs on all four difficulties
+stay solvent and off the reputation floor with failures enabled. If they don't, the rates or
+§7's uncapped severity are wrong, and that is reported rather than worked around." They don't.
+M6a's checkpoint asks the same question in the player's words — "is an outage you couldn't
+prevent legible and fair, or does one bad week undo the run?" — and says the answer decides
+whether §7's severity needs a cap. So this is reported, not fixed.
+
+**What was measured.** 300 seeds per difficulty, 20 turns, the headless upgrade bot, real
+failure rates from ADR-0052. Medians of peak users reached:
+
+| | no outage in 20 weeks | outage in weeks 1–10 | outage in week 11+ |
+|---|---|---|---|
+| Intern | 4,408 (n=179) | **64** (n=90) | 1,008 (n=31) |
+| Junior | 4,616 (n=183) | **74** (n=88) | 1,832 (n=29) |
+| Senior | 4,705 (n=187) | **60** (n=86) | 2,876 (n=27) |
+| Staff | 4,539 (n=188) | **51** (n=84) | 2,735 (n=28) |
+
+About 40% of runs see an outage in 20 weeks; of those hit in the first ten, roughly two
+thirds never reach 100 users at all. Bailouts go from 0–1 per 200 runs with failures
+disabled to 34 (Intern), 24 (Junior), 12 (Senior), 5 (Staff).
+
+**The mechanism, and it is entirely §7.** A total outage takes `errorRate` to 1.0.
+`severity = max(p99 ÷ p99Target, errorRate ÷ errorRateTarget)` is then `1 ÷ 0.01 = 100`, and
+`lossPerBadTurn × 100 = 6.0` against a reputation range of 0..1. Reputation is emptied by a
+single week, whatever it was before. `reputationModifier` drops to 0.6, so traffic is
+multiplied by about 0.67–0.75 a week and the user base shrinks; reputation returns at
+`+0.02` a turn, so it takes ten weeks just to get the modifier back over 1.0, by which time
+the business is gone. Nothing the player could have done prevents any of it — Tier 1 cannot
+buy redundancy.
+
+**Two things this is not.**
+- It is not the failure rates. At any rate high enough for a player to meet an outage in
+  Act 1, the week it lands still empties reputation. Lowering the rates hides the cliff
+  instead of removing it, and makes the concept unteachable (ADR-0052).
+- It is not new, entirely. The naive bot already touches reputation 0 in ~97% of 20-turn runs
+  with failures disabled, around weeks 14–19, because it upgrades a week late into steep
+  growth. **That part is pre-existing and M9's.** What M6a adds is a cliff that arrives in
+  week 3 through no fault of the player.
+
+**The two options.**
+
+1. **Cap severity in §7.** Add `BALANCE.reputation.maxSeverity`. At 5, the worst possible
+   week costs 0.30 reputation and is recoverable in fifteen good ones; a total outage becomes
+   a serious, survivable setback. It amends `02-SIMULATION.md` §7 for every bad week, not
+   just outages, which also softens the pre-existing spiral above — arguably a second
+   benefit, arguably scope creep into M9.
+2. **Make an outage part of a week rather than all of it.** Read `outageDurationTurns` as a
+   fraction: a node down for a fifth of the week gives `errorRate` 0.2, severity 20. Truer to
+   life, since no real service is down for a working week, and it leaves §7 alone. It amends
+   §5.7's "error rate for those classes goes to 1.0", weakens the lesson's bluntness, and
+   needs a rule for what a partial week does to latency.
+
+**Recommendation.** Option 1. The number that is wrong is the one with no upper bound:
+`severity` is a ratio of a rate to a target and nothing stops it reaching 100, so *any* week
+of heavy errors is unrecoverable, outage or not. Option 2 patches the one input that happens
+to reach the top of the range today, and leaves the same cliff waiting for the first incident
+that drives errors past about 17%.
+
+**Consequences while this is open.**
+- M6a's balance-sanity criterion is **not met**, and M6a is not checked off in the roadmap.
+- `failures.test.ts` asserts the behaviour as measured — including that an outage empties
+  reputation — so the finding is pinned rather than hidden. Those assertions change with
+  whichever option is chosen.
+- Nothing in `BALANCE` was tuned to make a test pass.

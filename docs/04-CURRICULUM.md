@@ -29,7 +29,7 @@ placed. Nothing else is unlocked.
 | `capacity-and-utilization` | Capacity, utilization, and the cliff | `latency-and-throughput` | Server tier upgrades | Compute instances needed for a target rps and headroom |
 | `percentiles` | Why the average lies | `latency-and-throughput` | p99 panel in the dashboard | Explain why p99 matters more than mean to a user |
 | `vertical-scaling` | Making the box bigger | `capacity-and-utilization` | Component tier 1→3 upgrades | Say where vertical scaling stops helping and why |
-| `single-point-of-failure` | One of everything is zero of something | `vertical-scaling` | Failure panel | Identify every SPOF in an architecture on sight |
+| `single-point-of-failure` | One of everything is zero of something | `vertical-scaling` | Failure panel; a second app-server instance | Identify every SPOF in an architecture on sight |
 
 **Act 1 incident:** `the-first-outage` — a modest traffic spike saturates the
 single server. Fixable only by upgrading the tier, which teaches that vertical
@@ -38,13 +38,21 @@ scaling is real and also that it runs out.
 Tier 1 is the MVP content set. Six concepts, ~30 questions, one incident, one
 demo (the saturation slider). Ship this before anything else.
 
+**On the instance unlocks (ADR-0050).** `replicas > 1` on app servers was
+originally all `horizontal-scaling`'s. It is split, so that each concept opens
+something its own lesson names: `single-point-of-failure` opens the second
+instance, which is the N+1 fix it teaches, and `horizontal-scaling` lifts the
+cap. Without the split, Tier 1 would teach a fix the player cannot buy until
+Tier 2 content exists. Databases stay at one instance either way: §5.4's
+replication is Tier 3's subject.
+
 ---
 
 ## Tier 2 — More than one box (Act 2: 1k → 100k users)
 
 | id | Title | Prereqs | Unlocks | After this, the player can |
 |---|---|---|---|---|
-| `horizontal-scaling` | Adding boxes instead of buying bigger ones | `vertical-scaling` | `replicas > 1` on app servers | Choose between scaling up and scaling out with reasons |
+| `horizontal-scaling` | Adding boxes instead of buying bigger ones | `vertical-scaling` | No cap on app-server instances | Choose between scaling up and scaling out with reasons |
 | `load-balancing` | Splitting traffic | `horizontal-scaling` | Load balancer component | Place a balancer and pick a strategy |
 | `statelessness` | Why your servers can't remember anything | `load-balancing` | Session store config | Explain why sticky sessions cause imbalance |
 | `caching-fundamentals` | Not asking the same question twice | `percentiles` | Cache component | Predict downstream load reduction from a hit rate |
