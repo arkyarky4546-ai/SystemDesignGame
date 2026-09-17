@@ -250,7 +250,7 @@ shape works: instances-needed, utilization-from-load, latency-at-utilization.
 
 ---
 
-## [ ] M5b — Review tool
+## [x] M5b — Review tool
 
 **Read:** `09-QUESTION-BANK.md` §8, §10
 

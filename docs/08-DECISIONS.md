@@ -1795,3 +1795,68 @@ could not type.
   orphans its ids in the manifest, which is correct: they were issued and are never reused.
 - The first batch is 48 derived questions from three templates against 15 authored. A check
   can therefore draw at most two of them, per §5.
+
+---
+
+## ADR-0045 — The review tool is a terminal program, and a template is what gets reviewed
+2026-09-16 · Status: accepted · Extends ADR-0044
+
+**Context.** `09-QUESTION-BANK.md` §8 asks for `npm run review`: local-only, excluded from the
+build, one item at a time, keyboard-driven, with the lesson side by side, writing `reviewStatus`
+back to source and appending to `content/review-log.jsonl`. Two things had to be worked out.
+§8 says the tool "serves" items, which reads like a local web app; and it says to write review
+status back to the source files, which for derived questions collides with CLAUDE.md's rule
+that `derived.json` is generated and never hand-edited.
+
+**Decision.**
+
+- **A terminal program, not a local web app.** Raw-mode stdin gives one keypress per decision
+  with no server, no port, no framework and no dependency. `?` prints the lesson above the
+  prompt rather than beside it, which is the one thing a terminal gives up; against that, the
+  tool starts instantly and the human is already in this terminal. §8's real requirement is
+  that reviewing 111 items is not annoying, and a keystroke per item is the fastest shape.
+
+- **A template carries its own `reviewStatus` and `status`, and the generator stamps them onto
+  every instance.** This is what makes §8's "approving one template approves its 40 instances"
+  work without hand-editing generated output: the decision is written into `templates.ts`, the
+  bank is regenerated, and all forty instances come back carrying the new stamp. A rejected
+  template still generates its instances, retired, so no id is ever lost (§4.3).
+  - A spot-checked instance is therefore decided on its template. §8 already says a failing
+    sample rejects the whole batch rather than one question, so this is the spec's own rule
+    rather than a workaround for it.
+
+- **Authored questions are edited in place in their `.ts` source,** by anchoring on the
+  question's `id` and setting the field that follows it, bounded by the next item's id. Two
+  details make that safe: the boundary only counts ids containing a hyphen, because option ids
+  are single letters; and a lookbehind stops `conceptId:` counting as an `id:`. Tests assert
+  that approving one question leaves both of its neighbours untouched.
+
+- **Rejection retires, and requires a reason.** `status: 'retired'` rather than deletion,
+  because a save can reference a retired id and still has to resolve. An empty reason writes
+  nothing at all: §8 says reasons are the input to improving the generation prompts, so a
+  rejection without one loses the only part worth keeping.
+
+- **The queue is what is left to do.** Already-reviewed items are skipped unless `--all`,
+  `--spot-check` serves only the instance samples, and the spot-check sample is seeded per
+  template, so an interrupted review resumes on the same questions instead of reshuffling.
+
+- **Local-only is asserted two ways.** Nothing under `src/` imports anything from `tools/`, and
+  no built asset contains a string unique to the review tool. The second check runs whenever
+  `dist/` exists, which the definition of done guarantees.
+
+**Alternatives.**
+- A local web app: nicer side-by-side reading, at the cost of a server, a build path that has
+  to be kept out of `dist/`, and a slower start for something used in long sittings.
+- Keeping review status in a separate file the loader merges: leaves the source files silent
+  about whether a human has read them, which is exactly what a reviewer wants to see in a diff.
+- Hand-editing `derived.json` to mark instances reviewed: forbidden by CLAUDE.md, and lost on
+  the next `npm run generate`.
+- Deleting a rejected question: breaks every save that references its id.
+
+**Consequences.**
+- Approving a template rewrites `derived.json` immediately, so a review session produces a diff
+  on the bank as well as on the templates. That is the intended signal.
+- The tool has to reload content after an edit, so `e` reboots the module graph. For a file
+  this size it is not noticeable.
+- Tier 1's queue today is 3 templates, 6 spot checks and 30 authored questions — 39 items. The
+  full Tier 1 burden §8 budgets for is about 111.

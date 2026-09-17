@@ -16,6 +16,8 @@ export const capacityAndUtilizationTemplates: readonly QuestionTemplate[] = [
   defineTemplate({
     id: 'tpl-capacity-instances-needed',
     conceptId: 'capacity-and-utilization',
+    reviewStatus: 'needs-review',
+    status: 'active',
     depth: 2,
     params: [
       { kind: 'int', name: 'meanRps', min: 200, max: 4000, step: 100 },
@@ -69,6 +71,8 @@ export const capacityAndUtilizationTemplates: readonly QuestionTemplate[] = [
   defineTemplate({
     id: 'tpl-capacity-utilization-from-load',
     conceptId: 'capacity-and-utilization',
+    reviewStatus: 'needs-review',
+    status: 'active',
     depth: 1,
     params: [
       { kind: 'int', name: 'meanRps', min: 40, max: 600, step: 10 },
@@ -115,6 +119,8 @@ export const capacityAndUtilizationTemplates: readonly QuestionTemplate[] = [
   defineTemplate({
     id: 'tpl-capacity-latency-at-utilization',
     conceptId: 'capacity-and-utilization',
+    reviewStatus: 'needs-review',
+    status: 'active',
     depth: 2,
     params: [
       { kind: 'choice', name: 'serviceTimeMs', values: [4, 5, 6, 8, 10, 12, 15, 20] },

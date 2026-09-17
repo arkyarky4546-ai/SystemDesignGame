@@ -259,6 +259,14 @@ export type QuestionTemplate = {
   /** How many instances to freeze into the bank. */
   readonly instanceCount: number
   readonly distractors: readonly DistractorRule[]
+  /**
+   * A template is what a human reviews: approving it approves every instance it produced,
+   * because the engine computed them (09-QUESTION-BANK §8). The generator stamps this onto
+   * each instance, so `derived.json` stays generated and is never hand-edited.
+   */
+  readonly reviewStatus: ReviewStatus
+  /** A retired template still generates its instances, retired, so their ids are never reused. */
+  readonly status: 'active' | 'retired'
 }
 
 /** The parameter names a spec list declares, as a union of string literals. */
@@ -273,6 +281,8 @@ export function defineTemplate<const S extends readonly ParamSpec[]>(template: {
   readonly id: string
   readonly conceptId: ConceptId
   readonly depth: Depth
+  readonly reviewStatus: ReviewStatus
+  readonly status: 'active' | 'retired'
   readonly params: S
   readonly constraints?: (params: Readonly<Record<NamesOf<S>, number>>) => boolean
   readonly build: (params: Readonly<Record<NamesOf<S>, number>>, engine: TemplateEngine) => GeneratedQuestion

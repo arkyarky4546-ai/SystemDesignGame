@@ -181,8 +181,10 @@ function buildQuestion(
     },
     explanation: generated.explanation,
     tags: generated.tags,
-    status: 'active',
-    reviewStatus: 'needs-review',
+    // Stamped from the template: approving a template approves every instance it produced,
+    // and retiring one retires them without ever reusing an id (09-QUESTION-BANK §8).
+    status: template.status,
+    reviewStatus: template.reviewStatus,
     provenance: {
       origin: 'derived',
       generatedAt: options.generatedAt,
