@@ -347,7 +347,87 @@ const NUMERIC_ANSWERS: Readonly<Record<string, () => number>> = {
     return 120 * hops
   },
   'q-percentiles-a-0010': () => (1 - 0.99 ** 20) * 100,
+  // Two queries for each of 450 requests, against the largest database's capacity.
+  'q-vertical-scaling-a-0005': () => {
+    expect(largestDb?.capacityRps).toBe(600)
+    const tick = unwrap(
+      simulateTick(
+        linearInput({ peakRps: 450, app: ROOMY, database: { capacityRps: 600, serviceTimeMs: 5 }, fanoutFactor: 2 }),
+      ),
+    )
+    return metricsFor(tick, 'db').droppedRps
+  },
+  // Sized so the peak sits at 75%, then loaded with the weekly mean: a 2.5× peak multiplier.
+  'q-vertical-scaling-a-0008': () => {
+    const peakRps = 250
+    return utilization(peakRps / 2.5, peakRps / 0.75) * 100
+  },
+  // Medium at 90%, then the same peak on Large, with the sizes read from the catalog.
+  'q-vertical-scaling-a-0009': () => {
+    expect(APP_TIERS[1]).toMatchObject({ label: 'Medium', capacityRps: 40, serviceTimeMs: 11 })
+    expect(APP_TIERS[2]).toMatchObject({ label: 'Large', capacityRps: 150, serviceTimeMs: 10 })
+    const peakRps = 40 * 0.9
+    expect(meanResponseTimeMs(11, utilization(peakRps, 40))).toBeCloseTo(110, 9)
+    return meanResponseTimeMs(10, utilization(peakRps, 150))
+  },
 }
+
+describe('what the vertical-scaling authored batch claims (02-SIMULATION §5.2)', () => {
+  const p99 = (serviceTimeMs: number, u: number) => p99LatencyMs(meanResponseTimeMs(serviceTimeMs, u))
+
+  it('a-0004: 10 ms at 20% is about 58 ms; four times the room is about 48; the floor is 46', () => {
+    expect(Math.round(p99(10, 0.2))).toBe(58)
+    expect(Math.round(p99(10, utilization(20, 400)))).toBe(48)
+    expect(Math.round(p99(10, 0.2) / 4)).toBe(14)
+    expect(Math.round(p99(10, 0.2) - p99(10, 0.05))).toBe(9)
+    expect(Math.round(p99(10, 0))).toBe(46)
+    expect(meanResponseTimeMs(10, 0.2)).toBeCloseTo(12.5, 9)
+    expect(meanResponseTimeMs(10, 0.05)).toBeCloseTo(10.5, 1)
+  })
+
+  it('a-0006: 180/s behind a 150/s app server puts the database at 75%, and at 90% once it is upgraded', () => {
+    const database = { capacityRps: 200, serviceTimeMs: 5 }
+    const before = unwrap(simulateTick(linearInput({ peakRps: 180, app: { capacityRps: 150, serviceTimeMs: 10 }, database })))
+    const after = unwrap(simulateTick(linearInput({ peakRps: 180, app: { capacityRps: 500, serviceTimeMs: 10 }, database })))
+    expect(metricsFor(before, 'app').droppedRps).toBe(30)
+    expect(metricsFor(before, 'db')).toMatchObject({ utilization: 0.75, status: 'warning' })
+    expect(metricsFor(after, 'db')).toMatchObject({ utilization: 0.9, status: 'saturated', droppedRps: 0 })
+    expect(metricsFor(after, 'db').meanMs).toBeCloseTo(50, 9)
+  })
+
+  it('a-0007: the path is about 340 ms; doubling the database gives about 116, doubling the app server about 330', () => {
+    const now = p99(10, 0.3) + p99(6, 0.9)
+    expect(Math.round(now / 10) * 10).toBe(340)
+    expect(Math.round(p99(6, 0.9))).toBe(276)
+    expect(Math.round(p99(10, 0.3))).toBe(66)
+    expect(Math.round(p99(10, 0.3) + p99(6, 0.45))).toBe(116)
+    expect(Math.round(p99(6, 0.45))).toBe(50)
+    expect(Math.round((p99(10, 0.15) + p99(6, 0.9)) / 10) * 10).toBe(330)
+    expect(Math.round(p99(10, 0.3) - p99(10, 0.15))).toBe(12)
+    expect(meanResponseTimeMs(1, 0.45)).toBeCloseTo(1.8, 1)
+  })
+
+  it('a-0010: Large at 40% to Extra large saves about 12 ms of p99, for $250 more a week and $4,500 of setup', () => {
+    const [, , large, extraLarge] = DB_TIERS
+    expect(large).toMatchObject({ capacityRps: 200, serviceTimeMs: 5, runningCostPerTurnCents: 200_00 })
+    expect(extraLarge).toMatchObject({ capacityRps: 600, serviceTimeMs: 5, runningCostPerTurnCents: 450_00, setupCostCents: 4_500_00 })
+    const load = 200 * 0.4
+    expect(Math.round(p99(5, 0.4))).toBe(38)
+    expect(Math.round(p99(5, utilization(load, 600)))).toBe(27)
+    expect(Math.round(p99(5, 0.4) - p99(5, utilization(load, 600)))).toBe(12)
+    expect(meanResponseTimeMs(5, 0.4)).toBeCloseTo(8.3, 1)
+    expect(meanResponseTimeMs(5, utilization(load, 600))).toBeCloseTo(5.8, 1)
+    expect(600 / load).toBe(7.5)
+    expect(Math.round(utilization(load, 600) * 100)).toBe(13)
+    expect(Math.round(p99(5, 0))).toBe(23)
+  })
+
+  it('a-0011: at 60% the mean is 2.5 service times and nothing is dropped', () => {
+    expect(meanResponseTimeMs(1, 0.6)).toBeCloseTo(2.5, 9)
+    const tick = unwrap(simulateTick(linearInput({ peakRps: 60, app: { capacityRps: 100, serviceTimeMs: 10 }, database: ROOMY })))
+    expect(metricsFor(tick, 'app').droppedRps).toBe(0)
+  })
+})
 
 describe('numeric answers, recomputed through the engine', () => {
   const numeric = Object.values(POOLS)
@@ -367,12 +447,13 @@ describe('numeric answers, recomputed through the engine', () => {
 })
 
 describe('which concepts have an authored batch', () => {
-  it('is every concept but the three M7 added, which M7b writes', () => {
-    expect(CONCEPT_IDS.filter((id) => !WITH_AUTHORED.includes(id))).toEqual([
-      'client-server-basics',
-      'latency-and-throughput',
-      'vertical-scaling',
-    ])
+  it('is every concept but the two M7b hasn’t reached yet', () => {
+    expect(CONCEPT_IDS.filter((id) => !WITH_AUTHORED.includes(id))).toEqual(['client-server-basics', 'latency-and-throughput'])
+  })
+
+  it('gives every batch its own id (M7b)', () => {
+    const batches = WITH_AUTHORED.map((id) => new Set(AUTHORED[id].map((question) => question.provenance.batchId)))
+    expect(new Set(batches.flatMap((batch) => [...batch])).size).toBe(WITH_AUTHORED.length)
   })
 })
 

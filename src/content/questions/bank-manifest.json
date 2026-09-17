@@ -1035,6 +1035,54 @@
       "origin": "derived",
       "template": "tpl-percentiles-p99-from-mean"
     },
+    "q-vertical-scaling-a-0001": {
+      "concept": "vertical-scaling",
+      "origin": "authored"
+    },
+    "q-vertical-scaling-a-0002": {
+      "concept": "vertical-scaling",
+      "origin": "authored"
+    },
+    "q-vertical-scaling-a-0003": {
+      "concept": "vertical-scaling",
+      "origin": "authored"
+    },
+    "q-vertical-scaling-a-0004": {
+      "concept": "vertical-scaling",
+      "origin": "authored"
+    },
+    "q-vertical-scaling-a-0005": {
+      "concept": "vertical-scaling",
+      "origin": "authored"
+    },
+    "q-vertical-scaling-a-0006": {
+      "concept": "vertical-scaling",
+      "origin": "authored"
+    },
+    "q-vertical-scaling-a-0007": {
+      "concept": "vertical-scaling",
+      "origin": "authored"
+    },
+    "q-vertical-scaling-a-0008": {
+      "concept": "vertical-scaling",
+      "origin": "authored"
+    },
+    "q-vertical-scaling-a-0009": {
+      "concept": "vertical-scaling",
+      "origin": "authored"
+    },
+    "q-vertical-scaling-a-0010": {
+      "concept": "vertical-scaling",
+      "origin": "authored"
+    },
+    "q-vertical-scaling-a-0011": {
+      "concept": "vertical-scaling",
+      "origin": "authored"
+    },
+    "q-vertical-scaling-a-0012": {
+      "concept": "vertical-scaling",
+      "origin": "authored"
+    },
     "q-vertical-scaling-d-vertical-bottleneck-moves-0001": {
       "concept": "vertical-scaling",
       "origin": "derived",

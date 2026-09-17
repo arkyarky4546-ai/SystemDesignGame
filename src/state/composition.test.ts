@@ -3,7 +3,8 @@ import { BALANCE } from '../config/balance'
 import { DIFFICULTIES } from '../config/difficulty'
 import { CONCEPTS } from '../content/concepts'
 import { loadQuestions } from '../content/questions'
-import type { Question } from '../content/schema'
+import { AUTHORED } from '../content/questions/authored'
+import { CONCEPT_IDS, type Question } from '../content/schema'
 import { recordCheckAttempt, type Knowledge } from '../engine'
 import { drawCheck, drawPractice, shuffledOptions } from './check'
 
@@ -78,6 +79,32 @@ describe('draw composition (09-QUESTION-BANK §5), over 12,000 draws', () => {
       for (const question of draw.questions) {
         expect(BALANCE.check.depths[draw.difficulty], `${draw.difficulty} drew depth ${question.depth}`).toContain(question.depth)
       }
+    }
+  })
+})
+
+// Every concept with an authored batch has to meet §5 from its own pool, not just the one
+// above. A concept without one can't, which is ADR-0048's gap until M7b reaches it.
+describe.each(CONCEPT_IDS.filter((id) => AUTHORED[id].length > 0))('the %s check’s composition (09-QUESTION-BANK §5)', (conceptId) => {
+  it('holds §5’s class limits and fills every draw, on every difficulty', async () => {
+    const pool = await loadQuestions(conceptId)
+    for (let index = 0; index < 2_000; index++) {
+      const difficulty = DIFFICULTIES[index % DIFFICULTIES.length]
+      if (!difficulty) continue
+      const questions = drawCheck({
+        pool,
+        conceptId,
+        drawCount: CONCEPTS[conceptId].check.drawCount,
+        difficulty,
+        knowledge: EMPTY,
+        seed: index,
+        attemptNumber: 1 + (index % 7),
+      })
+      expect(questions).toHaveLength(CONCEPTS[conceptId].check.drawCount)
+      expect(questions.filter(isDerived).length, `${difficulty} seed ${index}`).toBeLessThanOrEqual(BALANCE.check.maxDerived)
+      expect(questions.filter((question) => !isDerived(question)).length, `${difficulty} seed ${index}`).toBeGreaterThanOrEqual(
+        BALANCE.check.minAuthored,
+      )
     }
   })
 })

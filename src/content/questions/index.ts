@@ -10,7 +10,7 @@ import type { ConceptId, Question } from '../schema'
  * the next run (CLAUDE.md).
  */
 const LOADERS: Readonly<Record<ConceptId, () => Promise<readonly Question[]>>> = {
-  // No authored questions yet: M7b writes them.
+  // No authored questions yet: M7b writes them, a batch per session.
   'client-server-basics': async () => frozen(await import('./client-server-basics/derived.json')),
   'latency-and-throughput': async () => frozen(await import('./latency-and-throughput/derived.json')),
   'capacity-and-utilization': async () => {
@@ -27,7 +27,13 @@ const LOADERS: Readonly<Record<ConceptId, () => Promise<readonly Question[]>>> =
     ])
     return [...authored.percentilesAuthored, ...frozen(derived)]
   },
-  'vertical-scaling': async () => frozen(await import('./vertical-scaling/derived.json')),
+  'vertical-scaling': async () => {
+    const [authored, derived] = await Promise.all([
+      import('./vertical-scaling/authored'),
+      import('./vertical-scaling/derived.json'),
+    ])
+    return [...authored.verticalScalingAuthored, ...frozen(derived)]
+  },
 }
 
 /**
