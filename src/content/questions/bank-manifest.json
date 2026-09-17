@@ -300,6 +300,456 @@
       "origin": "derived",
       "template": "tpl-capacity-utilization-from-load"
     },
+    "q-client-server-basics-d-request-database-load-0001": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-database-load"
+    },
+    "q-client-server-basics-d-request-database-load-0002": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-database-load"
+    },
+    "q-client-server-basics-d-request-database-load-0003": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-database-load"
+    },
+    "q-client-server-basics-d-request-database-load-0004": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-database-load"
+    },
+    "q-client-server-basics-d-request-database-load-0005": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-database-load"
+    },
+    "q-client-server-basics-d-request-database-load-0006": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-database-load"
+    },
+    "q-client-server-basics-d-request-database-load-0007": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-database-load"
+    },
+    "q-client-server-basics-d-request-database-load-0008": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-database-load"
+    },
+    "q-client-server-basics-d-request-database-load-0009": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-database-load"
+    },
+    "q-client-server-basics-d-request-database-load-0010": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-database-load"
+    },
+    "q-client-server-basics-d-request-database-load-0011": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-database-load"
+    },
+    "q-client-server-basics-d-request-database-load-0012": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-database-load"
+    },
+    "q-client-server-basics-d-request-database-load-0013": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-database-load"
+    },
+    "q-client-server-basics-d-request-database-load-0014": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-database-load"
+    },
+    "q-client-server-basics-d-request-database-load-0015": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-database-load"
+    },
+    "q-client-server-basics-d-request-dropped-never-arrive-0001": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-dropped-never-arrive"
+    },
+    "q-client-server-basics-d-request-dropped-never-arrive-0002": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-dropped-never-arrive"
+    },
+    "q-client-server-basics-d-request-dropped-never-arrive-0003": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-dropped-never-arrive"
+    },
+    "q-client-server-basics-d-request-dropped-never-arrive-0004": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-dropped-never-arrive"
+    },
+    "q-client-server-basics-d-request-dropped-never-arrive-0005": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-dropped-never-arrive"
+    },
+    "q-client-server-basics-d-request-dropped-never-arrive-0006": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-dropped-never-arrive"
+    },
+    "q-client-server-basics-d-request-dropped-never-arrive-0007": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-dropped-never-arrive"
+    },
+    "q-client-server-basics-d-request-dropped-never-arrive-0008": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-dropped-never-arrive"
+    },
+    "q-client-server-basics-d-request-dropped-never-arrive-0009": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-dropped-never-arrive"
+    },
+    "q-client-server-basics-d-request-dropped-never-arrive-0010": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-dropped-never-arrive"
+    },
+    "q-client-server-basics-d-request-dropped-never-arrive-0011": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-dropped-never-arrive"
+    },
+    "q-client-server-basics-d-request-dropped-never-arrive-0012": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-dropped-never-arrive"
+    },
+    "q-client-server-basics-d-request-dropped-never-arrive-0013": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-dropped-never-arrive"
+    },
+    "q-client-server-basics-d-request-dropped-never-arrive-0014": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-dropped-never-arrive"
+    },
+    "q-client-server-basics-d-request-dropped-never-arrive-0015": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-dropped-never-arrive"
+    },
+    "q-client-server-basics-d-request-path-p99-0001": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-path-p99"
+    },
+    "q-client-server-basics-d-request-path-p99-0002": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-path-p99"
+    },
+    "q-client-server-basics-d-request-path-p99-0003": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-path-p99"
+    },
+    "q-client-server-basics-d-request-path-p99-0004": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-path-p99"
+    },
+    "q-client-server-basics-d-request-path-p99-0005": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-path-p99"
+    },
+    "q-client-server-basics-d-request-path-p99-0006": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-path-p99"
+    },
+    "q-client-server-basics-d-request-path-p99-0007": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-path-p99"
+    },
+    "q-client-server-basics-d-request-path-p99-0008": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-path-p99"
+    },
+    "q-client-server-basics-d-request-path-p99-0009": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-path-p99"
+    },
+    "q-client-server-basics-d-request-path-p99-0010": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-path-p99"
+    },
+    "q-client-server-basics-d-request-path-p99-0011": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-path-p99"
+    },
+    "q-client-server-basics-d-request-path-p99-0012": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-path-p99"
+    },
+    "q-client-server-basics-d-request-path-p99-0013": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-path-p99"
+    },
+    "q-client-server-basics-d-request-path-p99-0014": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-path-p99"
+    },
+    "q-client-server-basics-d-request-path-p99-0015": {
+      "concept": "client-server-basics",
+      "origin": "derived",
+      "template": "tpl-request-path-p99"
+    },
+    "q-latency-and-throughput-d-throughput-completed-0001": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-completed"
+    },
+    "q-latency-and-throughput-d-throughput-completed-0002": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-completed"
+    },
+    "q-latency-and-throughput-d-throughput-completed-0003": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-completed"
+    },
+    "q-latency-and-throughput-d-throughput-completed-0004": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-completed"
+    },
+    "q-latency-and-throughput-d-throughput-completed-0005": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-completed"
+    },
+    "q-latency-and-throughput-d-throughput-completed-0006": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-completed"
+    },
+    "q-latency-and-throughput-d-throughput-completed-0007": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-completed"
+    },
+    "q-latency-and-throughput-d-throughput-completed-0008": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-completed"
+    },
+    "q-latency-and-throughput-d-throughput-completed-0009": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-completed"
+    },
+    "q-latency-and-throughput-d-throughput-completed-0010": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-completed"
+    },
+    "q-latency-and-throughput-d-throughput-completed-0011": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-completed"
+    },
+    "q-latency-and-throughput-d-throughput-completed-0012": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-completed"
+    },
+    "q-latency-and-throughput-d-throughput-completed-0013": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-completed"
+    },
+    "q-latency-and-throughput-d-throughput-completed-0014": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-completed"
+    },
+    "q-latency-and-throughput-d-throughput-completed-0015": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-completed"
+    },
+    "q-latency-and-throughput-d-throughput-error-share-0001": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-error-share"
+    },
+    "q-latency-and-throughput-d-throughput-error-share-0002": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-error-share"
+    },
+    "q-latency-and-throughput-d-throughput-error-share-0003": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-error-share"
+    },
+    "q-latency-and-throughput-d-throughput-error-share-0004": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-error-share"
+    },
+    "q-latency-and-throughput-d-throughput-error-share-0005": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-error-share"
+    },
+    "q-latency-and-throughput-d-throughput-error-share-0006": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-error-share"
+    },
+    "q-latency-and-throughput-d-throughput-error-share-0007": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-error-share"
+    },
+    "q-latency-and-throughput-d-throughput-error-share-0008": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-error-share"
+    },
+    "q-latency-and-throughput-d-throughput-error-share-0009": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-error-share"
+    },
+    "q-latency-and-throughput-d-throughput-error-share-0010": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-error-share"
+    },
+    "q-latency-and-throughput-d-throughput-error-share-0011": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-error-share"
+    },
+    "q-latency-and-throughput-d-throughput-error-share-0012": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-error-share"
+    },
+    "q-latency-and-throughput-d-throughput-error-share-0013": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-error-share"
+    },
+    "q-latency-and-throughput-d-throughput-error-share-0014": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-error-share"
+    },
+    "q-latency-and-throughput-d-throughput-error-share-0015": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-error-share"
+    },
+    "q-latency-and-throughput-d-throughput-path-ceiling-0001": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-path-ceiling"
+    },
+    "q-latency-and-throughput-d-throughput-path-ceiling-0002": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-path-ceiling"
+    },
+    "q-latency-and-throughput-d-throughput-path-ceiling-0003": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-path-ceiling"
+    },
+    "q-latency-and-throughput-d-throughput-path-ceiling-0004": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-path-ceiling"
+    },
+    "q-latency-and-throughput-d-throughput-path-ceiling-0005": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-path-ceiling"
+    },
+    "q-latency-and-throughput-d-throughput-path-ceiling-0006": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-path-ceiling"
+    },
+    "q-latency-and-throughput-d-throughput-path-ceiling-0007": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-path-ceiling"
+    },
+    "q-latency-and-throughput-d-throughput-path-ceiling-0008": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-path-ceiling"
+    },
+    "q-latency-and-throughput-d-throughput-path-ceiling-0009": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-path-ceiling"
+    },
+    "q-latency-and-throughput-d-throughput-path-ceiling-0010": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-path-ceiling"
+    },
+    "q-latency-and-throughput-d-throughput-path-ceiling-0011": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-path-ceiling"
+    },
+    "q-latency-and-throughput-d-throughput-path-ceiling-0012": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-path-ceiling"
+    },
+    "q-latency-and-throughput-d-throughput-path-ceiling-0013": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-path-ceiling"
+    },
+    "q-latency-and-throughput-d-throughput-path-ceiling-0014": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-path-ceiling"
+    },
+    "q-latency-and-throughput-d-throughput-path-ceiling-0015": {
+      "concept": "latency-and-throughput",
+      "origin": "derived",
+      "template": "tpl-throughput-path-ceiling"
+    },
     "q-percentiles-a-0001": {
       "concept": "percentiles",
       "origin": "authored"
@@ -359,6 +809,531 @@
     "q-percentiles-a-0015": {
       "concept": "percentiles",
       "origin": "authored"
+    },
+    "q-percentiles-d-percentiles-mean-budget-0001": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-mean-budget"
+    },
+    "q-percentiles-d-percentiles-mean-budget-0002": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-mean-budget"
+    },
+    "q-percentiles-d-percentiles-mean-budget-0003": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-mean-budget"
+    },
+    "q-percentiles-d-percentiles-mean-budget-0004": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-mean-budget"
+    },
+    "q-percentiles-d-percentiles-mean-budget-0005": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-mean-budget"
+    },
+    "q-percentiles-d-percentiles-mean-budget-0006": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-mean-budget"
+    },
+    "q-percentiles-d-percentiles-mean-budget-0007": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-mean-budget"
+    },
+    "q-percentiles-d-percentiles-mean-budget-0008": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-mean-budget"
+    },
+    "q-percentiles-d-percentiles-mean-budget-0009": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-mean-budget"
+    },
+    "q-percentiles-d-percentiles-mean-budget-0010": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-mean-budget"
+    },
+    "q-percentiles-d-percentiles-mean-budget-0011": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-mean-budget"
+    },
+    "q-percentiles-d-percentiles-mean-budget-0012": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-mean-budget"
+    },
+    "q-percentiles-d-percentiles-mean-budget-0013": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-mean-budget"
+    },
+    "q-percentiles-d-percentiles-mean-budget-0014": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-mean-budget"
+    },
+    "q-percentiles-d-percentiles-mean-budget-0015": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-mean-budget"
+    },
+    "q-percentiles-d-percentiles-median-from-p99-0001": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-median-from-p99"
+    },
+    "q-percentiles-d-percentiles-median-from-p99-0002": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-median-from-p99"
+    },
+    "q-percentiles-d-percentiles-median-from-p99-0003": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-median-from-p99"
+    },
+    "q-percentiles-d-percentiles-median-from-p99-0004": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-median-from-p99"
+    },
+    "q-percentiles-d-percentiles-median-from-p99-0005": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-median-from-p99"
+    },
+    "q-percentiles-d-percentiles-median-from-p99-0006": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-median-from-p99"
+    },
+    "q-percentiles-d-percentiles-median-from-p99-0007": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-median-from-p99"
+    },
+    "q-percentiles-d-percentiles-median-from-p99-0008": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-median-from-p99"
+    },
+    "q-percentiles-d-percentiles-median-from-p99-0009": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-median-from-p99"
+    },
+    "q-percentiles-d-percentiles-median-from-p99-0010": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-median-from-p99"
+    },
+    "q-percentiles-d-percentiles-median-from-p99-0011": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-median-from-p99"
+    },
+    "q-percentiles-d-percentiles-median-from-p99-0012": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-median-from-p99"
+    },
+    "q-percentiles-d-percentiles-median-from-p99-0013": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-median-from-p99"
+    },
+    "q-percentiles-d-percentiles-median-from-p99-0014": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-median-from-p99"
+    },
+    "q-percentiles-d-percentiles-median-from-p99-0015": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-median-from-p99"
+    },
+    "q-percentiles-d-percentiles-p99-from-mean-0001": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-p99-from-mean"
+    },
+    "q-percentiles-d-percentiles-p99-from-mean-0002": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-p99-from-mean"
+    },
+    "q-percentiles-d-percentiles-p99-from-mean-0003": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-p99-from-mean"
+    },
+    "q-percentiles-d-percentiles-p99-from-mean-0004": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-p99-from-mean"
+    },
+    "q-percentiles-d-percentiles-p99-from-mean-0005": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-p99-from-mean"
+    },
+    "q-percentiles-d-percentiles-p99-from-mean-0006": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-p99-from-mean"
+    },
+    "q-percentiles-d-percentiles-p99-from-mean-0007": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-p99-from-mean"
+    },
+    "q-percentiles-d-percentiles-p99-from-mean-0008": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-p99-from-mean"
+    },
+    "q-percentiles-d-percentiles-p99-from-mean-0009": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-p99-from-mean"
+    },
+    "q-percentiles-d-percentiles-p99-from-mean-0010": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-p99-from-mean"
+    },
+    "q-percentiles-d-percentiles-p99-from-mean-0011": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-p99-from-mean"
+    },
+    "q-percentiles-d-percentiles-p99-from-mean-0012": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-p99-from-mean"
+    },
+    "q-percentiles-d-percentiles-p99-from-mean-0013": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-p99-from-mean"
+    },
+    "q-percentiles-d-percentiles-p99-from-mean-0014": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-p99-from-mean"
+    },
+    "q-percentiles-d-percentiles-p99-from-mean-0015": {
+      "concept": "percentiles",
+      "origin": "derived",
+      "template": "tpl-percentiles-p99-from-mean"
+    },
+    "q-vertical-scaling-d-vertical-bottleneck-moves-0001": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-bottleneck-moves"
+    },
+    "q-vertical-scaling-d-vertical-bottleneck-moves-0002": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-bottleneck-moves"
+    },
+    "q-vertical-scaling-d-vertical-bottleneck-moves-0003": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-bottleneck-moves"
+    },
+    "q-vertical-scaling-d-vertical-bottleneck-moves-0004": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-bottleneck-moves"
+    },
+    "q-vertical-scaling-d-vertical-bottleneck-moves-0005": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-bottleneck-moves"
+    },
+    "q-vertical-scaling-d-vertical-bottleneck-moves-0006": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-bottleneck-moves"
+    },
+    "q-vertical-scaling-d-vertical-bottleneck-moves-0007": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-bottleneck-moves"
+    },
+    "q-vertical-scaling-d-vertical-bottleneck-moves-0008": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-bottleneck-moves"
+    },
+    "q-vertical-scaling-d-vertical-bottleneck-moves-0009": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-bottleneck-moves"
+    },
+    "q-vertical-scaling-d-vertical-bottleneck-moves-0010": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-bottleneck-moves"
+    },
+    "q-vertical-scaling-d-vertical-bottleneck-moves-0011": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-bottleneck-moves"
+    },
+    "q-vertical-scaling-d-vertical-bottleneck-moves-0012": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-bottleneck-moves"
+    },
+    "q-vertical-scaling-d-vertical-bottleneck-moves-0013": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-bottleneck-moves"
+    },
+    "q-vertical-scaling-d-vertical-bottleneck-moves-0014": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-bottleneck-moves"
+    },
+    "q-vertical-scaling-d-vertical-bottleneck-moves-0015": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-bottleneck-moves"
+    },
+    "q-vertical-scaling-d-vertical-ceiling-drops-0001": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-ceiling-drops"
+    },
+    "q-vertical-scaling-d-vertical-ceiling-drops-0002": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-ceiling-drops"
+    },
+    "q-vertical-scaling-d-vertical-ceiling-drops-0003": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-ceiling-drops"
+    },
+    "q-vertical-scaling-d-vertical-ceiling-drops-0004": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-ceiling-drops"
+    },
+    "q-vertical-scaling-d-vertical-ceiling-drops-0005": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-ceiling-drops"
+    },
+    "q-vertical-scaling-d-vertical-ceiling-drops-0006": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-ceiling-drops"
+    },
+    "q-vertical-scaling-d-vertical-ceiling-drops-0007": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-ceiling-drops"
+    },
+    "q-vertical-scaling-d-vertical-ceiling-drops-0008": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-ceiling-drops"
+    },
+    "q-vertical-scaling-d-vertical-ceiling-drops-0009": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-ceiling-drops"
+    },
+    "q-vertical-scaling-d-vertical-ceiling-drops-0010": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-ceiling-drops"
+    },
+    "q-vertical-scaling-d-vertical-ceiling-drops-0011": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-ceiling-drops"
+    },
+    "q-vertical-scaling-d-vertical-ceiling-drops-0012": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-ceiling-drops"
+    },
+    "q-vertical-scaling-d-vertical-ceiling-drops-0013": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-ceiling-drops"
+    },
+    "q-vertical-scaling-d-vertical-ceiling-drops-0014": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-ceiling-drops"
+    },
+    "q-vertical-scaling-d-vertical-ceiling-drops-0015": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-ceiling-drops"
+    },
+    "q-vertical-scaling-d-vertical-latency-floor-0001": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-latency-floor"
+    },
+    "q-vertical-scaling-d-vertical-latency-floor-0002": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-latency-floor"
+    },
+    "q-vertical-scaling-d-vertical-latency-floor-0003": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-latency-floor"
+    },
+    "q-vertical-scaling-d-vertical-latency-floor-0004": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-latency-floor"
+    },
+    "q-vertical-scaling-d-vertical-latency-floor-0005": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-latency-floor"
+    },
+    "q-vertical-scaling-d-vertical-latency-floor-0006": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-latency-floor"
+    },
+    "q-vertical-scaling-d-vertical-latency-floor-0007": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-latency-floor"
+    },
+    "q-vertical-scaling-d-vertical-latency-floor-0008": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-latency-floor"
+    },
+    "q-vertical-scaling-d-vertical-latency-floor-0009": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-latency-floor"
+    },
+    "q-vertical-scaling-d-vertical-latency-floor-0010": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-latency-floor"
+    },
+    "q-vertical-scaling-d-vertical-latency-floor-0011": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-latency-floor"
+    },
+    "q-vertical-scaling-d-vertical-latency-floor-0012": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-latency-floor"
+    },
+    "q-vertical-scaling-d-vertical-latency-floor-0013": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-latency-floor"
+    },
+    "q-vertical-scaling-d-vertical-latency-floor-0014": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-latency-floor"
+    },
+    "q-vertical-scaling-d-vertical-latency-floor-0015": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-latency-floor"
+    },
+    "q-vertical-scaling-d-vertical-p99-after-upgrade-0001": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-p99-after-upgrade"
+    },
+    "q-vertical-scaling-d-vertical-p99-after-upgrade-0002": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-p99-after-upgrade"
+    },
+    "q-vertical-scaling-d-vertical-p99-after-upgrade-0003": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-p99-after-upgrade"
+    },
+    "q-vertical-scaling-d-vertical-p99-after-upgrade-0004": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-p99-after-upgrade"
+    },
+    "q-vertical-scaling-d-vertical-p99-after-upgrade-0005": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-p99-after-upgrade"
+    },
+    "q-vertical-scaling-d-vertical-p99-after-upgrade-0006": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-p99-after-upgrade"
+    },
+    "q-vertical-scaling-d-vertical-p99-after-upgrade-0007": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-p99-after-upgrade"
+    },
+    "q-vertical-scaling-d-vertical-p99-after-upgrade-0008": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-p99-after-upgrade"
+    },
+    "q-vertical-scaling-d-vertical-p99-after-upgrade-0009": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-p99-after-upgrade"
+    },
+    "q-vertical-scaling-d-vertical-p99-after-upgrade-0010": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-p99-after-upgrade"
+    },
+    "q-vertical-scaling-d-vertical-p99-after-upgrade-0011": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-p99-after-upgrade"
+    },
+    "q-vertical-scaling-d-vertical-p99-after-upgrade-0012": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-p99-after-upgrade"
+    },
+    "q-vertical-scaling-d-vertical-p99-after-upgrade-0013": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-p99-after-upgrade"
+    },
+    "q-vertical-scaling-d-vertical-p99-after-upgrade-0014": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-p99-after-upgrade"
+    },
+    "q-vertical-scaling-d-vertical-p99-after-upgrade-0015": {
+      "concept": "vertical-scaling",
+      "origin": "derived",
+      "template": "tpl-vertical-p99-after-upgrade"
     }
   }
 }

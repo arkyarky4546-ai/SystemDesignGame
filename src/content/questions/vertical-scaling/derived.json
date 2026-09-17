@@ -1,0 +1,2927 @@
+[
+  {
+    "id": "q-vertical-scaling-d-vertical-p99-after-upgrade-0001",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "A component with a 6 ms service time runs at 80% of its 400/s capacity at peak. You move it to a size with 3 times the capacity and the same service time. What is its p99 now, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "38 ms"
+        },
+        {
+          "id": "b",
+          "text": "138 ms",
+          "whyWrong": "This is p99 before the upgrade. The latency curve reads utilization, and more capacity at the same load lowers it."
+        },
+        {
+          "id": "c",
+          "text": "46 ms",
+          "whyWrong": "This assumes p99 falls in proportion to capacity. It follows 1 ÷ (1 − utilization) instead, which is why an upgrade from high on the curve buys more than its size ratio."
+        },
+        {
+          "id": "d",
+          "text": "28 ms",
+          "whyWrong": "This is the p99 of an idle component, the floor no size gets below. At this load the new size still queues some requests, so p99 is above it."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Same load, 3 times the capacity: utilization falls from 80% to about 27%. The mean becomes 6 ÷ (1 − 0.267) ≈ 8.2 ms, and p99 is 4.61 times that. The gain is large because the component started high on the curve.",
+    "tags": [
+      "upgrade-gain"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-p99-after-upgrade",
+      "params": {
+        "serviceTimeMs": 6,
+        "capacityRps": 400,
+        "utilizationBefore": 0.8,
+        "sizeMultiplier": 3
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-p99-after-upgrade-0002",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "A component with a 10 ms service time runs at 90% of its 400/s capacity at peak. You move it to a size with 3 times the capacity and the same service time. What is its p99 now, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "66 ms"
+        },
+        {
+          "id": "b",
+          "text": "461 ms",
+          "whyWrong": "This is p99 before the upgrade. The latency curve reads utilization, and more capacity at the same load lowers it."
+        },
+        {
+          "id": "c",
+          "text": "154 ms",
+          "whyWrong": "This assumes p99 falls in proportion to capacity. It follows 1 ÷ (1 − utilization) instead, which is why an upgrade from high on the curve buys more than its size ratio."
+        },
+        {
+          "id": "d",
+          "text": "46 ms",
+          "whyWrong": "This is the p99 of an idle component, the floor no size gets below. At this load the new size still queues some requests, so p99 is above it."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Same load, 3 times the capacity: utilization falls from 90% to about 30%. The mean becomes 10 ÷ (1 − 0.300) ≈ 14.3 ms, and p99 is 4.61 times that. The gain is large because the component started high on the curve.",
+    "tags": [
+      "upgrade-gain"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-p99-after-upgrade",
+      "params": {
+        "serviceTimeMs": 10,
+        "capacityRps": 400,
+        "utilizationBefore": 0.9,
+        "sizeMultiplier": 3
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-p99-after-upgrade-0003",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "A component with a 10 ms service time runs at 90% of its 50/s capacity at peak. You move it to a size with 2 times the capacity and the same service time. What is its p99 now, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "84 ms"
+        },
+        {
+          "id": "b",
+          "text": "461 ms",
+          "whyWrong": "This is p99 before the upgrade. The latency curve reads utilization, and more capacity at the same load lowers it."
+        },
+        {
+          "id": "c",
+          "text": "230 ms",
+          "whyWrong": "This assumes p99 falls in proportion to capacity. It follows 1 ÷ (1 − utilization) instead, which is why an upgrade from high on the curve buys more than its size ratio."
+        },
+        {
+          "id": "d",
+          "text": "46 ms",
+          "whyWrong": "This is the p99 of an idle component, the floor no size gets below. At this load the new size still queues some requests, so p99 is above it."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Same load, 2 times the capacity: utilization falls from 90% to about 45%. The mean becomes 10 ÷ (1 − 0.450) ≈ 18.2 ms, and p99 is 4.61 times that. The gain is large because the component started high on the curve.",
+    "tags": [
+      "upgrade-gain"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-p99-after-upgrade",
+      "params": {
+        "serviceTimeMs": 10,
+        "capacityRps": 50,
+        "utilizationBefore": 0.9,
+        "sizeMultiplier": 2
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-p99-after-upgrade-0004",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "A component with a 4 ms service time runs at 95% of its 40/s capacity at peak. You move it to a size with 3 times the capacity and the same service time. What is its p99 now, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "27 ms"
+        },
+        {
+          "id": "b",
+          "text": "368 ms",
+          "whyWrong": "This is p99 before the upgrade. The latency curve reads utilization, and more capacity at the same load lowers it."
+        },
+        {
+          "id": "c",
+          "text": "123 ms",
+          "whyWrong": "This assumes p99 falls in proportion to capacity. It follows 1 ÷ (1 − utilization) instead, which is why an upgrade from high on the curve buys more than its size ratio."
+        },
+        {
+          "id": "d",
+          "text": "18 ms",
+          "whyWrong": "This is the p99 of an idle component, the floor no size gets below. At this load the new size still queues some requests, so p99 is above it."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Same load, 3 times the capacity: utilization falls from 95% to about 32%. The mean becomes 4 ÷ (1 − 0.317) ≈ 5.9 ms, and p99 is 4.61 times that. The gain is large because the component started high on the curve.",
+    "tags": [
+      "upgrade-gain"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-p99-after-upgrade",
+      "params": {
+        "serviceTimeMs": 4,
+        "capacityRps": 40,
+        "utilizationBefore": 0.95,
+        "sizeMultiplier": 3
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-p99-after-upgrade-0005",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "A component with a 5 ms service time runs at 95% of its 40/s capacity at peak. You move it to a size with 3 times the capacity and the same service time. What is its p99 now, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "34 ms"
+        },
+        {
+          "id": "b",
+          "text": "461 ms",
+          "whyWrong": "This is p99 before the upgrade. The latency curve reads utilization, and more capacity at the same load lowers it."
+        },
+        {
+          "id": "c",
+          "text": "154 ms",
+          "whyWrong": "This assumes p99 falls in proportion to capacity. It follows 1 ÷ (1 − utilization) instead, which is why an upgrade from high on the curve buys more than its size ratio."
+        },
+        {
+          "id": "d",
+          "text": "23 ms",
+          "whyWrong": "This is the p99 of an idle component, the floor no size gets below. At this load the new size still queues some requests, so p99 is above it."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Same load, 3 times the capacity: utilization falls from 95% to about 32%. The mean becomes 5 ÷ (1 − 0.317) ≈ 7.3 ms, and p99 is 4.61 times that. The gain is large because the component started high on the curve.",
+    "tags": [
+      "upgrade-gain"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-p99-after-upgrade",
+      "params": {
+        "serviceTimeMs": 5,
+        "capacityRps": 40,
+        "utilizationBefore": 0.95,
+        "sizeMultiplier": 3
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-p99-after-upgrade-0006",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "A component with a 8 ms service time runs at 80% of its 400/s capacity at peak. You move it to a size with 3 times the capacity and the same service time. What is its p99 now, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "50 ms"
+        },
+        {
+          "id": "b",
+          "text": "184 ms",
+          "whyWrong": "This is p99 before the upgrade. The latency curve reads utilization, and more capacity at the same load lowers it."
+        },
+        {
+          "id": "c",
+          "text": "61 ms",
+          "whyWrong": "This assumes p99 falls in proportion to capacity. It follows 1 ÷ (1 − utilization) instead, which is why an upgrade from high on the curve buys more than its size ratio."
+        },
+        {
+          "id": "d",
+          "text": "37 ms",
+          "whyWrong": "This is the p99 of an idle component, the floor no size gets below. At this load the new size still queues some requests, so p99 is above it."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Same load, 3 times the capacity: utilization falls from 80% to about 27%. The mean becomes 8 ÷ (1 − 0.267) ≈ 10.9 ms, and p99 is 4.61 times that. The gain is large because the component started high on the curve.",
+    "tags": [
+      "upgrade-gain"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-p99-after-upgrade",
+      "params": {
+        "serviceTimeMs": 8,
+        "capacityRps": 400,
+        "utilizationBefore": 0.8,
+        "sizeMultiplier": 3
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-p99-after-upgrade-0007",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "A component with a 12 ms service time runs at 80% of its 100/s capacity at peak. You move it to a size with 4 times the capacity and the same service time. What is its p99 now, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "69 ms"
+        },
+        {
+          "id": "b",
+          "text": "276 ms",
+          "whyWrong": "This is p99 before the upgrade. The latency curve reads utilization, and more capacity at the same load lowers it."
+        },
+        {
+          "id": "c",
+          "text": "55 ms",
+          "whyWrong": "This is the p99 of an idle component, the floor no size gets below. At this load the new size still queues some requests, so p99 is above it."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Same load, 4 times the capacity: utilization falls from 80% to about 20%. The mean becomes 12 ÷ (1 − 0.200) ≈ 15.0 ms, and p99 is 4.61 times that. The gain is large because the component started high on the curve.",
+    "tags": [
+      "upgrade-gain"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-p99-after-upgrade",
+      "params": {
+        "serviceTimeMs": 12,
+        "capacityRps": 100,
+        "utilizationBefore": 0.8,
+        "sizeMultiplier": 4
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-p99-after-upgrade-0008",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "A component with a 12 ms service time runs at 95% of its 40/s capacity at peak. You move it to a size with 3 times the capacity and the same service time. What is its p99 now, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "81 ms"
+        },
+        {
+          "id": "b",
+          "text": "1,105 ms",
+          "whyWrong": "This is p99 before the upgrade. The latency curve reads utilization, and more capacity at the same load lowers it."
+        },
+        {
+          "id": "c",
+          "text": "368 ms",
+          "whyWrong": "This assumes p99 falls in proportion to capacity. It follows 1 ÷ (1 − utilization) instead, which is why an upgrade from high on the curve buys more than its size ratio."
+        },
+        {
+          "id": "d",
+          "text": "55 ms",
+          "whyWrong": "This is the p99 of an idle component, the floor no size gets below. At this load the new size still queues some requests, so p99 is above it."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Same load, 3 times the capacity: utilization falls from 95% to about 32%. The mean becomes 12 ÷ (1 − 0.317) ≈ 17.6 ms, and p99 is 4.61 times that. The gain is large because the component started high on the curve.",
+    "tags": [
+      "upgrade-gain"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-p99-after-upgrade",
+      "params": {
+        "serviceTimeMs": 12,
+        "capacityRps": 40,
+        "utilizationBefore": 0.95,
+        "sizeMultiplier": 3
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-p99-after-upgrade-0009",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "A component with a 4 ms service time runs at 80% of its 50/s capacity at peak. You move it to a size with 2 times the capacity and the same service time. What is its p99 now, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "31 ms"
+        },
+        {
+          "id": "b",
+          "text": "92 ms",
+          "whyWrong": "This is p99 before the upgrade. The latency curve reads utilization, and more capacity at the same load lowers it."
+        },
+        {
+          "id": "c",
+          "text": "46 ms",
+          "whyWrong": "This assumes p99 falls in proportion to capacity. It follows 1 ÷ (1 − utilization) instead, which is why an upgrade from high on the curve buys more than its size ratio."
+        },
+        {
+          "id": "d",
+          "text": "18 ms",
+          "whyWrong": "This is the p99 of an idle component, the floor no size gets below. At this load the new size still queues some requests, so p99 is above it."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Same load, 2 times the capacity: utilization falls from 80% to about 40%. The mean becomes 4 ÷ (1 − 0.400) ≈ 6.7 ms, and p99 is 4.61 times that. The gain is large because the component started high on the curve.",
+    "tags": [
+      "upgrade-gain"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-p99-after-upgrade",
+      "params": {
+        "serviceTimeMs": 4,
+        "capacityRps": 50,
+        "utilizationBefore": 0.8,
+        "sizeMultiplier": 2
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-p99-after-upgrade-0010",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "A component with a 8 ms service time runs at 85% of its 200/s capacity at peak. You move it to a size with 3 times the capacity and the same service time. What is its p99 now, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "51 ms"
+        },
+        {
+          "id": "b",
+          "text": "246 ms",
+          "whyWrong": "This is p99 before the upgrade. The latency curve reads utilization, and more capacity at the same load lowers it."
+        },
+        {
+          "id": "c",
+          "text": "82 ms",
+          "whyWrong": "This assumes p99 falls in proportion to capacity. It follows 1 ÷ (1 − utilization) instead, which is why an upgrade from high on the curve buys more than its size ratio."
+        },
+        {
+          "id": "d",
+          "text": "37 ms",
+          "whyWrong": "This is the p99 of an idle component, the floor no size gets below. At this load the new size still queues some requests, so p99 is above it."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Same load, 3 times the capacity: utilization falls from 85% to about 28%. The mean becomes 8 ÷ (1 − 0.283) ≈ 11.2 ms, and p99 is 4.61 times that. The gain is large because the component started high on the curve.",
+    "tags": [
+      "upgrade-gain"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-p99-after-upgrade",
+      "params": {
+        "serviceTimeMs": 8,
+        "capacityRps": 200,
+        "utilizationBefore": 0.85,
+        "sizeMultiplier": 3
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-p99-after-upgrade-0011",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "A component with a 5 ms service time runs at 95% of its 100/s capacity at peak. You move it to a size with 2 times the capacity and the same service time. What is its p99 now, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "44 ms"
+        },
+        {
+          "id": "b",
+          "text": "461 ms",
+          "whyWrong": "This is p99 before the upgrade. The latency curve reads utilization, and more capacity at the same load lowers it."
+        },
+        {
+          "id": "c",
+          "text": "230 ms",
+          "whyWrong": "This assumes p99 falls in proportion to capacity. It follows 1 ÷ (1 − utilization) instead, which is why an upgrade from high on the curve buys more than its size ratio."
+        },
+        {
+          "id": "d",
+          "text": "23 ms",
+          "whyWrong": "This is the p99 of an idle component, the floor no size gets below. At this load the new size still queues some requests, so p99 is above it."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Same load, 2 times the capacity: utilization falls from 95% to about 48%. The mean becomes 5 ÷ (1 − 0.475) ≈ 9.5 ms, and p99 is 4.61 times that. The gain is large because the component started high on the curve.",
+    "tags": [
+      "upgrade-gain"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-p99-after-upgrade",
+      "params": {
+        "serviceTimeMs": 5,
+        "capacityRps": 100,
+        "utilizationBefore": 0.95,
+        "sizeMultiplier": 2
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-p99-after-upgrade-0012",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "A component with a 6 ms service time runs at 90% of its 400/s capacity at peak. You move it to a size with 3 times the capacity and the same service time. What is its p99 now, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "39 ms"
+        },
+        {
+          "id": "b",
+          "text": "276 ms",
+          "whyWrong": "This is p99 before the upgrade. The latency curve reads utilization, and more capacity at the same load lowers it."
+        },
+        {
+          "id": "c",
+          "text": "92 ms",
+          "whyWrong": "This assumes p99 falls in proportion to capacity. It follows 1 ÷ (1 − utilization) instead, which is why an upgrade from high on the curve buys more than its size ratio."
+        },
+        {
+          "id": "d",
+          "text": "28 ms",
+          "whyWrong": "This is the p99 of an idle component, the floor no size gets below. At this load the new size still queues some requests, so p99 is above it."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Same load, 3 times the capacity: utilization falls from 90% to about 30%. The mean becomes 6 ÷ (1 − 0.300) ≈ 8.6 ms, and p99 is 4.61 times that. The gain is large because the component started high on the curve.",
+    "tags": [
+      "upgrade-gain"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-p99-after-upgrade",
+      "params": {
+        "serviceTimeMs": 6,
+        "capacityRps": 400,
+        "utilizationBefore": 0.9,
+        "sizeMultiplier": 3
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-p99-after-upgrade-0013",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "A component with a 10 ms service time runs at 95% of its 400/s capacity at peak. You move it to a size with 3 times the capacity and the same service time. What is its p99 now, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "67 ms"
+        },
+        {
+          "id": "b",
+          "text": "921 ms",
+          "whyWrong": "This is p99 before the upgrade. The latency curve reads utilization, and more capacity at the same load lowers it."
+        },
+        {
+          "id": "c",
+          "text": "307 ms",
+          "whyWrong": "This assumes p99 falls in proportion to capacity. It follows 1 ÷ (1 − utilization) instead, which is why an upgrade from high on the curve buys more than its size ratio."
+        },
+        {
+          "id": "d",
+          "text": "46 ms",
+          "whyWrong": "This is the p99 of an idle component, the floor no size gets below. At this load the new size still queues some requests, so p99 is above it."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Same load, 3 times the capacity: utilization falls from 95% to about 32%. The mean becomes 10 ÷ (1 − 0.317) ≈ 14.6 ms, and p99 is 4.61 times that. The gain is large because the component started high on the curve.",
+    "tags": [
+      "upgrade-gain"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-p99-after-upgrade",
+      "params": {
+        "serviceTimeMs": 10,
+        "capacityRps": 400,
+        "utilizationBefore": 0.95,
+        "sizeMultiplier": 3
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-p99-after-upgrade-0014",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "A component with a 6 ms service time runs at 80% of its 200/s capacity at peak. You move it to a size with 3 times the capacity and the same service time. What is its p99 now, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "38 ms"
+        },
+        {
+          "id": "b",
+          "text": "138 ms",
+          "whyWrong": "This is p99 before the upgrade. The latency curve reads utilization, and more capacity at the same load lowers it."
+        },
+        {
+          "id": "c",
+          "text": "46 ms",
+          "whyWrong": "This assumes p99 falls in proportion to capacity. It follows 1 ÷ (1 − utilization) instead, which is why an upgrade from high on the curve buys more than its size ratio."
+        },
+        {
+          "id": "d",
+          "text": "28 ms",
+          "whyWrong": "This is the p99 of an idle component, the floor no size gets below. At this load the new size still queues some requests, so p99 is above it."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Same load, 3 times the capacity: utilization falls from 80% to about 27%. The mean becomes 6 ÷ (1 − 0.267) ≈ 8.2 ms, and p99 is 4.61 times that. The gain is large because the component started high on the curve.",
+    "tags": [
+      "upgrade-gain"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-p99-after-upgrade",
+      "params": {
+        "serviceTimeMs": 6,
+        "capacityRps": 200,
+        "utilizationBefore": 0.8,
+        "sizeMultiplier": 3
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-p99-after-upgrade-0015",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "A component with a 12 ms service time runs at 80% of its 40/s capacity at peak. You move it to a size with 2 times the capacity and the same service time. What is its p99 now, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "92 ms"
+        },
+        {
+          "id": "b",
+          "text": "276 ms",
+          "whyWrong": "This is p99 before the upgrade. The latency curve reads utilization, and more capacity at the same load lowers it."
+        },
+        {
+          "id": "c",
+          "text": "138 ms",
+          "whyWrong": "This assumes p99 falls in proportion to capacity. It follows 1 ÷ (1 − utilization) instead, which is why an upgrade from high on the curve buys more than its size ratio."
+        },
+        {
+          "id": "d",
+          "text": "55 ms",
+          "whyWrong": "This is the p99 of an idle component, the floor no size gets below. At this load the new size still queues some requests, so p99 is above it."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Same load, 2 times the capacity: utilization falls from 80% to about 40%. The mean becomes 12 ÷ (1 − 0.400) ≈ 20.0 ms, and p99 is 4.61 times that. The gain is large because the component started high on the curve.",
+    "tags": [
+      "upgrade-gain"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-p99-after-upgrade",
+      "params": {
+        "serviceTimeMs": 12,
+        "capacityRps": 40,
+        "utilizationBefore": 0.8,
+        "sizeMultiplier": 2
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-latency-floor-0001",
+    "conceptId": "vertical-scaling",
+    "depth": 1,
+    "prompt": "A component takes 32 ms to serve a request with nothing queued. However large a size you buy for it, what is the lowest p99 it can reach in this game’s model, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "147 ms"
+        },
+        {
+          "id": "b",
+          "text": "32 ms",
+          "whyWrong": "This is the mean with nothing queued, not the 99th percentile. Response times are still spread around it, and p99 sits about 4.6 times higher."
+        },
+        {
+          "id": "c",
+          "text": "22 ms",
+          "whyWrong": "This is the median of an idle component. Half of all requests beat it; p99, the figure the SLO watches, is about 6.6 times higher."
+        },
+        {
+          "id": "d",
+          "text": "0 ms",
+          "whyWrong": "More capacity only removes waiting. The work itself still takes its service time, so no size gets p99 anywhere near zero."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "With no load nothing waits, so the mean response time is the service time itself, 32 ms. p99 is still the mean × ln 100 ≈ 4.61 × 32 ≈ 147 ms. Past that point more capacity buys nothing; only a shorter service time would.",
+    "tags": [
+      "latency-floor"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-latency-floor",
+      "params": {
+        "serviceTimeMs": 32
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-latency-floor-0002",
+    "conceptId": "vertical-scaling",
+    "depth": 1,
+    "prompt": "A component takes 40 ms to serve a request with nothing queued. However large a size you buy for it, what is the lowest p99 it can reach in this game’s model, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "184 ms"
+        },
+        {
+          "id": "b",
+          "text": "40 ms",
+          "whyWrong": "This is the mean with nothing queued, not the 99th percentile. Response times are still spread around it, and p99 sits about 4.6 times higher."
+        },
+        {
+          "id": "c",
+          "text": "28 ms",
+          "whyWrong": "This is the median of an idle component. Half of all requests beat it; p99, the figure the SLO watches, is about 6.6 times higher."
+        },
+        {
+          "id": "d",
+          "text": "0 ms",
+          "whyWrong": "More capacity only removes waiting. The work itself still takes its service time, so no size gets p99 anywhere near zero."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "With no load nothing waits, so the mean response time is the service time itself, 40 ms. p99 is still the mean × ln 100 ≈ 4.61 × 40 ≈ 184 ms. Past that point more capacity buys nothing; only a shorter service time would.",
+    "tags": [
+      "latency-floor"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-latency-floor",
+      "params": {
+        "serviceTimeMs": 40
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-latency-floor-0003",
+    "conceptId": "vertical-scaling",
+    "depth": 1,
+    "prompt": "A component takes 6 ms to serve a request with nothing queued. However large a size you buy for it, what is the lowest p99 it can reach in this game’s model, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "28 ms"
+        },
+        {
+          "id": "b",
+          "text": "6 ms",
+          "whyWrong": "This is the mean with nothing queued, not the 99th percentile. Response times are still spread around it, and p99 sits about 4.6 times higher."
+        },
+        {
+          "id": "c",
+          "text": "4 ms",
+          "whyWrong": "This is the median of an idle component. Half of all requests beat it; p99, the figure the SLO watches, is about 6.6 times higher."
+        },
+        {
+          "id": "d",
+          "text": "0 ms",
+          "whyWrong": "More capacity only removes waiting. The work itself still takes its service time, so no size gets p99 anywhere near zero."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "With no load nothing waits, so the mean response time is the service time itself, 6 ms. p99 is still the mean × ln 100 ≈ 4.61 × 6 ≈ 28 ms. Past that point more capacity buys nothing; only a shorter service time would.",
+    "tags": [
+      "latency-floor"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-latency-floor",
+      "params": {
+        "serviceTimeMs": 6
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-latency-floor-0004",
+    "conceptId": "vertical-scaling",
+    "depth": 1,
+    "prompt": "A component takes 15 ms to serve a request with nothing queued. However large a size you buy for it, what is the lowest p99 it can reach in this game’s model, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "69 ms"
+        },
+        {
+          "id": "b",
+          "text": "15 ms",
+          "whyWrong": "This is the mean with nothing queued, not the 99th percentile. Response times are still spread around it, and p99 sits about 4.6 times higher."
+        },
+        {
+          "id": "c",
+          "text": "10 ms",
+          "whyWrong": "This is the median of an idle component. Half of all requests beat it; p99, the figure the SLO watches, is about 6.6 times higher."
+        },
+        {
+          "id": "d",
+          "text": "0 ms",
+          "whyWrong": "More capacity only removes waiting. The work itself still takes its service time, so no size gets p99 anywhere near zero."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "With no load nothing waits, so the mean response time is the service time itself, 15 ms. p99 is still the mean × ln 100 ≈ 4.61 × 15 ≈ 69 ms. Past that point more capacity buys nothing; only a shorter service time would.",
+    "tags": [
+      "latency-floor"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-latency-floor",
+      "params": {
+        "serviceTimeMs": 15
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-latency-floor-0005",
+    "conceptId": "vertical-scaling",
+    "depth": 1,
+    "prompt": "A component takes 2 ms to serve a request with nothing queued. However large a size you buy for it, what is the lowest p99 it can reach in this game’s model, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "9 ms"
+        },
+        {
+          "id": "b",
+          "text": "2 ms",
+          "whyWrong": "This is the mean with nothing queued, not the 99th percentile. Response times are still spread around it, and p99 sits about 4.6 times higher."
+        },
+        {
+          "id": "c",
+          "text": "1 ms",
+          "whyWrong": "This is the median of an idle component. Half of all requests beat it; p99, the figure the SLO watches, is about 6.6 times higher."
+        },
+        {
+          "id": "d",
+          "text": "0 ms",
+          "whyWrong": "More capacity only removes waiting. The work itself still takes its service time, so no size gets p99 anywhere near zero."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "With no load nothing waits, so the mean response time is the service time itself, 2 ms. p99 is still the mean × ln 100 ≈ 4.61 × 2 ≈ 9 ms. Past that point more capacity buys nothing; only a shorter service time would.",
+    "tags": [
+      "latency-floor"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-latency-floor",
+      "params": {
+        "serviceTimeMs": 2
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-latency-floor-0006",
+    "conceptId": "vertical-scaling",
+    "depth": 1,
+    "prompt": "A component takes 20 ms to serve a request with nothing queued. However large a size you buy for it, what is the lowest p99 it can reach in this game’s model, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "92 ms"
+        },
+        {
+          "id": "b",
+          "text": "20 ms",
+          "whyWrong": "This is the mean with nothing queued, not the 99th percentile. Response times are still spread around it, and p99 sits about 4.6 times higher."
+        },
+        {
+          "id": "c",
+          "text": "14 ms",
+          "whyWrong": "This is the median of an idle component. Half of all requests beat it; p99, the figure the SLO watches, is about 6.6 times higher."
+        },
+        {
+          "id": "d",
+          "text": "0 ms",
+          "whyWrong": "More capacity only removes waiting. The work itself still takes its service time, so no size gets p99 anywhere near zero."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "With no load nothing waits, so the mean response time is the service time itself, 20 ms. p99 is still the mean × ln 100 ≈ 4.61 × 20 ≈ 92 ms. Past that point more capacity buys nothing; only a shorter service time would.",
+    "tags": [
+      "latency-floor"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-latency-floor",
+      "params": {
+        "serviceTimeMs": 20
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-latency-floor-0007",
+    "conceptId": "vertical-scaling",
+    "depth": 1,
+    "prompt": "A component takes 45 ms to serve a request with nothing queued. However large a size you buy for it, what is the lowest p99 it can reach in this game’s model, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "207 ms"
+        },
+        {
+          "id": "b",
+          "text": "45 ms",
+          "whyWrong": "This is the mean with nothing queued, not the 99th percentile. Response times are still spread around it, and p99 sits about 4.6 times higher."
+        },
+        {
+          "id": "c",
+          "text": "31 ms",
+          "whyWrong": "This is the median of an idle component. Half of all requests beat it; p99, the figure the SLO watches, is about 6.6 times higher."
+        },
+        {
+          "id": "d",
+          "text": "0 ms",
+          "whyWrong": "More capacity only removes waiting. The work itself still takes its service time, so no size gets p99 anywhere near zero."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "With no load nothing waits, so the mean response time is the service time itself, 45 ms. p99 is still the mean × ln 100 ≈ 4.61 × 45 ≈ 207 ms. Past that point more capacity buys nothing; only a shorter service time would.",
+    "tags": [
+      "latency-floor"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-latency-floor",
+      "params": {
+        "serviceTimeMs": 45
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-latency-floor-0008",
+    "conceptId": "vertical-scaling",
+    "depth": 1,
+    "prompt": "A component takes 8 ms to serve a request with nothing queued. However large a size you buy for it, what is the lowest p99 it can reach in this game’s model, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "37 ms"
+        },
+        {
+          "id": "b",
+          "text": "8 ms",
+          "whyWrong": "This is the mean with nothing queued, not the 99th percentile. Response times are still spread around it, and p99 sits about 4.6 times higher."
+        },
+        {
+          "id": "c",
+          "text": "6 ms",
+          "whyWrong": "This is the median of an idle component. Half of all requests beat it; p99, the figure the SLO watches, is about 6.6 times higher."
+        },
+        {
+          "id": "d",
+          "text": "0 ms",
+          "whyWrong": "More capacity only removes waiting. The work itself still takes its service time, so no size gets p99 anywhere near zero."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "With no load nothing waits, so the mean response time is the service time itself, 8 ms. p99 is still the mean × ln 100 ≈ 4.61 × 8 ≈ 37 ms. Past that point more capacity buys nothing; only a shorter service time would.",
+    "tags": [
+      "latency-floor"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-latency-floor",
+      "params": {
+        "serviceTimeMs": 8
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-latency-floor-0009",
+    "conceptId": "vertical-scaling",
+    "depth": 1,
+    "prompt": "A component takes 12 ms to serve a request with nothing queued. However large a size you buy for it, what is the lowest p99 it can reach in this game’s model, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "55 ms"
+        },
+        {
+          "id": "b",
+          "text": "12 ms",
+          "whyWrong": "This is the mean with nothing queued, not the 99th percentile. Response times are still spread around it, and p99 sits about 4.6 times higher."
+        },
+        {
+          "id": "c",
+          "text": "8 ms",
+          "whyWrong": "This is the median of an idle component. Half of all requests beat it; p99, the figure the SLO watches, is about 6.6 times higher."
+        },
+        {
+          "id": "d",
+          "text": "0 ms",
+          "whyWrong": "More capacity only removes waiting. The work itself still takes its service time, so no size gets p99 anywhere near zero."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "With no load nothing waits, so the mean response time is the service time itself, 12 ms. p99 is still the mean × ln 100 ≈ 4.61 × 12 ≈ 55 ms. Past that point more capacity buys nothing; only a shorter service time would.",
+    "tags": [
+      "latency-floor"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-latency-floor",
+      "params": {
+        "serviceTimeMs": 12
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-latency-floor-0010",
+    "conceptId": "vertical-scaling",
+    "depth": 1,
+    "prompt": "A component takes 30 ms to serve a request with nothing queued. However large a size you buy for it, what is the lowest p99 it can reach in this game’s model, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "138 ms"
+        },
+        {
+          "id": "b",
+          "text": "30 ms",
+          "whyWrong": "This is the mean with nothing queued, not the 99th percentile. Response times are still spread around it, and p99 sits about 4.6 times higher."
+        },
+        {
+          "id": "c",
+          "text": "21 ms",
+          "whyWrong": "This is the median of an idle component. Half of all requests beat it; p99, the figure the SLO watches, is about 6.6 times higher."
+        },
+        {
+          "id": "d",
+          "text": "0 ms",
+          "whyWrong": "More capacity only removes waiting. The work itself still takes its service time, so no size gets p99 anywhere near zero."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "With no load nothing waits, so the mean response time is the service time itself, 30 ms. p99 is still the mean × ln 100 ≈ 4.61 × 30 ≈ 138 ms. Past that point more capacity buys nothing; only a shorter service time would.",
+    "tags": [
+      "latency-floor"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-latency-floor",
+      "params": {
+        "serviceTimeMs": 30
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-latency-floor-0011",
+    "conceptId": "vertical-scaling",
+    "depth": 1,
+    "prompt": "A component takes 4 ms to serve a request with nothing queued. However large a size you buy for it, what is the lowest p99 it can reach in this game’s model, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "18 ms"
+        },
+        {
+          "id": "b",
+          "text": "4 ms",
+          "whyWrong": "This is the mean with nothing queued, not the 99th percentile. Response times are still spread around it, and p99 sits about 4.6 times higher."
+        },
+        {
+          "id": "c",
+          "text": "3 ms",
+          "whyWrong": "This is the median of an idle component. Half of all requests beat it; p99, the figure the SLO watches, is about 6.6 times higher."
+        },
+        {
+          "id": "d",
+          "text": "0 ms",
+          "whyWrong": "More capacity only removes waiting. The work itself still takes its service time, so no size gets p99 anywhere near zero."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "With no load nothing waits, so the mean response time is the service time itself, 4 ms. p99 is still the mean × ln 100 ≈ 4.61 × 4 ≈ 18 ms. Past that point more capacity buys nothing; only a shorter service time would.",
+    "tags": [
+      "latency-floor"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-latency-floor",
+      "params": {
+        "serviceTimeMs": 4
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-latency-floor-0012",
+    "conceptId": "vertical-scaling",
+    "depth": 1,
+    "prompt": "A component takes 16 ms to serve a request with nothing queued. However large a size you buy for it, what is the lowest p99 it can reach in this game’s model, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "74 ms"
+        },
+        {
+          "id": "b",
+          "text": "16 ms",
+          "whyWrong": "This is the mean with nothing queued, not the 99th percentile. Response times are still spread around it, and p99 sits about 4.6 times higher."
+        },
+        {
+          "id": "c",
+          "text": "11 ms",
+          "whyWrong": "This is the median of an idle component. Half of all requests beat it; p99, the figure the SLO watches, is about 6.6 times higher."
+        },
+        {
+          "id": "d",
+          "text": "0 ms",
+          "whyWrong": "More capacity only removes waiting. The work itself still takes its service time, so no size gets p99 anywhere near zero."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "With no load nothing waits, so the mean response time is the service time itself, 16 ms. p99 is still the mean × ln 100 ≈ 4.61 × 16 ≈ 74 ms. Past that point more capacity buys nothing; only a shorter service time would.",
+    "tags": [
+      "latency-floor"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-latency-floor",
+      "params": {
+        "serviceTimeMs": 16
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-latency-floor-0013",
+    "conceptId": "vertical-scaling",
+    "depth": 1,
+    "prompt": "A component takes 3 ms to serve a request with nothing queued. However large a size you buy for it, what is the lowest p99 it can reach in this game’s model, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "14 ms"
+        },
+        {
+          "id": "b",
+          "text": "3 ms",
+          "whyWrong": "This is the mean with nothing queued, not the 99th percentile. Response times are still spread around it, and p99 sits about 4.6 times higher."
+        },
+        {
+          "id": "c",
+          "text": "2 ms",
+          "whyWrong": "This is the median of an idle component. Half of all requests beat it; p99, the figure the SLO watches, is about 6.6 times higher."
+        },
+        {
+          "id": "d",
+          "text": "0 ms",
+          "whyWrong": "More capacity only removes waiting. The work itself still takes its service time, so no size gets p99 anywhere near zero."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "With no load nothing waits, so the mean response time is the service time itself, 3 ms. p99 is still the mean × ln 100 ≈ 4.61 × 3 ≈ 14 ms. Past that point more capacity buys nothing; only a shorter service time would.",
+    "tags": [
+      "latency-floor"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-latency-floor",
+      "params": {
+        "serviceTimeMs": 3
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-latency-floor-0014",
+    "conceptId": "vertical-scaling",
+    "depth": 1,
+    "prompt": "A component takes 24 ms to serve a request with nothing queued. However large a size you buy for it, what is the lowest p99 it can reach in this game’s model, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "111 ms"
+        },
+        {
+          "id": "b",
+          "text": "24 ms",
+          "whyWrong": "This is the mean with nothing queued, not the 99th percentile. Response times are still spread around it, and p99 sits about 4.6 times higher."
+        },
+        {
+          "id": "c",
+          "text": "17 ms",
+          "whyWrong": "This is the median of an idle component. Half of all requests beat it; p99, the figure the SLO watches, is about 6.6 times higher."
+        },
+        {
+          "id": "d",
+          "text": "0 ms",
+          "whyWrong": "More capacity only removes waiting. The work itself still takes its service time, so no size gets p99 anywhere near zero."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "With no load nothing waits, so the mean response time is the service time itself, 24 ms. p99 is still the mean × ln 100 ≈ 4.61 × 24 ≈ 111 ms. Past that point more capacity buys nothing; only a shorter service time would.",
+    "tags": [
+      "latency-floor"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-latency-floor",
+      "params": {
+        "serviceTimeMs": 24
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-latency-floor-0015",
+    "conceptId": "vertical-scaling",
+    "depth": 1,
+    "prompt": "A component takes 50 ms to serve a request with nothing queued. However large a size you buy for it, what is the lowest p99 it can reach in this game’s model, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "230 ms"
+        },
+        {
+          "id": "b",
+          "text": "50 ms",
+          "whyWrong": "This is the mean with nothing queued, not the 99th percentile. Response times are still spread around it, and p99 sits about 4.6 times higher."
+        },
+        {
+          "id": "c",
+          "text": "35 ms",
+          "whyWrong": "This is the median of an idle component. Half of all requests beat it; p99, the figure the SLO watches, is about 6.6 times higher."
+        },
+        {
+          "id": "d",
+          "text": "0 ms",
+          "whyWrong": "More capacity only removes waiting. The work itself still takes its service time, so no size gets p99 anywhere near zero."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "With no load nothing waits, so the mean response time is the service time itself, 50 ms. p99 is still the mean × ln 100 ≈ 4.61 × 50 ≈ 230 ms. Past that point more capacity buys nothing; only a shorter service time would.",
+    "tags": [
+      "latency-floor"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-latency-floor",
+      "params": {
+        "serviceTimeMs": 50
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-bottleneck-moves-0001",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "At peak, 350/s arrive. Your app server serves 75/s and drops the rest, and the database behind it, which can serve 250/s, looks healthy. You upgrade the app server to 600/s. How many requests per second does the database drop now?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "100/s"
+        },
+        {
+          "id": "b",
+          "text": "0/s",
+          "whyWrong": "The database only looked healthy because the app server was dropping load in front of it. Once the app server serves everything, the database receives the full peak."
+        },
+        {
+          "id": "c",
+          "text": "275/s",
+          "whyWrong": "This is how much the old app server dropped. After the upgrade those requests reach the database, and its own capacity decides what it drops."
+        },
+        {
+          "id": "d",
+          "text": "175/s",
+          "whyWrong": "This is the room the database had while the app server was holding load back. That room is gone once the full peak arrives."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "The new app server serves all 350/s, so every request it used to drop now reaches the database, one query each. The database serves 250/s and drops the other 100/s. It only looked healthy because the app server was dropping load before it arrived.",
+    "tags": [
+      "bottleneck-moves"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-bottleneck-moves",
+      "params": {
+        "peakRps": 350,
+        "appBeforeRps": 75,
+        "dbCapacityRps": 250,
+        "appAfterRps": 600
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-bottleneck-moves-0002",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "At peak, 350/s arrive. Your app server serves 50/s and drops the rest, and the database behind it, which can serve 250/s, looks healthy. You upgrade the app server to 1,500/s. How many requests per second does the database drop now?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "100/s"
+        },
+        {
+          "id": "b",
+          "text": "0/s",
+          "whyWrong": "The database only looked healthy because the app server was dropping load in front of it. Once the app server serves everything, the database receives the full peak."
+        },
+        {
+          "id": "c",
+          "text": "300/s",
+          "whyWrong": "This is how much the old app server dropped. After the upgrade those requests reach the database, and its own capacity decides what it drops."
+        },
+        {
+          "id": "d",
+          "text": "200/s",
+          "whyWrong": "This is the room the database had while the app server was holding load back. That room is gone once the full peak arrives."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "The new app server serves all 350/s, so every request it used to drop now reaches the database, one query each. The database serves 250/s and drops the other 100/s. It only looked healthy because the app server was dropping load before it arrived.",
+    "tags": [
+      "bottleneck-moves"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-bottleneck-moves",
+      "params": {
+        "peakRps": 350,
+        "appBeforeRps": 50,
+        "dbCapacityRps": 250,
+        "appAfterRps": 1500
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-bottleneck-moves-0003",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "At peak, 550/s arrive. Your app server serves 200/s and drops the rest, and the database behind it, which can serve 300/s, looks healthy. You upgrade the app server to 1,000/s. How many requests per second does the database drop now?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "250/s"
+        },
+        {
+          "id": "b",
+          "text": "0/s",
+          "whyWrong": "The database only looked healthy because the app server was dropping load in front of it. Once the app server serves everything, the database receives the full peak."
+        },
+        {
+          "id": "c",
+          "text": "350/s",
+          "whyWrong": "This is how much the old app server dropped. After the upgrade those requests reach the database, and its own capacity decides what it drops."
+        },
+        {
+          "id": "d",
+          "text": "100/s",
+          "whyWrong": "This is the room the database had while the app server was holding load back. That room is gone once the full peak arrives."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "The new app server serves all 550/s, so every request it used to drop now reaches the database, one query each. The database serves 300/s and drops the other 250/s. It only looked healthy because the app server was dropping load before it arrived.",
+    "tags": [
+      "bottleneck-moves"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-bottleneck-moves",
+      "params": {
+        "peakRps": 550,
+        "appBeforeRps": 200,
+        "dbCapacityRps": 300,
+        "appAfterRps": 1000
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-bottleneck-moves-0004",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "At peak, 1,000/s arrive. Your app server serves 50/s and drops the rest, and the database behind it, which can serve 150/s, looks healthy. You upgrade the app server to 1,500/s. How many requests per second does the database drop now?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "850/s"
+        },
+        {
+          "id": "b",
+          "text": "0/s",
+          "whyWrong": "The database only looked healthy because the app server was dropping load in front of it. Once the app server serves everything, the database receives the full peak."
+        },
+        {
+          "id": "c",
+          "text": "950/s",
+          "whyWrong": "This is how much the old app server dropped. After the upgrade those requests reach the database, and its own capacity decides what it drops."
+        },
+        {
+          "id": "d",
+          "text": "100/s",
+          "whyWrong": "This is the room the database had while the app server was holding load back. That room is gone once the full peak arrives."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "The new app server serves all 1,000/s, so every request it used to drop now reaches the database, one query each. The database serves 150/s and drops the other 850/s. It only looked healthy because the app server was dropping load before it arrived.",
+    "tags": [
+      "bottleneck-moves"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-bottleneck-moves",
+      "params": {
+        "peakRps": 1000,
+        "appBeforeRps": 50,
+        "dbCapacityRps": 150,
+        "appAfterRps": 1500
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-bottleneck-moves-0005",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "At peak, 850/s arrive. Your app server serves 150/s and drops the rest, and the database behind it, which can serve 400/s, looks healthy. You upgrade the app server to 1,200/s. How many requests per second does the database drop now?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "450/s"
+        },
+        {
+          "id": "b",
+          "text": "0/s",
+          "whyWrong": "The database only looked healthy because the app server was dropping load in front of it. Once the app server serves everything, the database receives the full peak."
+        },
+        {
+          "id": "c",
+          "text": "700/s",
+          "whyWrong": "This is how much the old app server dropped. After the upgrade those requests reach the database, and its own capacity decides what it drops."
+        },
+        {
+          "id": "d",
+          "text": "250/s",
+          "whyWrong": "This is the room the database had while the app server was holding load back. That room is gone once the full peak arrives."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "The new app server serves all 850/s, so every request it used to drop now reaches the database, one query each. The database serves 400/s and drops the other 450/s. It only looked healthy because the app server was dropping load before it arrived.",
+    "tags": [
+      "bottleneck-moves"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-bottleneck-moves",
+      "params": {
+        "peakRps": 850,
+        "appBeforeRps": 150,
+        "dbCapacityRps": 400,
+        "appAfterRps": 1200
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-bottleneck-moves-0006",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "At peak, 350/s arrive. Your app server serves 50/s and drops the rest, and the database behind it, which can serve 200/s, looks healthy. You upgrade the app server to 1,200/s. How many requests per second does the database drop now?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "150/s"
+        },
+        {
+          "id": "b",
+          "text": "0/s",
+          "whyWrong": "The database only looked healthy because the app server was dropping load in front of it. Once the app server serves everything, the database receives the full peak."
+        },
+        {
+          "id": "c",
+          "text": "300/s",
+          "whyWrong": "This is how much the old app server dropped. After the upgrade those requests reach the database, and its own capacity decides what it drops."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "The new app server serves all 350/s, so every request it used to drop now reaches the database, one query each. The database serves 200/s and drops the other 150/s. It only looked healthy because the app server was dropping load before it arrived.",
+    "tags": [
+      "bottleneck-moves"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-bottleneck-moves",
+      "params": {
+        "peakRps": 350,
+        "appBeforeRps": 50,
+        "dbCapacityRps": 200,
+        "appAfterRps": 1200
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-bottleneck-moves-0007",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "At peak, 750/s arrive. Your app server serves 50/s and drops the rest, and the database behind it, which can serve 100/s, looks healthy. You upgrade the app server to 2,000/s. How many requests per second does the database drop now?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "650/s"
+        },
+        {
+          "id": "b",
+          "text": "0/s",
+          "whyWrong": "The database only looked healthy because the app server was dropping load in front of it. Once the app server serves everything, the database receives the full peak."
+        },
+        {
+          "id": "c",
+          "text": "700/s",
+          "whyWrong": "This is how much the old app server dropped. After the upgrade those requests reach the database, and its own capacity decides what it drops."
+        },
+        {
+          "id": "d",
+          "text": "50/s",
+          "whyWrong": "This is the room the database had while the app server was holding load back. That room is gone once the full peak arrives."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "The new app server serves all 750/s, so every request it used to drop now reaches the database, one query each. The database serves 100/s and drops the other 650/s. It only looked healthy because the app server was dropping load before it arrived.",
+    "tags": [
+      "bottleneck-moves"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-bottleneck-moves",
+      "params": {
+        "peakRps": 750,
+        "appBeforeRps": 50,
+        "dbCapacityRps": 100,
+        "appAfterRps": 2000
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-bottleneck-moves-0008",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "At peak, 750/s arrive. Your app server serves 100/s and drops the rest, and the database behind it, which can serve 250/s, looks healthy. You upgrade the app server to 1,200/s. How many requests per second does the database drop now?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "500/s"
+        },
+        {
+          "id": "b",
+          "text": "0/s",
+          "whyWrong": "The database only looked healthy because the app server was dropping load in front of it. Once the app server serves everything, the database receives the full peak."
+        },
+        {
+          "id": "c",
+          "text": "650/s",
+          "whyWrong": "This is how much the old app server dropped. After the upgrade those requests reach the database, and its own capacity decides what it drops."
+        },
+        {
+          "id": "d",
+          "text": "150/s",
+          "whyWrong": "This is the room the database had while the app server was holding load back. That room is gone once the full peak arrives."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "The new app server serves all 750/s, so every request it used to drop now reaches the database, one query each. The database serves 250/s and drops the other 500/s. It only looked healthy because the app server was dropping load before it arrived.",
+    "tags": [
+      "bottleneck-moves"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-bottleneck-moves",
+      "params": {
+        "peakRps": 750,
+        "appBeforeRps": 100,
+        "dbCapacityRps": 250,
+        "appAfterRps": 1200
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-bottleneck-moves-0009",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "At peak, 850/s arrive. Your app server serves 50/s and drops the rest, and the database behind it, which can serve 600/s, looks healthy. You upgrade the app server to 1,200/s. How many requests per second does the database drop now?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "250/s"
+        },
+        {
+          "id": "b",
+          "text": "0/s",
+          "whyWrong": "The database only looked healthy because the app server was dropping load in front of it. Once the app server serves everything, the database receives the full peak."
+        },
+        {
+          "id": "c",
+          "text": "800/s",
+          "whyWrong": "This is how much the old app server dropped. After the upgrade those requests reach the database, and its own capacity decides what it drops."
+        },
+        {
+          "id": "d",
+          "text": "550/s",
+          "whyWrong": "This is the room the database had while the app server was holding load back. That room is gone once the full peak arrives."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "The new app server serves all 850/s, so every request it used to drop now reaches the database, one query each. The database serves 600/s and drops the other 250/s. It only looked healthy because the app server was dropping load before it arrived.",
+    "tags": [
+      "bottleneck-moves"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-bottleneck-moves",
+      "params": {
+        "peakRps": 850,
+        "appBeforeRps": 50,
+        "dbCapacityRps": 600,
+        "appAfterRps": 1200
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-bottleneck-moves-0010",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "At peak, 550/s arrive. Your app server serves 75/s and drops the rest, and the database behind it, which can serve 250/s, looks healthy. You upgrade the app server to 1,000/s. How many requests per second does the database drop now?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "300/s"
+        },
+        {
+          "id": "b",
+          "text": "0/s",
+          "whyWrong": "The database only looked healthy because the app server was dropping load in front of it. Once the app server serves everything, the database receives the full peak."
+        },
+        {
+          "id": "c",
+          "text": "475/s",
+          "whyWrong": "This is how much the old app server dropped. After the upgrade those requests reach the database, and its own capacity decides what it drops."
+        },
+        {
+          "id": "d",
+          "text": "175/s",
+          "whyWrong": "This is the room the database had while the app server was holding load back. That room is gone once the full peak arrives."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "The new app server serves all 550/s, so every request it used to drop now reaches the database, one query each. The database serves 250/s and drops the other 300/s. It only looked healthy because the app server was dropping load before it arrived.",
+    "tags": [
+      "bottleneck-moves"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-bottleneck-moves",
+      "params": {
+        "peakRps": 550,
+        "appBeforeRps": 75,
+        "dbCapacityRps": 250,
+        "appAfterRps": 1000
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-bottleneck-moves-0011",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "At peak, 500/s arrive. Your app server serves 150/s and drops the rest, and the database behind it, which can serve 400/s, looks healthy. You upgrade the app server to 800/s. How many requests per second does the database drop now?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "100/s"
+        },
+        {
+          "id": "b",
+          "text": "0/s",
+          "whyWrong": "The database only looked healthy because the app server was dropping load in front of it. Once the app server serves everything, the database receives the full peak."
+        },
+        {
+          "id": "c",
+          "text": "350/s",
+          "whyWrong": "This is how much the old app server dropped. After the upgrade those requests reach the database, and its own capacity decides what it drops."
+        },
+        {
+          "id": "d",
+          "text": "250/s",
+          "whyWrong": "This is the room the database had while the app server was holding load back. That room is gone once the full peak arrives."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "The new app server serves all 500/s, so every request it used to drop now reaches the database, one query each. The database serves 400/s and drops the other 100/s. It only looked healthy because the app server was dropping load before it arrived.",
+    "tags": [
+      "bottleneck-moves"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-bottleneck-moves",
+      "params": {
+        "peakRps": 500,
+        "appBeforeRps": 150,
+        "dbCapacityRps": 400,
+        "appAfterRps": 800
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-bottleneck-moves-0012",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "At peak, 550/s arrive. Your app server serves 250/s and drops the rest, and the database behind it, which can serve 500/s, looks healthy. You upgrade the app server to 1,200/s. How many requests per second does the database drop now?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "50/s"
+        },
+        {
+          "id": "b",
+          "text": "0/s",
+          "whyWrong": "The database only looked healthy because the app server was dropping load in front of it. Once the app server serves everything, the database receives the full peak."
+        },
+        {
+          "id": "c",
+          "text": "300/s",
+          "whyWrong": "This is how much the old app server dropped. After the upgrade those requests reach the database, and its own capacity decides what it drops."
+        },
+        {
+          "id": "d",
+          "text": "250/s",
+          "whyWrong": "This is the room the database had while the app server was holding load back. That room is gone once the full peak arrives."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "The new app server serves all 550/s, so every request it used to drop now reaches the database, one query each. The database serves 500/s and drops the other 50/s. It only looked healthy because the app server was dropping load before it arrived.",
+    "tags": [
+      "bottleneck-moves"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-bottleneck-moves",
+      "params": {
+        "peakRps": 550,
+        "appBeforeRps": 250,
+        "dbCapacityRps": 500,
+        "appAfterRps": 1200
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-bottleneck-moves-0013",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "At peak, 850/s arrive. Your app server serves 200/s and drops the rest, and the database behind it, which can serve 800/s, looks healthy. You upgrade the app server to 1,500/s. How many requests per second does the database drop now?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "50/s"
+        },
+        {
+          "id": "b",
+          "text": "0/s",
+          "whyWrong": "The database only looked healthy because the app server was dropping load in front of it. Once the app server serves everything, the database receives the full peak."
+        },
+        {
+          "id": "c",
+          "text": "650/s",
+          "whyWrong": "This is how much the old app server dropped. After the upgrade those requests reach the database, and its own capacity decides what it drops."
+        },
+        {
+          "id": "d",
+          "text": "600/s",
+          "whyWrong": "This is the room the database had while the app server was holding load back. That room is gone once the full peak arrives."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "The new app server serves all 850/s, so every request it used to drop now reaches the database, one query each. The database serves 800/s and drops the other 50/s. It only looked healthy because the app server was dropping load before it arrived.",
+    "tags": [
+      "bottleneck-moves"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-bottleneck-moves",
+      "params": {
+        "peakRps": 850,
+        "appBeforeRps": 200,
+        "dbCapacityRps": 800,
+        "appAfterRps": 1500
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-bottleneck-moves-0014",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "At peak, 550/s arrive. Your app server serves 200/s and drops the rest, and the database behind it, which can serve 300/s, looks healthy. You upgrade the app server to 1,500/s. How many requests per second does the database drop now?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "250/s"
+        },
+        {
+          "id": "b",
+          "text": "0/s",
+          "whyWrong": "The database only looked healthy because the app server was dropping load in front of it. Once the app server serves everything, the database receives the full peak."
+        },
+        {
+          "id": "c",
+          "text": "350/s",
+          "whyWrong": "This is how much the old app server dropped. After the upgrade those requests reach the database, and its own capacity decides what it drops."
+        },
+        {
+          "id": "d",
+          "text": "100/s",
+          "whyWrong": "This is the room the database had while the app server was holding load back. That room is gone once the full peak arrives."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "The new app server serves all 550/s, so every request it used to drop now reaches the database, one query each. The database serves 300/s and drops the other 250/s. It only looked healthy because the app server was dropping load before it arrived.",
+    "tags": [
+      "bottleneck-moves"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-bottleneck-moves",
+      "params": {
+        "peakRps": 550,
+        "appBeforeRps": 200,
+        "dbCapacityRps": 300,
+        "appAfterRps": 1500
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-bottleneck-moves-0015",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "At peak, 800/s arrive. Your app server serves 75/s and drops the rest, and the database behind it, which can serve 400/s, looks healthy. You upgrade the app server to 2,000/s. How many requests per second does the database drop now?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "400/s"
+        },
+        {
+          "id": "b",
+          "text": "0/s",
+          "whyWrong": "The database only looked healthy because the app server was dropping load in front of it. Once the app server serves everything, the database receives the full peak."
+        },
+        {
+          "id": "c",
+          "text": "725/s",
+          "whyWrong": "This is how much the old app server dropped. After the upgrade those requests reach the database, and its own capacity decides what it drops."
+        },
+        {
+          "id": "d",
+          "text": "325/s",
+          "whyWrong": "This is the room the database had while the app server was holding load back. That room is gone once the full peak arrives."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "The new app server serves all 800/s, so every request it used to drop now reaches the database, one query each. The database serves 400/s and drops the other 400/s. It only looked healthy because the app server was dropping load before it arrived.",
+    "tags": [
+      "bottleneck-moves"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-bottleneck-moves",
+      "params": {
+        "peakRps": 800,
+        "appBeforeRps": 75,
+        "dbCapacityRps": 400,
+        "appAfterRps": 2000
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-ceiling-drops-0001",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "Your app server is already the largest size there is, which serves 500/s. Traffic averages 600/s and its busiest hour runs at 2.5 times that. How many requests per second does it drop at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "1,000/s"
+        },
+        {
+          "id": "b",
+          "text": "0/s",
+          "whyWrong": "No size is unlimited. Past the largest size’s capacity the excess is dropped, and there is nothing bigger to upgrade to."
+        },
+        {
+          "id": "c",
+          "text": "100/s",
+          "whyWrong": "This measures the weekly mean against capacity. The week is resolved at its busiest hour, which is higher by the whole peak multiplier."
+        },
+        {
+          "id": "d",
+          "text": "500/s",
+          "whyWrong": "This is what the server completes, its full capacity. The question is what it turns away: the peak minus that."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak is 600 × 2.5 = 1,500/s against 500/s of capacity, so 1,000/s are dropped. There is no bigger size to buy: past the largest, serving more takes more than one server side by side.",
+    "tags": [
+      "size-ceiling",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-ceiling-drops",
+      "params": {
+        "meanRps": 600,
+        "peakMultiplier": 2.5
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-ceiling-drops-0002",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "Your app server is already the largest size there is, which serves 500/s. Traffic averages 480/s and its busiest hour runs at 2.5 times that. How many requests per second does it drop at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "700/s"
+        },
+        {
+          "id": "b",
+          "text": "0/s",
+          "whyWrong": "No size is unlimited. Past the largest size’s capacity the excess is dropped, and there is nothing bigger to upgrade to."
+        },
+        {
+          "id": "c",
+          "text": "500/s",
+          "whyWrong": "This is what the server completes, its full capacity. The question is what it turns away: the peak minus that."
+        },
+        {
+          "id": "d",
+          "text": "1,200/s",
+          "whyWrong": "An overloaded server still serves its capacity. Only the load above that is dropped."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak is 480 × 2.5 = 1,200/s against 500/s of capacity, so 700/s are dropped. There is no bigger size to buy: past the largest, serving more takes more than one server side by side.",
+    "tags": [
+      "size-ceiling",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-ceiling-drops",
+      "params": {
+        "meanRps": 480,
+        "peakMultiplier": 2.5
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-ceiling-drops-0003",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "Your app server is already the largest size there is, which serves 500/s. Traffic averages 320/s and its busiest hour runs at 2.5 times that. How many requests per second does it drop at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "300/s"
+        },
+        {
+          "id": "b",
+          "text": "0/s",
+          "whyWrong": "No size is unlimited. Past the largest size’s capacity the excess is dropped, and there is nothing bigger to upgrade to."
+        },
+        {
+          "id": "c",
+          "text": "500/s",
+          "whyWrong": "This is what the server completes, its full capacity. The question is what it turns away: the peak minus that."
+        },
+        {
+          "id": "d",
+          "text": "800/s",
+          "whyWrong": "An overloaded server still serves its capacity. Only the load above that is dropped."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak is 320 × 2.5 = 800/s against 500/s of capacity, so 300/s are dropped. There is no bigger size to buy: past the largest, serving more takes more than one server side by side.",
+    "tags": [
+      "size-ceiling",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-ceiling-drops",
+      "params": {
+        "meanRps": 320,
+        "peakMultiplier": 2.5
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-ceiling-drops-0004",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "Your app server is already the largest size there is, which serves 500/s. Traffic averages 480/s and its busiest hour runs at 1.5 times that. How many requests per second does it drop at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "220/s"
+        },
+        {
+          "id": "b",
+          "text": "0/s",
+          "whyWrong": "No size is unlimited. Past the largest size’s capacity the excess is dropped, and there is nothing bigger to upgrade to."
+        },
+        {
+          "id": "c",
+          "text": "500/s",
+          "whyWrong": "This is what the server completes, its full capacity. The question is what it turns away: the peak minus that."
+        },
+        {
+          "id": "d",
+          "text": "720/s",
+          "whyWrong": "An overloaded server still serves its capacity. Only the load above that is dropped."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak is 480 × 1.5 = 720/s against 500/s of capacity, so 220/s are dropped. There is no bigger size to buy: past the largest, serving more takes more than one server side by side.",
+    "tags": [
+      "size-ceiling",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-ceiling-drops",
+      "params": {
+        "meanRps": 480,
+        "peakMultiplier": 1.5
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-ceiling-drops-0005",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "Your app server is already the largest size there is, which serves 500/s. Traffic averages 580/s and its busiest hour runs at 2.5 times that. How many requests per second does it drop at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "950/s"
+        },
+        {
+          "id": "b",
+          "text": "0/s",
+          "whyWrong": "No size is unlimited. Past the largest size’s capacity the excess is dropped, and there is nothing bigger to upgrade to."
+        },
+        {
+          "id": "c",
+          "text": "80/s",
+          "whyWrong": "This measures the weekly mean against capacity. The week is resolved at its busiest hour, which is higher by the whole peak multiplier."
+        },
+        {
+          "id": "d",
+          "text": "500/s",
+          "whyWrong": "This is what the server completes, its full capacity. The question is what it turns away: the peak minus that."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak is 580 × 2.5 = 1,450/s against 500/s of capacity, so 950/s are dropped. There is no bigger size to buy: past the largest, serving more takes more than one server side by side.",
+    "tags": [
+      "size-ceiling",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-ceiling-drops",
+      "params": {
+        "meanRps": 580,
+        "peakMultiplier": 2.5
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-ceiling-drops-0006",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "Your app server is already the largest size there is, which serves 500/s. Traffic averages 460/s and its busiest hour runs at 1.5 times that. How many requests per second does it drop at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "190/s"
+        },
+        {
+          "id": "b",
+          "text": "0/s",
+          "whyWrong": "No size is unlimited. Past the largest size’s capacity the excess is dropped, and there is nothing bigger to upgrade to."
+        },
+        {
+          "id": "c",
+          "text": "500/s",
+          "whyWrong": "This is what the server completes, its full capacity. The question is what it turns away: the peak minus that."
+        },
+        {
+          "id": "d",
+          "text": "690/s",
+          "whyWrong": "An overloaded server still serves its capacity. Only the load above that is dropped."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak is 460 × 1.5 = 690/s against 500/s of capacity, so 190/s are dropped. There is no bigger size to buy: past the largest, serving more takes more than one server side by side.",
+    "tags": [
+      "size-ceiling",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-ceiling-drops",
+      "params": {
+        "meanRps": 460,
+        "peakMultiplier": 1.5
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-ceiling-drops-0007",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "Your app server is already the largest size there is, which serves 500/s. Traffic averages 400/s and its busiest hour runs at 2.5 times that. How many requests per second does it drop at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "500/s"
+        },
+        {
+          "id": "b",
+          "text": "0/s",
+          "whyWrong": "No size is unlimited. Past the largest size’s capacity the excess is dropped, and there is nothing bigger to upgrade to."
+        },
+        {
+          "id": "c",
+          "text": "1,000/s",
+          "whyWrong": "An overloaded server still serves its capacity. Only the load above that is dropped."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak is 400 × 2.5 = 1,000/s against 500/s of capacity, so 500/s are dropped. There is no bigger size to buy: past the largest, serving more takes more than one server side by side.",
+    "tags": [
+      "size-ceiling",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-ceiling-drops",
+      "params": {
+        "meanRps": 400,
+        "peakMultiplier": 2.5
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-ceiling-drops-0008",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "Your app server is already the largest size there is, which serves 500/s. Traffic averages 380/s and its busiest hour runs at 3 times that. How many requests per second does it drop at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "640/s"
+        },
+        {
+          "id": "b",
+          "text": "0/s",
+          "whyWrong": "No size is unlimited. Past the largest size’s capacity the excess is dropped, and there is nothing bigger to upgrade to."
+        },
+        {
+          "id": "c",
+          "text": "500/s",
+          "whyWrong": "This is what the server completes, its full capacity. The question is what it turns away: the peak minus that."
+        },
+        {
+          "id": "d",
+          "text": "1,140/s",
+          "whyWrong": "An overloaded server still serves its capacity. Only the load above that is dropped."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak is 380 × 3 = 1,140/s against 500/s of capacity, so 640/s are dropped. There is no bigger size to buy: past the largest, serving more takes more than one server side by side.",
+    "tags": [
+      "size-ceiling",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-ceiling-drops",
+      "params": {
+        "meanRps": 380,
+        "peakMultiplier": 3
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-ceiling-drops-0009",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "Your app server is already the largest size there is, which serves 500/s. Traffic averages 540/s and its busiest hour runs at 2 times that. How many requests per second does it drop at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "580/s"
+        },
+        {
+          "id": "b",
+          "text": "0/s",
+          "whyWrong": "No size is unlimited. Past the largest size’s capacity the excess is dropped, and there is nothing bigger to upgrade to."
+        },
+        {
+          "id": "c",
+          "text": "40/s",
+          "whyWrong": "This measures the weekly mean against capacity. The week is resolved at its busiest hour, which is higher by the whole peak multiplier."
+        },
+        {
+          "id": "d",
+          "text": "500/s",
+          "whyWrong": "This is what the server completes, its full capacity. The question is what it turns away: the peak minus that."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak is 540 × 2 = 1,080/s against 500/s of capacity, so 580/s are dropped. There is no bigger size to buy: past the largest, serving more takes more than one server side by side.",
+    "tags": [
+      "size-ceiling",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-ceiling-drops",
+      "params": {
+        "meanRps": 540,
+        "peakMultiplier": 2
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-ceiling-drops-0010",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "Your app server is already the largest size there is, which serves 500/s. Traffic averages 600/s and its busiest hour runs at 1.5 times that. How many requests per second does it drop at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "400/s"
+        },
+        {
+          "id": "b",
+          "text": "0/s",
+          "whyWrong": "No size is unlimited. Past the largest size’s capacity the excess is dropped, and there is nothing bigger to upgrade to."
+        },
+        {
+          "id": "c",
+          "text": "100/s",
+          "whyWrong": "This measures the weekly mean against capacity. The week is resolved at its busiest hour, which is higher by the whole peak multiplier."
+        },
+        {
+          "id": "d",
+          "text": "500/s",
+          "whyWrong": "This is what the server completes, its full capacity. The question is what it turns away: the peak minus that."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak is 600 × 1.5 = 900/s against 500/s of capacity, so 400/s are dropped. There is no bigger size to buy: past the largest, serving more takes more than one server side by side.",
+    "tags": [
+      "size-ceiling",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-ceiling-drops",
+      "params": {
+        "meanRps": 600,
+        "peakMultiplier": 1.5
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-ceiling-drops-0011",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "Your app server is already the largest size there is, which serves 500/s. Traffic averages 280/s and its busiest hour runs at 2 times that. How many requests per second does it drop at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "60/s"
+        },
+        {
+          "id": "b",
+          "text": "0/s",
+          "whyWrong": "No size is unlimited. Past the largest size’s capacity the excess is dropped, and there is nothing bigger to upgrade to."
+        },
+        {
+          "id": "c",
+          "text": "500/s",
+          "whyWrong": "This is what the server completes, its full capacity. The question is what it turns away: the peak minus that."
+        },
+        {
+          "id": "d",
+          "text": "560/s",
+          "whyWrong": "An overloaded server still serves its capacity. Only the load above that is dropped."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak is 280 × 2 = 560/s against 500/s of capacity, so 60/s are dropped. There is no bigger size to buy: past the largest, serving more takes more than one server side by side.",
+    "tags": [
+      "size-ceiling",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-ceiling-drops",
+      "params": {
+        "meanRps": 280,
+        "peakMultiplier": 2
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-ceiling-drops-0012",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "Your app server is already the largest size there is, which serves 500/s. Traffic averages 260/s and its busiest hour runs at 3 times that. How many requests per second does it drop at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "280/s"
+        },
+        {
+          "id": "b",
+          "text": "0/s",
+          "whyWrong": "No size is unlimited. Past the largest size’s capacity the excess is dropped, and there is nothing bigger to upgrade to."
+        },
+        {
+          "id": "c",
+          "text": "500/s",
+          "whyWrong": "This is what the server completes, its full capacity. The question is what it turns away: the peak minus that."
+        },
+        {
+          "id": "d",
+          "text": "780/s",
+          "whyWrong": "An overloaded server still serves its capacity. Only the load above that is dropped."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak is 260 × 3 = 780/s against 500/s of capacity, so 280/s are dropped. There is no bigger size to buy: past the largest, serving more takes more than one server side by side.",
+    "tags": [
+      "size-ceiling",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-ceiling-drops",
+      "params": {
+        "meanRps": 260,
+        "peakMultiplier": 3
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-ceiling-drops-0013",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "Your app server is already the largest size there is, which serves 500/s. Traffic averages 440/s and its busiest hour runs at 2 times that. How many requests per second does it drop at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "380/s"
+        },
+        {
+          "id": "b",
+          "text": "0/s",
+          "whyWrong": "No size is unlimited. Past the largest size’s capacity the excess is dropped, and there is nothing bigger to upgrade to."
+        },
+        {
+          "id": "c",
+          "text": "500/s",
+          "whyWrong": "This is what the server completes, its full capacity. The question is what it turns away: the peak minus that."
+        },
+        {
+          "id": "d",
+          "text": "880/s",
+          "whyWrong": "An overloaded server still serves its capacity. Only the load above that is dropped."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak is 440 × 2 = 880/s against 500/s of capacity, so 380/s are dropped. There is no bigger size to buy: past the largest, serving more takes more than one server side by side.",
+    "tags": [
+      "size-ceiling",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-ceiling-drops",
+      "params": {
+        "meanRps": 440,
+        "peakMultiplier": 2
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-ceiling-drops-0014",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "Your app server is already the largest size there is, which serves 500/s. Traffic averages 380/s and its busiest hour runs at 2.5 times that. How many requests per second does it drop at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "450/s"
+        },
+        {
+          "id": "b",
+          "text": "0/s",
+          "whyWrong": "No size is unlimited. Past the largest size’s capacity the excess is dropped, and there is nothing bigger to upgrade to."
+        },
+        {
+          "id": "c",
+          "text": "500/s",
+          "whyWrong": "This is what the server completes, its full capacity. The question is what it turns away: the peak minus that."
+        },
+        {
+          "id": "d",
+          "text": "950/s",
+          "whyWrong": "An overloaded server still serves its capacity. Only the load above that is dropped."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak is 380 × 2.5 = 950/s against 500/s of capacity, so 450/s are dropped. There is no bigger size to buy: past the largest, serving more takes more than one server side by side.",
+    "tags": [
+      "size-ceiling",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-ceiling-drops",
+      "params": {
+        "meanRps": 380,
+        "peakMultiplier": 2.5
+      }
+    }
+  },
+  {
+    "id": "q-vertical-scaling-d-vertical-ceiling-drops-0015",
+    "conceptId": "vertical-scaling",
+    "depth": 2,
+    "prompt": "Your app server is already the largest size there is, which serves 500/s. Traffic averages 540/s and its busiest hour runs at 2.5 times that. How many requests per second does it drop at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "850/s"
+        },
+        {
+          "id": "b",
+          "text": "0/s",
+          "whyWrong": "No size is unlimited. Past the largest size’s capacity the excess is dropped, and there is nothing bigger to upgrade to."
+        },
+        {
+          "id": "c",
+          "text": "40/s",
+          "whyWrong": "This measures the weekly mean against capacity. The week is resolved at its busiest hour, which is higher by the whole peak multiplier."
+        },
+        {
+          "id": "d",
+          "text": "500/s",
+          "whyWrong": "This is what the server completes, its full capacity. The question is what it turns away: the peak minus that."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak is 540 × 2.5 = 1,350/s against 500/s of capacity, so 850/s are dropped. There is no bigger size to buy: past the largest, serving more takes more than one server side by side.",
+    "tags": [
+      "size-ceiling",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-vertical-scaling",
+      "templateId": "tpl-vertical-ceiling-drops",
+      "params": {
+        "meanRps": 540,
+        "peakMultiplier": 2.5
+      }
+    }
+  }
+]

@@ -5,16 +5,14 @@ import type { Concept } from '../../schema'
  * target rps and headroom. It unlocks app server sizes above Small (ADR-0040).
  *
  * Every claim it makes about the model comes from 02-SIMULATION §5.2, and the arithmetic in
- * its prose is checked against the engine in `src/state/content-accuracy.test.ts`. Its
- * prerequisite, `latency-and-throughput`, doesn’t exist yet and is waived until M7
- * (ADR-0040).
+ * its prose is checked against the engine in `src/state/content-accuracy.test.ts`.
  */
 export const capacityAndUtilization = {
   id: 'capacity-and-utilization',
   tier: 1,
   title: 'Capacity, utilization, and the cliff',
   oneLiner: 'How close a component is to its limit decides how slow it feels, long before it runs out.',
-  prerequisites: [],
+  prerequisites: ['latency-and-throughput'],
   // It opens app server sizes rather than a component kind, so the gate is on the tiers.
   unlocks: { components: [] },
   lesson: {

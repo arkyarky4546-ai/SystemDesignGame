@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { CONCEPTS } from '../src/content/concepts'
 import { AUTHORED } from '../src/content/questions/authored'
 import { TEMPLATES } from '../src/content/questions/templates'
-import type { Question } from '../src/content/schema'
+import { CONCEPT_IDS, type ConceptId, type Question } from '../src/content/schema'
 import {
   TEMPLATE_ENGINE,
   buildManifest,
@@ -25,14 +25,16 @@ const MANIFEST_FILE = 'src/content/questions/bank-manifest.json'
 
 const templates = TEMPLATES[CONCEPT_ID]
 const generate = () => generateForConcept(templates, TEMPLATE_ENGINE, generationOptionsFor(CONCEPT_ID))
-const committed = JSON.parse(readFileSync(DERIVED_FILE, 'utf8')) as Question[]
+const committedFor = (conceptId: ConceptId) =>
+  JSON.parse(readFileSync(`src/content/questions/${conceptId}/derived.json`, 'utf8')) as Question[]
+const committed = committedFor(CONCEPT_ID)
 const manifest = JSON.parse(readFileSync(MANIFEST_FILE, 'utf8')) as BankManifest
 
-/** The whole bank, with a given set of derived questions in place of the committed ones. */
-const pools = (derived: readonly Question[]) => ({
-  [CONCEPT_ID]: [...AUTHORED[CONCEPT_ID], ...derived],
-  percentiles: AUTHORED.percentiles,
-})
+/** The whole bank, with a given set of derived questions in place of this concept's committed ones. */
+const pools = (derived: readonly Question[]) =>
+  Object.fromEntries(
+    CONCEPT_IDS.map((id) => [id, [...AUTHORED[id], ...(id === CONCEPT_ID ? derived : committedFor(id))]] as const),
+  )
 
 const screen = (questions: readonly Question[]): readonly Finding[] =>
   screenQuestions({
@@ -192,6 +194,60 @@ describe('screening (09-QUESTION-BANK §7)', () => {
     expect(fromOneTemplate.length).toBeGreaterThan(1)
     const findings = screen(committed).filter((finding) => finding.rule === 'near-duplicate detection')
     expect(findings).toEqual([])
+  })
+})
+
+describe('Tier 1’s derived bank (M7)', () => {
+  const everyTemplate = CONCEPT_IDS.flatMap((id) => TEMPLATES[id])
+  const regenerated = CONCEPT_IDS.map((id) => ({
+    id,
+    result: generateForConcept(TEMPLATES[id], TEMPLATE_ENGINE, generationOptionsFor(id)),
+  }))
+
+  it('has about fifteen templates, and every concept has at least three', () => {
+    expect(everyTemplate.length).toBeGreaterThanOrEqual(14)
+    expect(everyTemplate.length).toBeLessThanOrEqual(17)
+    for (const id of CONCEPT_IDS) expect(TEMPLATES[id].length, id).toBeGreaterThanOrEqual(3)
+  })
+
+  it('freezes about 240 instances, none abandoned, each exactly as committed', () => {
+    const total = regenerated.reduce((sum, each) => sum + each.result.questions.length, 0)
+    expect(total).toBeGreaterThanOrEqual(225)
+    expect(total).toBeLessThanOrEqual(260)
+    for (const { id, result } of regenerated) {
+      expect(result.abandoned, id).toBe(0)
+      expect(serializeBank(result.questions), id).toBe(readFileSync(`src/content/questions/${id}/derived.json`, 'utf8'))
+    }
+  })
+
+  it('screens clean: no errors anywhere in the bank', () => {
+    const findings = screenQuestions({
+      concepts: Object.values(CONCEPTS),
+      questions: pools(committed),
+      engine: TEMPLATE_ENGINE,
+      templates: TEMPLATES,
+    })
+    expect(findings.filter((finding) => finding.severity === 'error')).toEqual([])
+  })
+
+  it('ships every template, and so every instance, for review', () => {
+    for (const template of everyTemplate) expect(template.reviewStatus, template.id).toBe('needs-review')
+    for (const { result } of regenerated) {
+      for (const question of result.questions) expect(question.reviewStatus, question.id).toBe('needs-review')
+    }
+  })
+
+  it('references every key number in every lesson from at least one question', () => {
+    for (const concept of Object.values(CONCEPTS)) {
+      const tags = new Set((pools(committed)[concept.id] ?? []).flatMap((question) => question.tags))
+      for (const fact of concept.lesson.keyNumbers) expect([...tags], `${concept.id}: ${fact.tag}`).toContain(fact.tag)
+    }
+  })
+
+  it('gives each concept its own batch', () => {
+    const batches = regenerated.map(({ result }) => new Set(result.questions.map((question) => question.provenance.batchId)))
+    for (const batch of batches) expect(batch.size).toBe(1)
+    expect(new Set(batches.flatMap((batch) => [...batch])).size).toBe(CONCEPT_IDS.length)
   })
 })
 

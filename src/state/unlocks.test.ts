@@ -27,10 +27,20 @@ describe('size unlocks (00-GAME-DESIGN §4, ADR-0040)', () => {
     }
   })
 
-  it('leaves database sizes open, since vertical-scaling gates those later', () => {
-    for (let index = 0; index < COMPONENT_DEFS.database.tiers.length; index++) {
-      expect(isTierUnlocked(NOTHING_LEARNED, 'database', index), `tier ${index}`).toBe(true)
+  it('leaves the smallest database open and gates every size above it on vertical-scaling', () => {
+    expect(isTierUnlocked(NOTHING_LEARNED, 'database', 0)).toBe(true)
+    for (let index = 1; index < COMPONENT_DEFS.database.tiers.length; index++) {
+      expect(tierGatedBy('database', index), `tier ${index}`).toBe('vertical-scaling')
+      expect(isTierUnlocked(NOTHING_LEARNED, 'database', index), `tier ${index}`).toBe(false)
+      // Passing capacity-and-utilization opens the app server's sizes, not the database's.
+      expect(isTierUnlocked(LEARNED, 'database', index), `tier ${index}`).toBe(false)
     }
+    expect(nextConceptFor(NOTHING_LEARNED, 'database')).toBe('vertical-scaling')
+    expect(tiersUnlockedBy('vertical-scaling').map((tier) => `${tier.label} ${tier.kind}`)).toEqual([
+      'Medium database',
+      'Large database',
+      'Extra large database',
+    ])
   })
 
   it('opens every gated size once the concept is passed', () => {

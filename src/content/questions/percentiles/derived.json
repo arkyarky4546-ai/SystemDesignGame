@@ -1,0 +1,2147 @@
+[
+  {
+    "id": "q-percentiles-d-percentiles-p99-from-mean-0001",
+    "conceptId": "percentiles",
+    "depth": 1,
+    "prompt": "A component’s mean response time is 10 ms. In this game’s model, what is its p99, the time 99 requests in 100 beat, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "46 ms"
+        },
+        {
+          "id": "b",
+          "text": "10 ms",
+          "whyWrong": "This is the mean itself. Response times are spread around it, and the 99th percentile sits about 4.6 times higher."
+        },
+        {
+          "id": "c",
+          "text": "7 ms",
+          "whyWrong": "This is the median, about 0.69 of the mean. Half of all requests beat it, so it says nothing about the slow tail p99 measures."
+        },
+        {
+          "id": "d",
+          "text": "20 ms",
+          "whyWrong": "Doubling the mean underestimates the tail. With response times spread exponentially, p99 is ln 100 ≈ 4.6 times the mean, not 2."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Response times here are spread exponentially around the mean, so p99 = mean × ln 100 ≈ 4.61 × 10 ≈ 46 ms. The slowest request in a hundred waits more than four times the average, which the mean alone never shows.",
+    "tags": [
+      "p99-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-p99-from-mean",
+      "params": {
+        "meanMs": 10
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-p99-from-mean-0002",
+    "conceptId": "percentiles",
+    "depth": 1,
+    "prompt": "A component’s mean response time is 80 ms. In this game’s model, what is its p99, the time 99 requests in 100 beat, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "368 ms"
+        },
+        {
+          "id": "b",
+          "text": "80 ms",
+          "whyWrong": "This is the mean itself. Response times are spread around it, and the 99th percentile sits about 4.6 times higher."
+        },
+        {
+          "id": "c",
+          "text": "55 ms",
+          "whyWrong": "This is the median, about 0.69 of the mean. Half of all requests beat it, so it says nothing about the slow tail p99 measures."
+        },
+        {
+          "id": "d",
+          "text": "160 ms",
+          "whyWrong": "Doubling the mean underestimates the tail. With response times spread exponentially, p99 is ln 100 ≈ 4.6 times the mean, not 2."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Response times here are spread exponentially around the mean, so p99 = mean × ln 100 ≈ 4.61 × 80 ≈ 368 ms. The slowest request in a hundred waits more than four times the average, which the mean alone never shows.",
+    "tags": [
+      "p99-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-p99-from-mean",
+      "params": {
+        "meanMs": 80
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-p99-from-mean-0003",
+    "conceptId": "percentiles",
+    "depth": 1,
+    "prompt": "A component’s mean response time is 150 ms. In this game’s model, what is its p99, the time 99 requests in 100 beat, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "691 ms"
+        },
+        {
+          "id": "b",
+          "text": "150 ms",
+          "whyWrong": "This is the mean itself. Response times are spread around it, and the 99th percentile sits about 4.6 times higher."
+        },
+        {
+          "id": "c",
+          "text": "104 ms",
+          "whyWrong": "This is the median, about 0.69 of the mean. Half of all requests beat it, so it says nothing about the slow tail p99 measures."
+        },
+        {
+          "id": "d",
+          "text": "300 ms",
+          "whyWrong": "Doubling the mean underestimates the tail. With response times spread exponentially, p99 is ln 100 ≈ 4.6 times the mean, not 2."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Response times here are spread exponentially around the mean, so p99 = mean × ln 100 ≈ 4.61 × 150 ≈ 691 ms. The slowest request in a hundred waits more than four times the average, which the mean alone never shows.",
+    "tags": [
+      "p99-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-p99-from-mean",
+      "params": {
+        "meanMs": 150
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-p99-from-mean-0004",
+    "conceptId": "percentiles",
+    "depth": 1,
+    "prompt": "A component’s mean response time is 20 ms. In this game’s model, what is its p99, the time 99 requests in 100 beat, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "92 ms"
+        },
+        {
+          "id": "b",
+          "text": "20 ms",
+          "whyWrong": "This is the mean itself. Response times are spread around it, and the 99th percentile sits about 4.6 times higher."
+        },
+        {
+          "id": "c",
+          "text": "14 ms",
+          "whyWrong": "This is the median, about 0.69 of the mean. Half of all requests beat it, so it says nothing about the slow tail p99 measures."
+        },
+        {
+          "id": "d",
+          "text": "40 ms",
+          "whyWrong": "Doubling the mean underestimates the tail. With response times spread exponentially, p99 is ln 100 ≈ 4.6 times the mean, not 2."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Response times here are spread exponentially around the mean, so p99 = mean × ln 100 ≈ 4.61 × 20 ≈ 92 ms. The slowest request in a hundred waits more than four times the average, which the mean alone never shows.",
+    "tags": [
+      "p99-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-p99-from-mean",
+      "params": {
+        "meanMs": 20
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-p99-from-mean-0005",
+    "conceptId": "percentiles",
+    "depth": 1,
+    "prompt": "A component’s mean response time is 60 ms. In this game’s model, what is its p99, the time 99 requests in 100 beat, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "276 ms"
+        },
+        {
+          "id": "b",
+          "text": "60 ms",
+          "whyWrong": "This is the mean itself. Response times are spread around it, and the 99th percentile sits about 4.6 times higher."
+        },
+        {
+          "id": "c",
+          "text": "42 ms",
+          "whyWrong": "This is the median, about 0.69 of the mean. Half of all requests beat it, so it says nothing about the slow tail p99 measures."
+        },
+        {
+          "id": "d",
+          "text": "120 ms",
+          "whyWrong": "Doubling the mean underestimates the tail. With response times spread exponentially, p99 is ln 100 ≈ 4.6 times the mean, not 2."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Response times here are spread exponentially around the mean, so p99 = mean × ln 100 ≈ 4.61 × 60 ≈ 276 ms. The slowest request in a hundred waits more than four times the average, which the mean alone never shows.",
+    "tags": [
+      "p99-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-p99-from-mean",
+      "params": {
+        "meanMs": 60
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-p99-from-mean-0006",
+    "conceptId": "percentiles",
+    "depth": 1,
+    "prompt": "A component’s mean response time is 100 ms. In this game’s model, what is its p99, the time 99 requests in 100 beat, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "461 ms"
+        },
+        {
+          "id": "b",
+          "text": "100 ms",
+          "whyWrong": "This is the mean itself. Response times are spread around it, and the 99th percentile sits about 4.6 times higher."
+        },
+        {
+          "id": "c",
+          "text": "69 ms",
+          "whyWrong": "This is the median, about 0.69 of the mean. Half of all requests beat it, so it says nothing about the slow tail p99 measures."
+        },
+        {
+          "id": "d",
+          "text": "200 ms",
+          "whyWrong": "Doubling the mean underestimates the tail. With response times spread exponentially, p99 is ln 100 ≈ 4.6 times the mean, not 2."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Response times here are spread exponentially around the mean, so p99 = mean × ln 100 ≈ 4.61 × 100 ≈ 461 ms. The slowest request in a hundred waits more than four times the average, which the mean alone never shows.",
+    "tags": [
+      "p99-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-p99-from-mean",
+      "params": {
+        "meanMs": 100
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-p99-from-mean-0007",
+    "conceptId": "percentiles",
+    "depth": 1,
+    "prompt": "A component’s mean response time is 30 ms. In this game’s model, what is its p99, the time 99 requests in 100 beat, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "138 ms"
+        },
+        {
+          "id": "b",
+          "text": "30 ms",
+          "whyWrong": "This is the mean itself. Response times are spread around it, and the 99th percentile sits about 4.6 times higher."
+        },
+        {
+          "id": "c",
+          "text": "21 ms",
+          "whyWrong": "This is the median, about 0.69 of the mean. Half of all requests beat it, so it says nothing about the slow tail p99 measures."
+        },
+        {
+          "id": "d",
+          "text": "60 ms",
+          "whyWrong": "Doubling the mean underestimates the tail. With response times spread exponentially, p99 is ln 100 ≈ 4.6 times the mean, not 2."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Response times here are spread exponentially around the mean, so p99 = mean × ln 100 ≈ 4.61 × 30 ≈ 138 ms. The slowest request in a hundred waits more than four times the average, which the mean alone never shows.",
+    "tags": [
+      "p99-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-p99-from-mean",
+      "params": {
+        "meanMs": 30
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-p99-from-mean-0008",
+    "conceptId": "percentiles",
+    "depth": 1,
+    "prompt": "A component’s mean response time is 15 ms. In this game’s model, what is its p99, the time 99 requests in 100 beat, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "69 ms"
+        },
+        {
+          "id": "b",
+          "text": "15 ms",
+          "whyWrong": "This is the mean itself. Response times are spread around it, and the 99th percentile sits about 4.6 times higher."
+        },
+        {
+          "id": "c",
+          "text": "10 ms",
+          "whyWrong": "This is the median, about 0.69 of the mean. Half of all requests beat it, so it says nothing about the slow tail p99 measures."
+        },
+        {
+          "id": "d",
+          "text": "30 ms",
+          "whyWrong": "Doubling the mean underestimates the tail. With response times spread exponentially, p99 is ln 100 ≈ 4.6 times the mean, not 2."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Response times here are spread exponentially around the mean, so p99 = mean × ln 100 ≈ 4.61 × 15 ≈ 69 ms. The slowest request in a hundred waits more than four times the average, which the mean alone never shows.",
+    "tags": [
+      "p99-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-p99-from-mean",
+      "params": {
+        "meanMs": 15
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-p99-from-mean-0009",
+    "conceptId": "percentiles",
+    "depth": 1,
+    "prompt": "A component’s mean response time is 12 ms. In this game’s model, what is its p99, the time 99 requests in 100 beat, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "55 ms"
+        },
+        {
+          "id": "b",
+          "text": "12 ms",
+          "whyWrong": "This is the mean itself. Response times are spread around it, and the 99th percentile sits about 4.6 times higher."
+        },
+        {
+          "id": "c",
+          "text": "8 ms",
+          "whyWrong": "This is the median, about 0.69 of the mean. Half of all requests beat it, so it says nothing about the slow tail p99 measures."
+        },
+        {
+          "id": "d",
+          "text": "24 ms",
+          "whyWrong": "Doubling the mean underestimates the tail. With response times spread exponentially, p99 is ln 100 ≈ 4.6 times the mean, not 2."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Response times here are spread exponentially around the mean, so p99 = mean × ln 100 ≈ 4.61 × 12 ≈ 55 ms. The slowest request in a hundred waits more than four times the average, which the mean alone never shows.",
+    "tags": [
+      "p99-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-p99-from-mean",
+      "params": {
+        "meanMs": 12
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-p99-from-mean-0010",
+    "conceptId": "percentiles",
+    "depth": 1,
+    "prompt": "A component’s mean response time is 35 ms. In this game’s model, what is its p99, the time 99 requests in 100 beat, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "161 ms"
+        },
+        {
+          "id": "b",
+          "text": "35 ms",
+          "whyWrong": "This is the mean itself. Response times are spread around it, and the 99th percentile sits about 4.6 times higher."
+        },
+        {
+          "id": "c",
+          "text": "24 ms",
+          "whyWrong": "This is the median, about 0.69 of the mean. Half of all requests beat it, so it says nothing about the slow tail p99 measures."
+        },
+        {
+          "id": "d",
+          "text": "70 ms",
+          "whyWrong": "Doubling the mean underestimates the tail. With response times spread exponentially, p99 is ln 100 ≈ 4.6 times the mean, not 2."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Response times here are spread exponentially around the mean, so p99 = mean × ln 100 ≈ 4.61 × 35 ≈ 161 ms. The slowest request in a hundred waits more than four times the average, which the mean alone never shows.",
+    "tags": [
+      "p99-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-p99-from-mean",
+      "params": {
+        "meanMs": 35
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-p99-from-mean-0011",
+    "conceptId": "percentiles",
+    "depth": 1,
+    "prompt": "A component’s mean response time is 8 ms. In this game’s model, what is its p99, the time 99 requests in 100 beat, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "37 ms"
+        },
+        {
+          "id": "b",
+          "text": "8 ms",
+          "whyWrong": "This is the mean itself. Response times are spread around it, and the 99th percentile sits about 4.6 times higher."
+        },
+        {
+          "id": "c",
+          "text": "6 ms",
+          "whyWrong": "This is the median, about 0.69 of the mean. Half of all requests beat it, so it says nothing about the slow tail p99 measures."
+        },
+        {
+          "id": "d",
+          "text": "16 ms",
+          "whyWrong": "Doubling the mean underestimates the tail. With response times spread exponentially, p99 is ln 100 ≈ 4.6 times the mean, not 2."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Response times here are spread exponentially around the mean, so p99 = mean × ln 100 ≈ 4.61 × 8 ≈ 37 ms. The slowest request in a hundred waits more than four times the average, which the mean alone never shows.",
+    "tags": [
+      "p99-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-p99-from-mean",
+      "params": {
+        "meanMs": 8
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-p99-from-mean-0012",
+    "conceptId": "percentiles",
+    "depth": 1,
+    "prompt": "A component’s mean response time is 75 ms. In this game’s model, what is its p99, the time 99 requests in 100 beat, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "345 ms"
+        },
+        {
+          "id": "b",
+          "text": "75 ms",
+          "whyWrong": "This is the mean itself. Response times are spread around it, and the 99th percentile sits about 4.6 times higher."
+        },
+        {
+          "id": "c",
+          "text": "52 ms",
+          "whyWrong": "This is the median, about 0.69 of the mean. Half of all requests beat it, so it says nothing about the slow tail p99 measures."
+        },
+        {
+          "id": "d",
+          "text": "150 ms",
+          "whyWrong": "Doubling the mean underestimates the tail. With response times spread exponentially, p99 is ln 100 ≈ 4.6 times the mean, not 2."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Response times here are spread exponentially around the mean, so p99 = mean × ln 100 ≈ 4.61 × 75 ≈ 345 ms. The slowest request in a hundred waits more than four times the average, which the mean alone never shows.",
+    "tags": [
+      "p99-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-p99-from-mean",
+      "params": {
+        "meanMs": 75
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-p99-from-mean-0013",
+    "conceptId": "percentiles",
+    "depth": 1,
+    "prompt": "A component’s mean response time is 64 ms. In this game’s model, what is its p99, the time 99 requests in 100 beat, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "295 ms"
+        },
+        {
+          "id": "b",
+          "text": "64 ms",
+          "whyWrong": "This is the mean itself. Response times are spread around it, and the 99th percentile sits about 4.6 times higher."
+        },
+        {
+          "id": "c",
+          "text": "44 ms",
+          "whyWrong": "This is the median, about 0.69 of the mean. Half of all requests beat it, so it says nothing about the slow tail p99 measures."
+        },
+        {
+          "id": "d",
+          "text": "128 ms",
+          "whyWrong": "Doubling the mean underestimates the tail. With response times spread exponentially, p99 is ln 100 ≈ 4.6 times the mean, not 2."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Response times here are spread exponentially around the mean, so p99 = mean × ln 100 ≈ 4.61 × 64 ≈ 295 ms. The slowest request in a hundred waits more than four times the average, which the mean alone never shows.",
+    "tags": [
+      "p99-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-p99-from-mean",
+      "params": {
+        "meanMs": 64
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-p99-from-mean-0014",
+    "conceptId": "percentiles",
+    "depth": 1,
+    "prompt": "A component’s mean response time is 40 ms. In this game’s model, what is its p99, the time 99 requests in 100 beat, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "184 ms"
+        },
+        {
+          "id": "b",
+          "text": "40 ms",
+          "whyWrong": "This is the mean itself. Response times are spread around it, and the 99th percentile sits about 4.6 times higher."
+        },
+        {
+          "id": "c",
+          "text": "28 ms",
+          "whyWrong": "This is the median, about 0.69 of the mean. Half of all requests beat it, so it says nothing about the slow tail p99 measures."
+        },
+        {
+          "id": "d",
+          "text": "80 ms",
+          "whyWrong": "Doubling the mean underestimates the tail. With response times spread exponentially, p99 is ln 100 ≈ 4.6 times the mean, not 2."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Response times here are spread exponentially around the mean, so p99 = mean × ln 100 ≈ 4.61 × 40 ≈ 184 ms. The slowest request in a hundred waits more than four times the average, which the mean alone never shows.",
+    "tags": [
+      "p99-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-p99-from-mean",
+      "params": {
+        "meanMs": 40
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-p99-from-mean-0015",
+    "conceptId": "percentiles",
+    "depth": 1,
+    "prompt": "A component’s mean response time is 120 ms. In this game’s model, what is its p99, the time 99 requests in 100 beat, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "553 ms"
+        },
+        {
+          "id": "b",
+          "text": "120 ms",
+          "whyWrong": "This is the mean itself. Response times are spread around it, and the 99th percentile sits about 4.6 times higher."
+        },
+        {
+          "id": "c",
+          "text": "83 ms",
+          "whyWrong": "This is the median, about 0.69 of the mean. Half of all requests beat it, so it says nothing about the slow tail p99 measures."
+        },
+        {
+          "id": "d",
+          "text": "240 ms",
+          "whyWrong": "Doubling the mean underestimates the tail. With response times spread exponentially, p99 is ln 100 ≈ 4.6 times the mean, not 2."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Response times here are spread exponentially around the mean, so p99 = mean × ln 100 ≈ 4.61 × 120 ≈ 553 ms. The slowest request in a hundred waits more than four times the average, which the mean alone never shows.",
+    "tags": [
+      "p99-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-p99-from-mean",
+      "params": {
+        "meanMs": 120
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-median-from-p99-0001",
+    "conceptId": "percentiles",
+    "depth": 2,
+    "prompt": "Your dashboard shows a p99 of 140 ms for one component. In this game’s model, what is its median response time, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "21 ms"
+        },
+        {
+          "id": "b",
+          "text": "30 ms",
+          "whyWrong": "This is the mean, which sits above the median. The median is 0.69 of the mean, so it is lower still."
+        },
+        {
+          "id": "c",
+          "text": "70 ms",
+          "whyWrong": "Halving p99 assumes the tail sits twice as far out as the typical request. In this model p99 is about 6.6 times the median."
+        },
+        {
+          "id": "d",
+          "text": "97 ms",
+          "whyWrong": "This multiplies p99 by 0.69, but that multiplier turns the mean into the median. p99 has to be turned back into the mean first."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Both percentiles are fixed multiples of the mean: p99 is 4.61 of it and p50 is 0.69. So the mean is 140 ÷ 4.61 ≈ 30 ms, and the median is that × 0.69 ≈ 21 ms, about p99 ÷ 6.6. A typical request is far faster than the slow one the SLO watches.",
+    "tags": [
+      "p99-vs-p50",
+      "median-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-median-from-p99",
+      "params": {
+        "p99Ms": 140
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-median-from-p99-0002",
+    "conceptId": "percentiles",
+    "depth": 2,
+    "prompt": "Your dashboard shows a p99 of 480 ms for one component. In this game’s model, what is its median response time, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "72 ms"
+        },
+        {
+          "id": "b",
+          "text": "104 ms",
+          "whyWrong": "This is the mean, which sits above the median. The median is 0.69 of the mean, so it is lower still."
+        },
+        {
+          "id": "c",
+          "text": "240 ms",
+          "whyWrong": "Halving p99 assumes the tail sits twice as far out as the typical request. In this model p99 is about 6.6 times the median."
+        },
+        {
+          "id": "d",
+          "text": "333 ms",
+          "whyWrong": "This multiplies p99 by 0.69, but that multiplier turns the mean into the median. p99 has to be turned back into the mean first."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Both percentiles are fixed multiples of the mean: p99 is 4.61 of it and p50 is 0.69. So the mean is 480 ÷ 4.61 ≈ 104 ms, and the median is that × 0.69 ≈ 72 ms, about p99 ÷ 6.6. A typical request is far faster than the slow one the SLO watches.",
+    "tags": [
+      "p99-vs-p50",
+      "median-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-median-from-p99",
+      "params": {
+        "p99Ms": 480
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-median-from-p99-0003",
+    "conceptId": "percentiles",
+    "depth": 2,
+    "prompt": "Your dashboard shows a p99 of 880 ms for one component. In this game’s model, what is its median response time, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "132 ms"
+        },
+        {
+          "id": "b",
+          "text": "191 ms",
+          "whyWrong": "This is the mean, which sits above the median. The median is 0.69 of the mean, so it is lower still."
+        },
+        {
+          "id": "c",
+          "text": "440 ms",
+          "whyWrong": "Halving p99 assumes the tail sits twice as far out as the typical request. In this model p99 is about 6.6 times the median."
+        },
+        {
+          "id": "d",
+          "text": "610 ms",
+          "whyWrong": "This multiplies p99 by 0.69, but that multiplier turns the mean into the median. p99 has to be turned back into the mean first."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Both percentiles are fixed multiples of the mean: p99 is 4.61 of it and p50 is 0.69. So the mean is 880 ÷ 4.61 ≈ 191 ms, and the median is that × 0.69 ≈ 132 ms, about p99 ÷ 6.6. A typical request is far faster than the slow one the SLO watches.",
+    "tags": [
+      "p99-vs-p50",
+      "median-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-median-from-p99",
+      "params": {
+        "p99Ms": 880
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-median-from-p99-0004",
+    "conceptId": "percentiles",
+    "depth": 2,
+    "prompt": "Your dashboard shows a p99 of 900 ms for one component. In this game’s model, what is its median response time, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "135 ms"
+        },
+        {
+          "id": "b",
+          "text": "195 ms",
+          "whyWrong": "This is the mean, which sits above the median. The median is 0.69 of the mean, so it is lower still."
+        },
+        {
+          "id": "c",
+          "text": "450 ms",
+          "whyWrong": "Halving p99 assumes the tail sits twice as far out as the typical request. In this model p99 is about 6.6 times the median."
+        },
+        {
+          "id": "d",
+          "text": "624 ms",
+          "whyWrong": "This multiplies p99 by 0.69, but that multiplier turns the mean into the median. p99 has to be turned back into the mean first."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Both percentiles are fixed multiples of the mean: p99 is 4.61 of it and p50 is 0.69. So the mean is 900 ÷ 4.61 ≈ 195 ms, and the median is that × 0.69 ≈ 135 ms, about p99 ÷ 6.6. A typical request is far faster than the slow one the SLO watches.",
+    "tags": [
+      "p99-vs-p50",
+      "median-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-median-from-p99",
+      "params": {
+        "p99Ms": 900
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-median-from-p99-0005",
+    "conceptId": "percentiles",
+    "depth": 2,
+    "prompt": "Your dashboard shows a p99 of 680 ms for one component. In this game’s model, what is its median response time, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "102 ms"
+        },
+        {
+          "id": "b",
+          "text": "148 ms",
+          "whyWrong": "This is the mean, which sits above the median. The median is 0.69 of the mean, so it is lower still."
+        },
+        {
+          "id": "c",
+          "text": "340 ms",
+          "whyWrong": "Halving p99 assumes the tail sits twice as far out as the typical request. In this model p99 is about 6.6 times the median."
+        },
+        {
+          "id": "d",
+          "text": "471 ms",
+          "whyWrong": "This multiplies p99 by 0.69, but that multiplier turns the mean into the median. p99 has to be turned back into the mean first."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Both percentiles are fixed multiples of the mean: p99 is 4.61 of it and p50 is 0.69. So the mean is 680 ÷ 4.61 ≈ 148 ms, and the median is that × 0.69 ≈ 102 ms, about p99 ÷ 6.6. A typical request is far faster than the slow one the SLO watches.",
+    "tags": [
+      "p99-vs-p50",
+      "median-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-median-from-p99",
+      "params": {
+        "p99Ms": 680
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-median-from-p99-0006",
+    "conceptId": "percentiles",
+    "depth": 2,
+    "prompt": "Your dashboard shows a p99 of 620 ms for one component. In this game’s model, what is its median response time, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "93 ms"
+        },
+        {
+          "id": "b",
+          "text": "135 ms",
+          "whyWrong": "This is the mean, which sits above the median. The median is 0.69 of the mean, so it is lower still."
+        },
+        {
+          "id": "c",
+          "text": "310 ms",
+          "whyWrong": "Halving p99 assumes the tail sits twice as far out as the typical request. In this model p99 is about 6.6 times the median."
+        },
+        {
+          "id": "d",
+          "text": "430 ms",
+          "whyWrong": "This multiplies p99 by 0.69, but that multiplier turns the mean into the median. p99 has to be turned back into the mean first."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Both percentiles are fixed multiples of the mean: p99 is 4.61 of it and p50 is 0.69. So the mean is 620 ÷ 4.61 ≈ 135 ms, and the median is that × 0.69 ≈ 93 ms, about p99 ÷ 6.6. A typical request is far faster than the slow one the SLO watches.",
+    "tags": [
+      "p99-vs-p50",
+      "median-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-median-from-p99",
+      "params": {
+        "p99Ms": 620
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-median-from-p99-0007",
+    "conceptId": "percentiles",
+    "depth": 2,
+    "prompt": "Your dashboard shows a p99 of 740 ms for one component. In this game’s model, what is its median response time, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "111 ms"
+        },
+        {
+          "id": "b",
+          "text": "161 ms",
+          "whyWrong": "This is the mean, which sits above the median. The median is 0.69 of the mean, so it is lower still."
+        },
+        {
+          "id": "c",
+          "text": "370 ms",
+          "whyWrong": "Halving p99 assumes the tail sits twice as far out as the typical request. In this model p99 is about 6.6 times the median."
+        },
+        {
+          "id": "d",
+          "text": "513 ms",
+          "whyWrong": "This multiplies p99 by 0.69, but that multiplier turns the mean into the median. p99 has to be turned back into the mean first."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Both percentiles are fixed multiples of the mean: p99 is 4.61 of it and p50 is 0.69. So the mean is 740 ÷ 4.61 ≈ 161 ms, and the median is that × 0.69 ≈ 111 ms, about p99 ÷ 6.6. A typical request is far faster than the slow one the SLO watches.",
+    "tags": [
+      "p99-vs-p50",
+      "median-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-median-from-p99",
+      "params": {
+        "p99Ms": 740
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-median-from-p99-0008",
+    "conceptId": "percentiles",
+    "depth": 2,
+    "prompt": "Your dashboard shows a p99 of 340 ms for one component. In this game’s model, what is its median response time, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "51 ms"
+        },
+        {
+          "id": "b",
+          "text": "74 ms",
+          "whyWrong": "This is the mean, which sits above the median. The median is 0.69 of the mean, so it is lower still."
+        },
+        {
+          "id": "c",
+          "text": "170 ms",
+          "whyWrong": "Halving p99 assumes the tail sits twice as far out as the typical request. In this model p99 is about 6.6 times the median."
+        },
+        {
+          "id": "d",
+          "text": "236 ms",
+          "whyWrong": "This multiplies p99 by 0.69, but that multiplier turns the mean into the median. p99 has to be turned back into the mean first."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Both percentiles are fixed multiples of the mean: p99 is 4.61 of it and p50 is 0.69. So the mean is 340 ÷ 4.61 ≈ 74 ms, and the median is that × 0.69 ≈ 51 ms, about p99 ÷ 6.6. A typical request is far faster than the slow one the SLO watches.",
+    "tags": [
+      "p99-vs-p50",
+      "median-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-median-from-p99",
+      "params": {
+        "p99Ms": 340
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-median-from-p99-0009",
+    "conceptId": "percentiles",
+    "depth": 2,
+    "prompt": "Your dashboard shows a p99 of 420 ms for one component. In this game’s model, what is its median response time, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "63 ms"
+        },
+        {
+          "id": "b",
+          "text": "91 ms",
+          "whyWrong": "This is the mean, which sits above the median. The median is 0.69 of the mean, so it is lower still."
+        },
+        {
+          "id": "c",
+          "text": "210 ms",
+          "whyWrong": "Halving p99 assumes the tail sits twice as far out as the typical request. In this model p99 is about 6.6 times the median."
+        },
+        {
+          "id": "d",
+          "text": "291 ms",
+          "whyWrong": "This multiplies p99 by 0.69, but that multiplier turns the mean into the median. p99 has to be turned back into the mean first."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Both percentiles are fixed multiples of the mean: p99 is 4.61 of it and p50 is 0.69. So the mean is 420 ÷ 4.61 ≈ 91 ms, and the median is that × 0.69 ≈ 63 ms, about p99 ÷ 6.6. A typical request is far faster than the slow one the SLO watches.",
+    "tags": [
+      "p99-vs-p50",
+      "median-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-median-from-p99",
+      "params": {
+        "p99Ms": 420
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-median-from-p99-0010",
+    "conceptId": "percentiles",
+    "depth": 2,
+    "prompt": "Your dashboard shows a p99 of 760 ms for one component. In this game’s model, what is its median response time, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "114 ms"
+        },
+        {
+          "id": "b",
+          "text": "165 ms",
+          "whyWrong": "This is the mean, which sits above the median. The median is 0.69 of the mean, so it is lower still."
+        },
+        {
+          "id": "c",
+          "text": "380 ms",
+          "whyWrong": "Halving p99 assumes the tail sits twice as far out as the typical request. In this model p99 is about 6.6 times the median."
+        },
+        {
+          "id": "d",
+          "text": "527 ms",
+          "whyWrong": "This multiplies p99 by 0.69, but that multiplier turns the mean into the median. p99 has to be turned back into the mean first."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Both percentiles are fixed multiples of the mean: p99 is 4.61 of it and p50 is 0.69. So the mean is 760 ÷ 4.61 ≈ 165 ms, and the median is that × 0.69 ≈ 114 ms, about p99 ÷ 6.6. A typical request is far faster than the slow one the SLO watches.",
+    "tags": [
+      "p99-vs-p50",
+      "median-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-median-from-p99",
+      "params": {
+        "p99Ms": 760
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-median-from-p99-0011",
+    "conceptId": "percentiles",
+    "depth": 2,
+    "prompt": "Your dashboard shows a p99 of 260 ms for one component. In this game’s model, what is its median response time, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "39 ms"
+        },
+        {
+          "id": "b",
+          "text": "56 ms",
+          "whyWrong": "This is the mean, which sits above the median. The median is 0.69 of the mean, so it is lower still."
+        },
+        {
+          "id": "c",
+          "text": "130 ms",
+          "whyWrong": "Halving p99 assumes the tail sits twice as far out as the typical request. In this model p99 is about 6.6 times the median."
+        },
+        {
+          "id": "d",
+          "text": "180 ms",
+          "whyWrong": "This multiplies p99 by 0.69, but that multiplier turns the mean into the median. p99 has to be turned back into the mean first."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Both percentiles are fixed multiples of the mean: p99 is 4.61 of it and p50 is 0.69. So the mean is 260 ÷ 4.61 ≈ 56 ms, and the median is that × 0.69 ≈ 39 ms, about p99 ÷ 6.6. A typical request is far faster than the slow one the SLO watches.",
+    "tags": [
+      "p99-vs-p50",
+      "median-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-median-from-p99",
+      "params": {
+        "p99Ms": 260
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-median-from-p99-0012",
+    "conceptId": "percentiles",
+    "depth": 2,
+    "prompt": "Your dashboard shows a p99 of 220 ms for one component. In this game’s model, what is its median response time, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "33 ms"
+        },
+        {
+          "id": "b",
+          "text": "48 ms",
+          "whyWrong": "This is the mean, which sits above the median. The median is 0.69 of the mean, so it is lower still."
+        },
+        {
+          "id": "c",
+          "text": "110 ms",
+          "whyWrong": "Halving p99 assumes the tail sits twice as far out as the typical request. In this model p99 is about 6.6 times the median."
+        },
+        {
+          "id": "d",
+          "text": "152 ms",
+          "whyWrong": "This multiplies p99 by 0.69, but that multiplier turns the mean into the median. p99 has to be turned back into the mean first."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Both percentiles are fixed multiples of the mean: p99 is 4.61 of it and p50 is 0.69. So the mean is 220 ÷ 4.61 ≈ 48 ms, and the median is that × 0.69 ≈ 33 ms, about p99 ÷ 6.6. A typical request is far faster than the slow one the SLO watches.",
+    "tags": [
+      "p99-vs-p50",
+      "median-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-median-from-p99",
+      "params": {
+        "p99Ms": 220
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-median-from-p99-0013",
+    "conceptId": "percentiles",
+    "depth": 2,
+    "prompt": "Your dashboard shows a p99 of 280 ms for one component. In this game’s model, what is its median response time, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "42 ms"
+        },
+        {
+          "id": "b",
+          "text": "61 ms",
+          "whyWrong": "This is the mean, which sits above the median. The median is 0.69 of the mean, so it is lower still."
+        },
+        {
+          "id": "c",
+          "text": "140 ms",
+          "whyWrong": "Halving p99 assumes the tail sits twice as far out as the typical request. In this model p99 is about 6.6 times the median."
+        },
+        {
+          "id": "d",
+          "text": "194 ms",
+          "whyWrong": "This multiplies p99 by 0.69, but that multiplier turns the mean into the median. p99 has to be turned back into the mean first."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Both percentiles are fixed multiples of the mean: p99 is 4.61 of it and p50 is 0.69. So the mean is 280 ÷ 4.61 ≈ 61 ms, and the median is that × 0.69 ≈ 42 ms, about p99 ÷ 6.6. A typical request is far faster than the slow one the SLO watches.",
+    "tags": [
+      "p99-vs-p50",
+      "median-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-median-from-p99",
+      "params": {
+        "p99Ms": 280
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-median-from-p99-0014",
+    "conceptId": "percentiles",
+    "depth": 2,
+    "prompt": "Your dashboard shows a p99 of 440 ms for one component. In this game’s model, what is its median response time, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "66 ms"
+        },
+        {
+          "id": "b",
+          "text": "96 ms",
+          "whyWrong": "This is the mean, which sits above the median. The median is 0.69 of the mean, so it is lower still."
+        },
+        {
+          "id": "c",
+          "text": "220 ms",
+          "whyWrong": "Halving p99 assumes the tail sits twice as far out as the typical request. In this model p99 is about 6.6 times the median."
+        },
+        {
+          "id": "d",
+          "text": "305 ms",
+          "whyWrong": "This multiplies p99 by 0.69, but that multiplier turns the mean into the median. p99 has to be turned back into the mean first."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Both percentiles are fixed multiples of the mean: p99 is 4.61 of it and p50 is 0.69. So the mean is 440 ÷ 4.61 ≈ 96 ms, and the median is that × 0.69 ≈ 66 ms, about p99 ÷ 6.6. A typical request is far faster than the slow one the SLO watches.",
+    "tags": [
+      "p99-vs-p50",
+      "median-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-median-from-p99",
+      "params": {
+        "p99Ms": 440
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-median-from-p99-0015",
+    "conceptId": "percentiles",
+    "depth": 2,
+    "prompt": "Your dashboard shows a p99 of 180 ms for one component. In this game’s model, what is its median response time, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "27 ms"
+        },
+        {
+          "id": "b",
+          "text": "39 ms",
+          "whyWrong": "This is the mean, which sits above the median. The median is 0.69 of the mean, so it is lower still."
+        },
+        {
+          "id": "c",
+          "text": "90 ms",
+          "whyWrong": "Halving p99 assumes the tail sits twice as far out as the typical request. In this model p99 is about 6.6 times the median."
+        },
+        {
+          "id": "d",
+          "text": "125 ms",
+          "whyWrong": "This multiplies p99 by 0.69, but that multiplier turns the mean into the median. p99 has to be turned back into the mean first."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Both percentiles are fixed multiples of the mean: p99 is 4.61 of it and p50 is 0.69. So the mean is 180 ÷ 4.61 ≈ 39 ms, and the median is that × 0.69 ≈ 27 ms, about p99 ÷ 6.6. A typical request is far faster than the slow one the SLO watches.",
+    "tags": [
+      "p99-vs-p50",
+      "median-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-median-from-p99",
+      "params": {
+        "p99Ms": 180
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-mean-budget-0001",
+    "conceptId": "percentiles",
+    "depth": 2,
+    "prompt": "Your SLO says p99 must stay at or under 400 ms. In this game’s model, what is the highest mean response time a component can have and still meet it, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "87 ms"
+        },
+        {
+          "id": "b",
+          "text": "400 ms",
+          "whyWrong": "This lets the mean reach the target itself. p99 sits about 4.6 times above the mean, so by then the slowest requests are far past the SLO."
+        },
+        {
+          "id": "c",
+          "text": "577 ms",
+          "whyWrong": "This keeps the median at the target, which lets the mean rise above it. The SLO is on p99, which is 4.6 times the mean, not the median."
+        },
+        {
+          "id": "d",
+          "text": "1,842 ms",
+          "whyWrong": "This multiplies the target by 4.6. p99 is the larger of the two figures, so the mean has to be smaller than the target, not larger."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "p99 is the mean × ln 100 ≈ 4.61 × the mean, so the mean has to stay at or under 400 ÷ 4.61 ≈ 87 ms. A mean that looks comfortably inside the target can still put the slowest requests far outside it.",
+    "tags": [
+      "p99-slo",
+      "p99-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-mean-budget",
+      "params": {
+        "sloMs": 400
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-mean-budget-0002",
+    "conceptId": "percentiles",
+    "depth": 2,
+    "prompt": "Your SLO says p99 must stay at or under 1,650 ms. In this game’s model, what is the highest mean response time a component can have and still meet it, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "358 ms"
+        },
+        {
+          "id": "b",
+          "text": "1,650 ms",
+          "whyWrong": "This lets the mean reach the target itself. p99 sits about 4.6 times above the mean, so by then the slowest requests are far past the SLO."
+        },
+        {
+          "id": "c",
+          "text": "2,380 ms",
+          "whyWrong": "This keeps the median at the target, which lets the mean rise above it. The SLO is on p99, which is 4.6 times the mean, not the median."
+        },
+        {
+          "id": "d",
+          "text": "7,599 ms",
+          "whyWrong": "This multiplies the target by 4.6. p99 is the larger of the two figures, so the mean has to be smaller than the target, not larger."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "p99 is the mean × ln 100 ≈ 4.61 × the mean, so the mean has to stay at or under 1650 ÷ 4.61 ≈ 358 ms. A mean that looks comfortably inside the target can still put the slowest requests far outside it.",
+    "tags": [
+      "p99-slo",
+      "p99-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-mean-budget",
+      "params": {
+        "sloMs": 1650
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-mean-budget-0003",
+    "conceptId": "percentiles",
+    "depth": 2,
+    "prompt": "Your SLO says p99 must stay at or under 550 ms. In this game’s model, what is the highest mean response time a component can have and still meet it, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "119 ms"
+        },
+        {
+          "id": "b",
+          "text": "550 ms",
+          "whyWrong": "This lets the mean reach the target itself. p99 sits about 4.6 times above the mean, so by then the slowest requests are far past the SLO."
+        },
+        {
+          "id": "c",
+          "text": "793 ms",
+          "whyWrong": "This keeps the median at the target, which lets the mean rise above it. The SLO is on p99, which is 4.6 times the mean, not the median."
+        },
+        {
+          "id": "d",
+          "text": "2,533 ms",
+          "whyWrong": "This multiplies the target by 4.6. p99 is the larger of the two figures, so the mean has to be smaller than the target, not larger."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "p99 is the mean × ln 100 ≈ 4.61 × the mean, so the mean has to stay at or under 550 ÷ 4.61 ≈ 119 ms. A mean that looks comfortably inside the target can still put the slowest requests far outside it.",
+    "tags": [
+      "p99-slo",
+      "p99-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-mean-budget",
+      "params": {
+        "sloMs": 550
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-mean-budget-0004",
+    "conceptId": "percentiles",
+    "depth": 2,
+    "prompt": "Your SLO says p99 must stay at or under 1,000 ms. In this game’s model, what is the highest mean response time a component can have and still meet it, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "217 ms"
+        },
+        {
+          "id": "b",
+          "text": "1,000 ms",
+          "whyWrong": "This lets the mean reach the target itself. p99 sits about 4.6 times above the mean, so by then the slowest requests are far past the SLO."
+        },
+        {
+          "id": "c",
+          "text": "1,443 ms",
+          "whyWrong": "This keeps the median at the target, which lets the mean rise above it. The SLO is on p99, which is 4.6 times the mean, not the median."
+        },
+        {
+          "id": "d",
+          "text": "4,605 ms",
+          "whyWrong": "This multiplies the target by 4.6. p99 is the larger of the two figures, so the mean has to be smaller than the target, not larger."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "p99 is the mean × ln 100 ≈ 4.61 × the mean, so the mean has to stay at or under 1000 ÷ 4.61 ≈ 217 ms. A mean that looks comfortably inside the target can still put the slowest requests far outside it.",
+    "tags": [
+      "p99-slo",
+      "p99-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-mean-budget",
+      "params": {
+        "sloMs": 1000
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-mean-budget-0005",
+    "conceptId": "percentiles",
+    "depth": 2,
+    "prompt": "Your SLO says p99 must stay at or under 900 ms. In this game’s model, what is the highest mean response time a component can have and still meet it, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "195 ms"
+        },
+        {
+          "id": "b",
+          "text": "900 ms",
+          "whyWrong": "This lets the mean reach the target itself. p99 sits about 4.6 times above the mean, so by then the slowest requests are far past the SLO."
+        },
+        {
+          "id": "c",
+          "text": "1,298 ms",
+          "whyWrong": "This keeps the median at the target, which lets the mean rise above it. The SLO is on p99, which is 4.6 times the mean, not the median."
+        },
+        {
+          "id": "d",
+          "text": "4,145 ms",
+          "whyWrong": "This multiplies the target by 4.6. p99 is the larger of the two figures, so the mean has to be smaller than the target, not larger."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "p99 is the mean × ln 100 ≈ 4.61 × the mean, so the mean has to stay at or under 900 ÷ 4.61 ≈ 195 ms. A mean that looks comfortably inside the target can still put the slowest requests far outside it.",
+    "tags": [
+      "p99-slo",
+      "p99-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-mean-budget",
+      "params": {
+        "sloMs": 900
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-mean-budget-0006",
+    "conceptId": "percentiles",
+    "depth": 2,
+    "prompt": "Your SLO says p99 must stay at or under 750 ms. In this game’s model, what is the highest mean response time a component can have and still meet it, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "163 ms"
+        },
+        {
+          "id": "b",
+          "text": "750 ms",
+          "whyWrong": "This lets the mean reach the target itself. p99 sits about 4.6 times above the mean, so by then the slowest requests are far past the SLO."
+        },
+        {
+          "id": "c",
+          "text": "1,082 ms",
+          "whyWrong": "This keeps the median at the target, which lets the mean rise above it. The SLO is on p99, which is 4.6 times the mean, not the median."
+        },
+        {
+          "id": "d",
+          "text": "3,454 ms",
+          "whyWrong": "This multiplies the target by 4.6. p99 is the larger of the two figures, so the mean has to be smaller than the target, not larger."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "p99 is the mean × ln 100 ≈ 4.61 × the mean, so the mean has to stay at or under 750 ÷ 4.61 ≈ 163 ms. A mean that looks comfortably inside the target can still put the slowest requests far outside it.",
+    "tags": [
+      "p99-slo",
+      "p99-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-mean-budget",
+      "params": {
+        "sloMs": 750
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-mean-budget-0007",
+    "conceptId": "percentiles",
+    "depth": 2,
+    "prompt": "Your SLO says p99 must stay at or under 1,050 ms. In this game’s model, what is the highest mean response time a component can have and still meet it, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "228 ms"
+        },
+        {
+          "id": "b",
+          "text": "1,050 ms",
+          "whyWrong": "This lets the mean reach the target itself. p99 sits about 4.6 times above the mean, so by then the slowest requests are far past the SLO."
+        },
+        {
+          "id": "c",
+          "text": "1,515 ms",
+          "whyWrong": "This keeps the median at the target, which lets the mean rise above it. The SLO is on p99, which is 4.6 times the mean, not the median."
+        },
+        {
+          "id": "d",
+          "text": "4,835 ms",
+          "whyWrong": "This multiplies the target by 4.6. p99 is the larger of the two figures, so the mean has to be smaller than the target, not larger."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "p99 is the mean × ln 100 ≈ 4.61 × the mean, so the mean has to stay at or under 1050 ÷ 4.61 ≈ 228 ms. A mean that looks comfortably inside the target can still put the slowest requests far outside it.",
+    "tags": [
+      "p99-slo",
+      "p99-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-mean-budget",
+      "params": {
+        "sloMs": 1050
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-mean-budget-0008",
+    "conceptId": "percentiles",
+    "depth": 2,
+    "prompt": "Your SLO says p99 must stay at or under 1,550 ms. In this game’s model, what is the highest mean response time a component can have and still meet it, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "337 ms"
+        },
+        {
+          "id": "b",
+          "text": "1,550 ms",
+          "whyWrong": "This lets the mean reach the target itself. p99 sits about 4.6 times above the mean, so by then the slowest requests are far past the SLO."
+        },
+        {
+          "id": "c",
+          "text": "2,236 ms",
+          "whyWrong": "This keeps the median at the target, which lets the mean rise above it. The SLO is on p99, which is 4.6 times the mean, not the median."
+        },
+        {
+          "id": "d",
+          "text": "7,138 ms",
+          "whyWrong": "This multiplies the target by 4.6. p99 is the larger of the two figures, so the mean has to be smaller than the target, not larger."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "p99 is the mean × ln 100 ≈ 4.61 × the mean, so the mean has to stay at or under 1550 ÷ 4.61 ≈ 337 ms. A mean that looks comfortably inside the target can still put the slowest requests far outside it.",
+    "tags": [
+      "p99-slo",
+      "p99-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-mean-budget",
+      "params": {
+        "sloMs": 1550
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-mean-budget-0009",
+    "conceptId": "percentiles",
+    "depth": 2,
+    "prompt": "Your SLO says p99 must stay at or under 1,300 ms. In this game’s model, what is the highest mean response time a component can have and still meet it, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "282 ms"
+        },
+        {
+          "id": "b",
+          "text": "1,300 ms",
+          "whyWrong": "This lets the mean reach the target itself. p99 sits about 4.6 times above the mean, so by then the slowest requests are far past the SLO."
+        },
+        {
+          "id": "c",
+          "text": "1,876 ms",
+          "whyWrong": "This keeps the median at the target, which lets the mean rise above it. The SLO is on p99, which is 4.6 times the mean, not the median."
+        },
+        {
+          "id": "d",
+          "text": "5,987 ms",
+          "whyWrong": "This multiplies the target by 4.6. p99 is the larger of the two figures, so the mean has to be smaller than the target, not larger."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "p99 is the mean × ln 100 ≈ 4.61 × the mean, so the mean has to stay at or under 1300 ÷ 4.61 ≈ 282 ms. A mean that looks comfortably inside the target can still put the slowest requests far outside it.",
+    "tags": [
+      "p99-slo",
+      "p99-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-mean-budget",
+      "params": {
+        "sloMs": 1300
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-mean-budget-0010",
+    "conceptId": "percentiles",
+    "depth": 2,
+    "prompt": "Your SLO says p99 must stay at or under 200 ms. In this game’s model, what is the highest mean response time a component can have and still meet it, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "43 ms"
+        },
+        {
+          "id": "b",
+          "text": "200 ms",
+          "whyWrong": "This lets the mean reach the target itself. p99 sits about 4.6 times above the mean, so by then the slowest requests are far past the SLO."
+        },
+        {
+          "id": "c",
+          "text": "289 ms",
+          "whyWrong": "This keeps the median at the target, which lets the mean rise above it. The SLO is on p99, which is 4.6 times the mean, not the median."
+        },
+        {
+          "id": "d",
+          "text": "921 ms",
+          "whyWrong": "This multiplies the target by 4.6. p99 is the larger of the two figures, so the mean has to be smaller than the target, not larger."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "p99 is the mean × ln 100 ≈ 4.61 × the mean, so the mean has to stay at or under 200 ÷ 4.61 ≈ 43 ms. A mean that looks comfortably inside the target can still put the slowest requests far outside it.",
+    "tags": [
+      "p99-slo",
+      "p99-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-mean-budget",
+      "params": {
+        "sloMs": 200
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-mean-budget-0011",
+    "conceptId": "percentiles",
+    "depth": 2,
+    "prompt": "Your SLO says p99 must stay at or under 300 ms. In this game’s model, what is the highest mean response time a component can have and still meet it, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "65 ms"
+        },
+        {
+          "id": "b",
+          "text": "300 ms",
+          "whyWrong": "This lets the mean reach the target itself. p99 sits about 4.6 times above the mean, so by then the slowest requests are far past the SLO."
+        },
+        {
+          "id": "c",
+          "text": "433 ms",
+          "whyWrong": "This keeps the median at the target, which lets the mean rise above it. The SLO is on p99, which is 4.6 times the mean, not the median."
+        },
+        {
+          "id": "d",
+          "text": "1,382 ms",
+          "whyWrong": "This multiplies the target by 4.6. p99 is the larger of the two figures, so the mean has to be smaller than the target, not larger."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "p99 is the mean × ln 100 ≈ 4.61 × the mean, so the mean has to stay at or under 300 ÷ 4.61 ≈ 65 ms. A mean that looks comfortably inside the target can still put the slowest requests far outside it.",
+    "tags": [
+      "p99-slo",
+      "p99-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-mean-budget",
+      "params": {
+        "sloMs": 300
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-mean-budget-0012",
+    "conceptId": "percentiles",
+    "depth": 2,
+    "prompt": "Your SLO says p99 must stay at or under 1,750 ms. In this game’s model, what is the highest mean response time a component can have and still meet it, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "380 ms"
+        },
+        {
+          "id": "b",
+          "text": "1,750 ms",
+          "whyWrong": "This lets the mean reach the target itself. p99 sits about 4.6 times above the mean, so by then the slowest requests are far past the SLO."
+        },
+        {
+          "id": "c",
+          "text": "2,525 ms",
+          "whyWrong": "This keeps the median at the target, which lets the mean rise above it. The SLO is on p99, which is 4.6 times the mean, not the median."
+        },
+        {
+          "id": "d",
+          "text": "8,059 ms",
+          "whyWrong": "This multiplies the target by 4.6. p99 is the larger of the two figures, so the mean has to be smaller than the target, not larger."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "p99 is the mean × ln 100 ≈ 4.61 × the mean, so the mean has to stay at or under 1750 ÷ 4.61 ≈ 380 ms. A mean that looks comfortably inside the target can still put the slowest requests far outside it.",
+    "tags": [
+      "p99-slo",
+      "p99-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-mean-budget",
+      "params": {
+        "sloMs": 1750
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-mean-budget-0013",
+    "conceptId": "percentiles",
+    "depth": 2,
+    "prompt": "Your SLO says p99 must stay at or under 2,000 ms. In this game’s model, what is the highest mean response time a component can have and still meet it, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "434 ms"
+        },
+        {
+          "id": "b",
+          "text": "2,000 ms",
+          "whyWrong": "This lets the mean reach the target itself. p99 sits about 4.6 times above the mean, so by then the slowest requests are far past the SLO."
+        },
+        {
+          "id": "c",
+          "text": "2,885 ms",
+          "whyWrong": "This keeps the median at the target, which lets the mean rise above it. The SLO is on p99, which is 4.6 times the mean, not the median."
+        },
+        {
+          "id": "d",
+          "text": "9,210 ms",
+          "whyWrong": "This multiplies the target by 4.6. p99 is the larger of the two figures, so the mean has to be smaller than the target, not larger."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "p99 is the mean × ln 100 ≈ 4.61 × the mean, so the mean has to stay at or under 2000 ÷ 4.61 ≈ 434 ms. A mean that looks comfortably inside the target can still put the slowest requests far outside it.",
+    "tags": [
+      "p99-slo",
+      "p99-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-mean-budget",
+      "params": {
+        "sloMs": 2000
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-mean-budget-0014",
+    "conceptId": "percentiles",
+    "depth": 2,
+    "prompt": "Your SLO says p99 must stay at or under 1,350 ms. In this game’s model, what is the highest mean response time a component can have and still meet it, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "293 ms"
+        },
+        {
+          "id": "b",
+          "text": "1,350 ms",
+          "whyWrong": "This lets the mean reach the target itself. p99 sits about 4.6 times above the mean, so by then the slowest requests are far past the SLO."
+        },
+        {
+          "id": "c",
+          "text": "1,948 ms",
+          "whyWrong": "This keeps the median at the target, which lets the mean rise above it. The SLO is on p99, which is 4.6 times the mean, not the median."
+        },
+        {
+          "id": "d",
+          "text": "6,217 ms",
+          "whyWrong": "This multiplies the target by 4.6. p99 is the larger of the two figures, so the mean has to be smaller than the target, not larger."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "p99 is the mean × ln 100 ≈ 4.61 × the mean, so the mean has to stay at or under 1350 ÷ 4.61 ≈ 293 ms. A mean that looks comfortably inside the target can still put the slowest requests far outside it.",
+    "tags": [
+      "p99-slo",
+      "p99-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-mean-budget",
+      "params": {
+        "sloMs": 1350
+      }
+    }
+  },
+  {
+    "id": "q-percentiles-d-percentiles-mean-budget-0015",
+    "conceptId": "percentiles",
+    "depth": 2,
+    "prompt": "Your SLO says p99 must stay at or under 1,400 ms. In this game’s model, what is the highest mean response time a component can have and still meet it, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "304 ms"
+        },
+        {
+          "id": "b",
+          "text": "1,400 ms",
+          "whyWrong": "This lets the mean reach the target itself. p99 sits about 4.6 times above the mean, so by then the slowest requests are far past the SLO."
+        },
+        {
+          "id": "c",
+          "text": "2,020 ms",
+          "whyWrong": "This keeps the median at the target, which lets the mean rise above it. The SLO is on p99, which is 4.6 times the mean, not the median."
+        },
+        {
+          "id": "d",
+          "text": "6,447 ms",
+          "whyWrong": "This multiplies the target by 4.6. p99 is the larger of the two figures, so the mean has to be smaller than the target, not larger."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "p99 is the mean × ln 100 ≈ 4.61 × the mean, so the mean has to stay at or under 1400 ÷ 4.61 ≈ 304 ms. A mean that looks comfortably inside the target can still put the slowest requests far outside it.",
+    "tags": [
+      "p99-slo",
+      "p99-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-percentiles",
+      "templateId": "tpl-percentiles-mean-budget",
+      "params": {
+        "sloMs": 1400
+      }
+    }
+  }
+]

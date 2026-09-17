@@ -51,7 +51,9 @@ describe('the review queue (09-QUESTION-BANK §8)', () => {
   it('covers every template and every authored question exactly once', () => {
     const queue = buildQueue(queueInput())
     const templateIds = queue.filter((item) => item.kind === 'template').map((item) => item.id)
-    expect(templateIds).toEqual(templates.map((template) => template.id))
+    // Concept by concept, in curriculum order, so the lesson beside the reviewer changes rarely.
+    const everyTemplate = Object.values(CONCEPTS).flatMap((concept) => TEMPLATES[concept.id])
+    expect(templateIds).toEqual(everyTemplate.map((template) => template.id))
 
     const authoredIds = queue.filter((item) => item.kind === 'authored').map((item) => item.id)
     const expected = Object.values(AUTHORED)

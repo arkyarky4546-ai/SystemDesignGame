@@ -1,0 +1,2192 @@
+[
+  {
+    "id": "q-client-server-basics-d-request-database-load-0001",
+    "conceptId": "client-server-basics",
+    "depth": 1,
+    "prompt": "Traffic averages 310/s and its busiest hour runs at 3 times that. Your app server keeps up, and your code makes 4 queries for every request it serves. How many queries per second reach the database at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "3,720/s"
+        },
+        {
+          "id": "b",
+          "text": "930/s",
+          "whyWrong": "This is the request rate, not the query rate. Each request the app server serves makes several queries, and every one of them is load on the database."
+        },
+        {
+          "id": "c",
+          "text": "1,240/s",
+          "whyWrong": "This works the load out at the weekly mean. The game resolves each week at its busiest hour, so the database has to carry the peak rate of queries."
+        },
+        {
+          "id": "d",
+          "text": "310/s",
+          "whyWrong": "This is the average request rate. It misses both the busy hour and the queries each request makes, so it understates the database’s load twice over."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "At peak the app server receives 310 × 3 = 930/s and serves all of it. Each served request makes 4 queries, so the database receives 930 × 4 = 3,720/s. Load is always worked out at the busiest hour.",
+    "tags": [
+      "fanout",
+      "peak-load"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-database-load",
+      "params": {
+        "meanRps": 310,
+        "peakMultiplier": 3,
+        "queriesPerRequest": 4
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-database-load-0002",
+    "conceptId": "client-server-basics",
+    "depth": 1,
+    "prompt": "Traffic averages 190/s and its busiest hour runs at 1.5 times that. Your app server keeps up, and your code makes 5 queries for every request it serves. How many queries per second reach the database at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "1,425/s"
+        },
+        {
+          "id": "b",
+          "text": "285/s",
+          "whyWrong": "This is the request rate, not the query rate. Each request the app server serves makes several queries, and every one of them is load on the database."
+        },
+        {
+          "id": "c",
+          "text": "950/s",
+          "whyWrong": "This works the load out at the weekly mean. The game resolves each week at its busiest hour, so the database has to carry the peak rate of queries."
+        },
+        {
+          "id": "d",
+          "text": "190/s",
+          "whyWrong": "This is the average request rate. It misses both the busy hour and the queries each request makes, so it understates the database’s load twice over."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "At peak the app server receives 190 × 1.5 = 285/s and serves all of it. Each served request makes 5 queries, so the database receives 285 × 5 = 1,425/s. Load is always worked out at the busiest hour.",
+    "tags": [
+      "fanout",
+      "peak-load"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-database-load",
+      "params": {
+        "meanRps": 190,
+        "peakMultiplier": 1.5,
+        "queriesPerRequest": 5
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-database-load-0003",
+    "conceptId": "client-server-basics",
+    "depth": 1,
+    "prompt": "Traffic averages 110/s and its busiest hour runs at 3 times that. Your app server keeps up, and your code makes 5 queries for every request it serves. How many queries per second reach the database at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "1,650/s"
+        },
+        {
+          "id": "b",
+          "text": "330/s",
+          "whyWrong": "This is the request rate, not the query rate. Each request the app server serves makes several queries, and every one of them is load on the database."
+        },
+        {
+          "id": "c",
+          "text": "550/s",
+          "whyWrong": "This works the load out at the weekly mean. The game resolves each week at its busiest hour, so the database has to carry the peak rate of queries."
+        },
+        {
+          "id": "d",
+          "text": "110/s",
+          "whyWrong": "This is the average request rate. It misses both the busy hour and the queries each request makes, so it understates the database’s load twice over."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "At peak the app server receives 110 × 3 = 330/s and serves all of it. Each served request makes 5 queries, so the database receives 330 × 5 = 1,650/s. Load is always worked out at the busiest hour.",
+    "tags": [
+      "fanout",
+      "peak-load"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-database-load",
+      "params": {
+        "meanRps": 110,
+        "peakMultiplier": 3,
+        "queriesPerRequest": 5
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-database-load-0004",
+    "conceptId": "client-server-basics",
+    "depth": 1,
+    "prompt": "Traffic averages 220/s and its busiest hour runs at 3 times that. Your app server keeps up, and your code makes 5 queries for every request it serves. How many queries per second reach the database at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "3,300/s"
+        },
+        {
+          "id": "b",
+          "text": "660/s",
+          "whyWrong": "This is the request rate, not the query rate. Each request the app server serves makes several queries, and every one of them is load on the database."
+        },
+        {
+          "id": "c",
+          "text": "1,100/s",
+          "whyWrong": "This works the load out at the weekly mean. The game resolves each week at its busiest hour, so the database has to carry the peak rate of queries."
+        },
+        {
+          "id": "d",
+          "text": "220/s",
+          "whyWrong": "This is the average request rate. It misses both the busy hour and the queries each request makes, so it understates the database’s load twice over."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "At peak the app server receives 220 × 3 = 660/s and serves all of it. Each served request makes 5 queries, so the database receives 660 × 5 = 3,300/s. Load is always worked out at the busiest hour.",
+    "tags": [
+      "fanout",
+      "peak-load"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-database-load",
+      "params": {
+        "meanRps": 220,
+        "peakMultiplier": 3,
+        "queriesPerRequest": 5
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-database-load-0005",
+    "conceptId": "client-server-basics",
+    "depth": 1,
+    "prompt": "Traffic averages 380/s and its busiest hour runs at 3 times that. Your app server keeps up, and your code makes 5 queries for every request it serves. How many queries per second reach the database at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "5,700/s"
+        },
+        {
+          "id": "b",
+          "text": "1,140/s",
+          "whyWrong": "This is the request rate, not the query rate. Each request the app server serves makes several queries, and every one of them is load on the database."
+        },
+        {
+          "id": "c",
+          "text": "1,900/s",
+          "whyWrong": "This works the load out at the weekly mean. The game resolves each week at its busiest hour, so the database has to carry the peak rate of queries."
+        },
+        {
+          "id": "d",
+          "text": "380/s",
+          "whyWrong": "This is the average request rate. It misses both the busy hour and the queries each request makes, so it understates the database’s load twice over."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "At peak the app server receives 380 × 3 = 1,140/s and serves all of it. Each served request makes 5 queries, so the database receives 1140 × 5 = 5,700/s. Load is always worked out at the busiest hour.",
+    "tags": [
+      "fanout",
+      "peak-load"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-database-load",
+      "params": {
+        "meanRps": 380,
+        "peakMultiplier": 3,
+        "queriesPerRequest": 5
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-database-load-0006",
+    "conceptId": "client-server-basics",
+    "depth": 1,
+    "prompt": "Traffic averages 60/s and its busiest hour runs at 3 times that. Your app server keeps up, and your code makes 4 queries for every request it serves. How many queries per second reach the database at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "720/s"
+        },
+        {
+          "id": "b",
+          "text": "180/s",
+          "whyWrong": "This is the request rate, not the query rate. Each request the app server serves makes several queries, and every one of them is load on the database."
+        },
+        {
+          "id": "c",
+          "text": "240/s",
+          "whyWrong": "This works the load out at the weekly mean. The game resolves each week at its busiest hour, so the database has to carry the peak rate of queries."
+        },
+        {
+          "id": "d",
+          "text": "60/s",
+          "whyWrong": "This is the average request rate. It misses both the busy hour and the queries each request makes, so it understates the database’s load twice over."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "At peak the app server receives 60 × 3 = 180/s and serves all of it. Each served request makes 4 queries, so the database receives 180 × 4 = 720/s. Load is always worked out at the busiest hour.",
+    "tags": [
+      "fanout",
+      "peak-load"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-database-load",
+      "params": {
+        "meanRps": 60,
+        "peakMultiplier": 3,
+        "queriesPerRequest": 4
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-database-load-0007",
+    "conceptId": "client-server-basics",
+    "depth": 1,
+    "prompt": "Traffic averages 90/s and its busiest hour runs at 2 times that. Your app server keeps up, and your code makes 3 queries for every request it serves. How many queries per second reach the database at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "540/s"
+        },
+        {
+          "id": "b",
+          "text": "180/s",
+          "whyWrong": "This is the request rate, not the query rate. Each request the app server serves makes several queries, and every one of them is load on the database."
+        },
+        {
+          "id": "c",
+          "text": "270/s",
+          "whyWrong": "This works the load out at the weekly mean. The game resolves each week at its busiest hour, so the database has to carry the peak rate of queries."
+        },
+        {
+          "id": "d",
+          "text": "90/s",
+          "whyWrong": "This is the average request rate. It misses both the busy hour and the queries each request makes, so it understates the database’s load twice over."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "At peak the app server receives 90 × 2 = 180/s and serves all of it. Each served request makes 3 queries, so the database receives 180 × 3 = 540/s. Load is always worked out at the busiest hour.",
+    "tags": [
+      "fanout",
+      "peak-load"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-database-load",
+      "params": {
+        "meanRps": 90,
+        "peakMultiplier": 2,
+        "queriesPerRequest": 3
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-database-load-0008",
+    "conceptId": "client-server-basics",
+    "depth": 1,
+    "prompt": "Traffic averages 170/s and its busiest hour runs at 2.5 times that. Your app server keeps up, and your code makes 3 queries for every request it serves. How many queries per second reach the database at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "1,275/s"
+        },
+        {
+          "id": "b",
+          "text": "425/s",
+          "whyWrong": "This is the request rate, not the query rate. Each request the app server serves makes several queries, and every one of them is load on the database."
+        },
+        {
+          "id": "c",
+          "text": "510/s",
+          "whyWrong": "This works the load out at the weekly mean. The game resolves each week at its busiest hour, so the database has to carry the peak rate of queries."
+        },
+        {
+          "id": "d",
+          "text": "170/s",
+          "whyWrong": "This is the average request rate. It misses both the busy hour and the queries each request makes, so it understates the database’s load twice over."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "At peak the app server receives 170 × 2.5 = 425/s and serves all of it. Each served request makes 3 queries, so the database receives 425 × 3 = 1,275/s. Load is always worked out at the busiest hour.",
+    "tags": [
+      "fanout",
+      "peak-load"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-database-load",
+      "params": {
+        "meanRps": 170,
+        "peakMultiplier": 2.5,
+        "queriesPerRequest": 3
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-database-load-0009",
+    "conceptId": "client-server-basics",
+    "depth": 1,
+    "prompt": "Traffic averages 140/s and its busiest hour runs at 3 times that. Your app server keeps up, and your code makes 4 queries for every request it serves. How many queries per second reach the database at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "1,680/s"
+        },
+        {
+          "id": "b",
+          "text": "420/s",
+          "whyWrong": "This is the request rate, not the query rate. Each request the app server serves makes several queries, and every one of them is load on the database."
+        },
+        {
+          "id": "c",
+          "text": "560/s",
+          "whyWrong": "This works the load out at the weekly mean. The game resolves each week at its busiest hour, so the database has to carry the peak rate of queries."
+        },
+        {
+          "id": "d",
+          "text": "140/s",
+          "whyWrong": "This is the average request rate. It misses both the busy hour and the queries each request makes, so it understates the database’s load twice over."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "At peak the app server receives 140 × 3 = 420/s and serves all of it. Each served request makes 4 queries, so the database receives 420 × 4 = 1,680/s. Load is always worked out at the busiest hour.",
+    "tags": [
+      "fanout",
+      "peak-load"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-database-load",
+      "params": {
+        "meanRps": 140,
+        "peakMultiplier": 3,
+        "queriesPerRequest": 4
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-database-load-0010",
+    "conceptId": "client-server-basics",
+    "depth": 1,
+    "prompt": "Traffic averages 90/s and its busiest hour runs at 2.5 times that. Your app server keeps up, and your code makes 4 queries for every request it serves. How many queries per second reach the database at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "900/s"
+        },
+        {
+          "id": "b",
+          "text": "225/s",
+          "whyWrong": "This is the request rate, not the query rate. Each request the app server serves makes several queries, and every one of them is load on the database."
+        },
+        {
+          "id": "c",
+          "text": "360/s",
+          "whyWrong": "This works the load out at the weekly mean. The game resolves each week at its busiest hour, so the database has to carry the peak rate of queries."
+        },
+        {
+          "id": "d",
+          "text": "90/s",
+          "whyWrong": "This is the average request rate. It misses both the busy hour and the queries each request makes, so it understates the database’s load twice over."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "At peak the app server receives 90 × 2.5 = 225/s and serves all of it. Each served request makes 4 queries, so the database receives 225 × 4 = 900/s. Load is always worked out at the busiest hour.",
+    "tags": [
+      "fanout",
+      "peak-load"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-database-load",
+      "params": {
+        "meanRps": 90,
+        "peakMultiplier": 2.5,
+        "queriesPerRequest": 4
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-database-load-0011",
+    "conceptId": "client-server-basics",
+    "depth": 1,
+    "prompt": "Traffic averages 310/s and its busiest hour runs at 2 times that. Your app server keeps up, and your code makes 4 queries for every request it serves. How many queries per second reach the database at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "2,480/s"
+        },
+        {
+          "id": "b",
+          "text": "620/s",
+          "whyWrong": "This is the request rate, not the query rate. Each request the app server serves makes several queries, and every one of them is load on the database."
+        },
+        {
+          "id": "c",
+          "text": "1,240/s",
+          "whyWrong": "This works the load out at the weekly mean. The game resolves each week at its busiest hour, so the database has to carry the peak rate of queries."
+        },
+        {
+          "id": "d",
+          "text": "310/s",
+          "whyWrong": "This is the average request rate. It misses both the busy hour and the queries each request makes, so it understates the database’s load twice over."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "At peak the app server receives 310 × 2 = 620/s and serves all of it. Each served request makes 4 queries, so the database receives 620 × 4 = 2,480/s. Load is always worked out at the busiest hour.",
+    "tags": [
+      "fanout",
+      "peak-load"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-database-load",
+      "params": {
+        "meanRps": 310,
+        "peakMultiplier": 2,
+        "queriesPerRequest": 4
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-database-load-0012",
+    "conceptId": "client-server-basics",
+    "depth": 1,
+    "prompt": "Traffic averages 200/s and its busiest hour runs at 1.5 times that. Your app server keeps up, and your code makes 2 queries for every request it serves. How many queries per second reach the database at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "600/s"
+        },
+        {
+          "id": "b",
+          "text": "300/s",
+          "whyWrong": "This is the request rate, not the query rate. Each request the app server serves makes several queries, and every one of them is load on the database."
+        },
+        {
+          "id": "c",
+          "text": "400/s",
+          "whyWrong": "This works the load out at the weekly mean. The game resolves each week at its busiest hour, so the database has to carry the peak rate of queries."
+        },
+        {
+          "id": "d",
+          "text": "200/s",
+          "whyWrong": "This is the average request rate. It misses both the busy hour and the queries each request makes, so it understates the database’s load twice over."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "At peak the app server receives 200 × 1.5 = 300/s and serves all of it. Each served request makes 2 queries, so the database receives 300 × 2 = 600/s. Load is always worked out at the busiest hour.",
+    "tags": [
+      "fanout",
+      "peak-load"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-database-load",
+      "params": {
+        "meanRps": 200,
+        "peakMultiplier": 1.5,
+        "queriesPerRequest": 2
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-database-load-0013",
+    "conceptId": "client-server-basics",
+    "depth": 1,
+    "prompt": "Traffic averages 340/s and its busiest hour runs at 2 times that. Your app server keeps up, and your code makes 2 queries for every request it serves. How many queries per second reach the database at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "1,360/s"
+        },
+        {
+          "id": "b",
+          "text": "680/s",
+          "whyWrong": "This is the request rate, not the query rate. Each request the app server serves makes several queries, and every one of them is load on the database."
+        },
+        {
+          "id": "c",
+          "text": "340/s",
+          "whyWrong": "This is the average request rate. It misses both the busy hour and the queries each request makes, so it understates the database’s load twice over."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "At peak the app server receives 340 × 2 = 680/s and serves all of it. Each served request makes 2 queries, so the database receives 680 × 2 = 1,360/s. Load is always worked out at the busiest hour.",
+    "tags": [
+      "fanout",
+      "peak-load"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-database-load",
+      "params": {
+        "meanRps": 340,
+        "peakMultiplier": 2,
+        "queriesPerRequest": 2
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-database-load-0014",
+    "conceptId": "client-server-basics",
+    "depth": 1,
+    "prompt": "Traffic averages 320/s and its busiest hour runs at 2.5 times that. Your app server keeps up, and your code makes 5 queries for every request it serves. How many queries per second reach the database at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "4,000/s"
+        },
+        {
+          "id": "b",
+          "text": "800/s",
+          "whyWrong": "This is the request rate, not the query rate. Each request the app server serves makes several queries, and every one of them is load on the database."
+        },
+        {
+          "id": "c",
+          "text": "1,600/s",
+          "whyWrong": "This works the load out at the weekly mean. The game resolves each week at its busiest hour, so the database has to carry the peak rate of queries."
+        },
+        {
+          "id": "d",
+          "text": "320/s",
+          "whyWrong": "This is the average request rate. It misses both the busy hour and the queries each request makes, so it understates the database’s load twice over."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "At peak the app server receives 320 × 2.5 = 800/s and serves all of it. Each served request makes 5 queries, so the database receives 800 × 5 = 4,000/s. Load is always worked out at the busiest hour.",
+    "tags": [
+      "fanout",
+      "peak-load"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-database-load",
+      "params": {
+        "meanRps": 320,
+        "peakMultiplier": 2.5,
+        "queriesPerRequest": 5
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-database-load-0015",
+    "conceptId": "client-server-basics",
+    "depth": 1,
+    "prompt": "Traffic averages 60/s and its busiest hour runs at 1.5 times that. Your app server keeps up, and your code makes 4 queries for every request it serves. How many queries per second reach the database at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "360/s"
+        },
+        {
+          "id": "b",
+          "text": "90/s",
+          "whyWrong": "This is the request rate, not the query rate. Each request the app server serves makes several queries, and every one of them is load on the database."
+        },
+        {
+          "id": "c",
+          "text": "240/s",
+          "whyWrong": "This works the load out at the weekly mean. The game resolves each week at its busiest hour, so the database has to carry the peak rate of queries."
+        },
+        {
+          "id": "d",
+          "text": "60/s",
+          "whyWrong": "This is the average request rate. It misses both the busy hour and the queries each request makes, so it understates the database’s load twice over."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "At peak the app server receives 60 × 1.5 = 90/s and serves all of it. Each served request makes 4 queries, so the database receives 90 × 4 = 360/s. Load is always worked out at the busiest hour.",
+    "tags": [
+      "fanout",
+      "peak-load"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-database-load",
+      "params": {
+        "meanRps": 60,
+        "peakMultiplier": 1.5,
+        "queriesPerRequest": 4
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-dropped-never-arrive-0001",
+    "conceptId": "client-server-basics",
+    "depth": 2,
+    "prompt": "Your app server can serve 250/s and makes 4 queries to the database per request. At peak, 350/s arrive. How many queries per second reach the database?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "1,000/s"
+        },
+        {
+          "id": "b",
+          "text": "1,400/s",
+          "whyWrong": "This sends every arriving request’s queries to the database, including the ones the app server turned away. A dropped request never runs your code, so it never queries anything."
+        },
+        {
+          "id": "c",
+          "text": "400/s",
+          "whyWrong": "This is the query load of the requests that were dropped. They are exactly the ones that never reach the database; the served ones are what it sees."
+        },
+        {
+          "id": "d",
+          "text": "250/s",
+          "whyWrong": "This is the rate of requests the app server serves, not the queries they make. Each served request queries the database that many times."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "The app server serves 250/s and drops the other 100/s where they arrive. Only served requests run your code, so the database receives 250 × 4 = 1,000/s. A dropped request makes no queries at all.",
+    "tags": [
+      "drops-downstream",
+      "fanout"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-dropped-never-arrive",
+      "params": {
+        "peakRps": 350,
+        "appCapacityRps": 250,
+        "queriesPerRequest": 4
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-dropped-never-arrive-0002",
+    "conceptId": "client-server-basics",
+    "depth": 2,
+    "prompt": "Your app server can serve 300/s and makes 1 query to the database per request. At peak, 900/s arrive. How many queries per second reach the database?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "300/s"
+        },
+        {
+          "id": "b",
+          "text": "900/s",
+          "whyWrong": "This sends every arriving request’s queries to the database, including the ones the app server turned away. A dropped request never runs your code, so it never queries anything."
+        },
+        {
+          "id": "c",
+          "text": "600/s",
+          "whyWrong": "This is the query load of the requests that were dropped. They are exactly the ones that never reach the database; the served ones are what it sees."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "The app server serves 300/s and drops the other 600/s where they arrive. Only served requests run your code, so the database receives 300 × 1 = 300/s. A dropped request makes no queries at all.",
+    "tags": [
+      "drops-downstream",
+      "fanout"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-dropped-never-arrive",
+      "params": {
+        "peakRps": 900,
+        "appCapacityRps": 300,
+        "queriesPerRequest": 1
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-dropped-never-arrive-0003",
+    "conceptId": "client-server-basics",
+    "depth": 2,
+    "prompt": "Your app server can serve 250/s and makes 3 queries to the database per request. At peak, 750/s arrive. How many queries per second reach the database?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "750/s"
+        },
+        {
+          "id": "b",
+          "text": "2,250/s",
+          "whyWrong": "This sends every arriving request’s queries to the database, including the ones the app server turned away. A dropped request never runs your code, so it never queries anything."
+        },
+        {
+          "id": "c",
+          "text": "1,500/s",
+          "whyWrong": "This is the query load of the requests that were dropped. They are exactly the ones that never reach the database; the served ones are what it sees."
+        },
+        {
+          "id": "d",
+          "text": "250/s",
+          "whyWrong": "This is the rate of requests the app server serves, not the queries they make. Each served request queries the database that many times."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "The app server serves 250/s and drops the other 500/s where they arrive. Only served requests run your code, so the database receives 250 × 3 = 750/s. A dropped request makes no queries at all.",
+    "tags": [
+      "drops-downstream",
+      "fanout"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-dropped-never-arrive",
+      "params": {
+        "peakRps": 750,
+        "appCapacityRps": 250,
+        "queriesPerRequest": 3
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-dropped-never-arrive-0004",
+    "conceptId": "client-server-basics",
+    "depth": 2,
+    "prompt": "Your app server can serve 200/s and makes 1 query to the database per request. At peak, 300/s arrive. How many queries per second reach the database?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "200/s"
+        },
+        {
+          "id": "b",
+          "text": "300/s",
+          "whyWrong": "This sends every arriving request’s queries to the database, including the ones the app server turned away. A dropped request never runs your code, so it never queries anything."
+        },
+        {
+          "id": "c",
+          "text": "100/s",
+          "whyWrong": "This is the query load of the requests that were dropped. They are exactly the ones that never reach the database; the served ones are what it sees."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "The app server serves 200/s and drops the other 100/s where they arrive. Only served requests run your code, so the database receives 200 × 1 = 200/s. A dropped request makes no queries at all.",
+    "tags": [
+      "drops-downstream",
+      "fanout"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-dropped-never-arrive",
+      "params": {
+        "peakRps": 300,
+        "appCapacityRps": 200,
+        "queriesPerRequest": 1
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-dropped-never-arrive-0005",
+    "conceptId": "client-server-basics",
+    "depth": 2,
+    "prompt": "Your app server can serve 250/s and makes 4 queries to the database per request. At peak, 700/s arrive. How many queries per second reach the database?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "1,000/s"
+        },
+        {
+          "id": "b",
+          "text": "2,800/s",
+          "whyWrong": "This sends every arriving request’s queries to the database, including the ones the app server turned away. A dropped request never runs your code, so it never queries anything."
+        },
+        {
+          "id": "c",
+          "text": "1,800/s",
+          "whyWrong": "This is the query load of the requests that were dropped. They are exactly the ones that never reach the database; the served ones are what it sees."
+        },
+        {
+          "id": "d",
+          "text": "250/s",
+          "whyWrong": "This is the rate of requests the app server serves, not the queries they make. Each served request queries the database that many times."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "The app server serves 250/s and drops the other 450/s where they arrive. Only served requests run your code, so the database receives 250 × 4 = 1,000/s. A dropped request makes no queries at all.",
+    "tags": [
+      "drops-downstream",
+      "fanout"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-dropped-never-arrive",
+      "params": {
+        "peakRps": 700,
+        "appCapacityRps": 250,
+        "queriesPerRequest": 4
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-dropped-never-arrive-0006",
+    "conceptId": "client-server-basics",
+    "depth": 2,
+    "prompt": "Your app server can serve 600/s and makes 2 queries to the database per request. At peak, 950/s arrive. How many queries per second reach the database?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "1,200/s"
+        },
+        {
+          "id": "b",
+          "text": "1,900/s",
+          "whyWrong": "This sends every arriving request’s queries to the database, including the ones the app server turned away. A dropped request never runs your code, so it never queries anything."
+        },
+        {
+          "id": "c",
+          "text": "700/s",
+          "whyWrong": "This is the query load of the requests that were dropped. They are exactly the ones that never reach the database; the served ones are what it sees."
+        },
+        {
+          "id": "d",
+          "text": "600/s",
+          "whyWrong": "This is the rate of requests the app server serves, not the queries they make. Each served request queries the database that many times."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "The app server serves 600/s and drops the other 350/s where they arrive. Only served requests run your code, so the database receives 600 × 2 = 1,200/s. A dropped request makes no queries at all.",
+    "tags": [
+      "drops-downstream",
+      "fanout"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-dropped-never-arrive",
+      "params": {
+        "peakRps": 950,
+        "appCapacityRps": 600,
+        "queriesPerRequest": 2
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-dropped-never-arrive-0007",
+    "conceptId": "client-server-basics",
+    "depth": 2,
+    "prompt": "Your app server can serve 600/s and makes 3 queries to the database per request. At peak, 1,150/s arrive. How many queries per second reach the database?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "1,800/s"
+        },
+        {
+          "id": "b",
+          "text": "3,450/s",
+          "whyWrong": "This sends every arriving request’s queries to the database, including the ones the app server turned away. A dropped request never runs your code, so it never queries anything."
+        },
+        {
+          "id": "c",
+          "text": "1,650/s",
+          "whyWrong": "This is the query load of the requests that were dropped. They are exactly the ones that never reach the database; the served ones are what it sees."
+        },
+        {
+          "id": "d",
+          "text": "600/s",
+          "whyWrong": "This is the rate of requests the app server serves, not the queries they make. Each served request queries the database that many times."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "The app server serves 600/s and drops the other 550/s where they arrive. Only served requests run your code, so the database receives 600 × 3 = 1,800/s. A dropped request makes no queries at all.",
+    "tags": [
+      "drops-downstream",
+      "fanout"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-dropped-never-arrive",
+      "params": {
+        "peakRps": 1150,
+        "appCapacityRps": 600,
+        "queriesPerRequest": 3
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-dropped-never-arrive-0008",
+    "conceptId": "client-server-basics",
+    "depth": 2,
+    "prompt": "Your app server can serve 100/s and makes 3 queries to the database per request. At peak, 300/s arrive. How many queries per second reach the database?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "300/s"
+        },
+        {
+          "id": "b",
+          "text": "900/s",
+          "whyWrong": "This sends every arriving request’s queries to the database, including the ones the app server turned away. A dropped request never runs your code, so it never queries anything."
+        },
+        {
+          "id": "c",
+          "text": "600/s",
+          "whyWrong": "This is the query load of the requests that were dropped. They are exactly the ones that never reach the database; the served ones are what it sees."
+        },
+        {
+          "id": "d",
+          "text": "100/s",
+          "whyWrong": "This is the rate of requests the app server serves, not the queries they make. Each served request queries the database that many times."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "The app server serves 100/s and drops the other 200/s where they arrive. Only served requests run your code, so the database receives 100 × 3 = 300/s. A dropped request makes no queries at all.",
+    "tags": [
+      "drops-downstream",
+      "fanout"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-dropped-never-arrive",
+      "params": {
+        "peakRps": 300,
+        "appCapacityRps": 100,
+        "queriesPerRequest": 3
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-dropped-never-arrive-0009",
+    "conceptId": "client-server-basics",
+    "depth": 2,
+    "prompt": "Your app server can serve 250/s and makes 3 queries to the database per request. At peak, 350/s arrive. How many queries per second reach the database?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "750/s"
+        },
+        {
+          "id": "b",
+          "text": "1,050/s",
+          "whyWrong": "This sends every arriving request’s queries to the database, including the ones the app server turned away. A dropped request never runs your code, so it never queries anything."
+        },
+        {
+          "id": "c",
+          "text": "300/s",
+          "whyWrong": "This is the query load of the requests that were dropped. They are exactly the ones that never reach the database; the served ones are what it sees."
+        },
+        {
+          "id": "d",
+          "text": "250/s",
+          "whyWrong": "This is the rate of requests the app server serves, not the queries they make. Each served request queries the database that many times."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "The app server serves 250/s and drops the other 100/s where they arrive. Only served requests run your code, so the database receives 250 × 3 = 750/s. A dropped request makes no queries at all.",
+    "tags": [
+      "drops-downstream",
+      "fanout"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-dropped-never-arrive",
+      "params": {
+        "peakRps": 350,
+        "appCapacityRps": 250,
+        "queriesPerRequest": 3
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-dropped-never-arrive-0010",
+    "conceptId": "client-server-basics",
+    "depth": 2,
+    "prompt": "Your app server can serve 150/s and makes 3 queries to the database per request. At peak, 200/s arrive. How many queries per second reach the database?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "450/s"
+        },
+        {
+          "id": "b",
+          "text": "600/s",
+          "whyWrong": "This sends every arriving request’s queries to the database, including the ones the app server turned away. A dropped request never runs your code, so it never queries anything."
+        },
+        {
+          "id": "c",
+          "text": "150/s",
+          "whyWrong": "This is the query load of the requests that were dropped. They are exactly the ones that never reach the database; the served ones are what it sees."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "The app server serves 150/s and drops the other 50/s where they arrive. Only served requests run your code, so the database receives 150 × 3 = 450/s. A dropped request makes no queries at all.",
+    "tags": [
+      "drops-downstream",
+      "fanout"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-dropped-never-arrive",
+      "params": {
+        "peakRps": 200,
+        "appCapacityRps": 150,
+        "queriesPerRequest": 3
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-dropped-never-arrive-0011",
+    "conceptId": "client-server-basics",
+    "depth": 2,
+    "prompt": "Your app server can serve 200/s and makes 4 queries to the database per request. At peak, 350/s arrive. How many queries per second reach the database?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "800/s"
+        },
+        {
+          "id": "b",
+          "text": "1,400/s",
+          "whyWrong": "This sends every arriving request’s queries to the database, including the ones the app server turned away. A dropped request never runs your code, so it never queries anything."
+        },
+        {
+          "id": "c",
+          "text": "600/s",
+          "whyWrong": "This is the query load of the requests that were dropped. They are exactly the ones that never reach the database; the served ones are what it sees."
+        },
+        {
+          "id": "d",
+          "text": "200/s",
+          "whyWrong": "This is the rate of requests the app server serves, not the queries they make. Each served request queries the database that many times."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "The app server serves 200/s and drops the other 150/s where they arrive. Only served requests run your code, so the database receives 200 × 4 = 800/s. A dropped request makes no queries at all.",
+    "tags": [
+      "drops-downstream",
+      "fanout"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-dropped-never-arrive",
+      "params": {
+        "peakRps": 350,
+        "appCapacityRps": 200,
+        "queriesPerRequest": 4
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-dropped-never-arrive-0012",
+    "conceptId": "client-server-basics",
+    "depth": 2,
+    "prompt": "Your app server can serve 300/s and makes 2 queries to the database per request. At peak, 450/s arrive. How many queries per second reach the database?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "600/s"
+        },
+        {
+          "id": "b",
+          "text": "900/s",
+          "whyWrong": "This sends every arriving request’s queries to the database, including the ones the app server turned away. A dropped request never runs your code, so it never queries anything."
+        },
+        {
+          "id": "c",
+          "text": "300/s",
+          "whyWrong": "This is the query load of the requests that were dropped. They are exactly the ones that never reach the database; the served ones are what it sees."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "The app server serves 300/s and drops the other 150/s where they arrive. Only served requests run your code, so the database receives 300 × 2 = 600/s. A dropped request makes no queries at all.",
+    "tags": [
+      "drops-downstream",
+      "fanout"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-dropped-never-arrive",
+      "params": {
+        "peakRps": 450,
+        "appCapacityRps": 300,
+        "queriesPerRequest": 2
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-dropped-never-arrive-0013",
+    "conceptId": "client-server-basics",
+    "depth": 2,
+    "prompt": "Your app server can serve 800/s and makes 2 queries to the database per request. At peak, 1,100/s arrive. How many queries per second reach the database?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "1,600/s"
+        },
+        {
+          "id": "b",
+          "text": "2,200/s",
+          "whyWrong": "This sends every arriving request’s queries to the database, including the ones the app server turned away. A dropped request never runs your code, so it never queries anything."
+        },
+        {
+          "id": "c",
+          "text": "600/s",
+          "whyWrong": "This is the query load of the requests that were dropped. They are exactly the ones that never reach the database; the served ones are what it sees."
+        },
+        {
+          "id": "d",
+          "text": "800/s",
+          "whyWrong": "This is the rate of requests the app server serves, not the queries they make. Each served request queries the database that many times."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "The app server serves 800/s and drops the other 300/s where they arrive. Only served requests run your code, so the database receives 800 × 2 = 1,600/s. A dropped request makes no queries at all.",
+    "tags": [
+      "drops-downstream",
+      "fanout"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-dropped-never-arrive",
+      "params": {
+        "peakRps": 1100,
+        "appCapacityRps": 800,
+        "queriesPerRequest": 2
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-dropped-never-arrive-0014",
+    "conceptId": "client-server-basics",
+    "depth": 2,
+    "prompt": "Your app server can serve 400/s and makes 4 queries to the database per request. At peak, 1,200/s arrive. How many queries per second reach the database?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "1,600/s"
+        },
+        {
+          "id": "b",
+          "text": "4,800/s",
+          "whyWrong": "This sends every arriving request’s queries to the database, including the ones the app server turned away. A dropped request never runs your code, so it never queries anything."
+        },
+        {
+          "id": "c",
+          "text": "3,200/s",
+          "whyWrong": "This is the query load of the requests that were dropped. They are exactly the ones that never reach the database; the served ones are what it sees."
+        },
+        {
+          "id": "d",
+          "text": "400/s",
+          "whyWrong": "This is the rate of requests the app server serves, not the queries they make. Each served request queries the database that many times."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "The app server serves 400/s and drops the other 800/s where they arrive. Only served requests run your code, so the database receives 400 × 4 = 1,600/s. A dropped request makes no queries at all.",
+    "tags": [
+      "drops-downstream",
+      "fanout"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-dropped-never-arrive",
+      "params": {
+        "peakRps": 1200,
+        "appCapacityRps": 400,
+        "queriesPerRequest": 4
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-dropped-never-arrive-0015",
+    "conceptId": "client-server-basics",
+    "depth": 2,
+    "prompt": "Your app server can serve 250/s and makes 1 query to the database per request. At peak, 700/s arrive. How many queries per second reach the database?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "250/s"
+        },
+        {
+          "id": "b",
+          "text": "700/s",
+          "whyWrong": "This sends every arriving request’s queries to the database, including the ones the app server turned away. A dropped request never runs your code, so it never queries anything."
+        },
+        {
+          "id": "c",
+          "text": "450/s",
+          "whyWrong": "This is the query load of the requests that were dropped. They are exactly the ones that never reach the database; the served ones are what it sees."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "The app server serves 250/s and drops the other 450/s where they arrive. Only served requests run your code, so the database receives 250 × 1 = 250/s. A dropped request makes no queries at all.",
+    "tags": [
+      "drops-downstream",
+      "fanout"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-dropped-never-arrive",
+      "params": {
+        "peakRps": 700,
+        "appCapacityRps": 250,
+        "queriesPerRequest": 1
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-path-p99-0001",
+    "conceptId": "client-server-basics",
+    "depth": 1,
+    "prompt": "At peak, your app server’s p99 is 150 ms and your database’s is 20 ms. Every request passes through both. What p99 does this game report for the whole path?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "170 ms"
+        },
+        {
+          "id": "b",
+          "text": "150 ms",
+          "whyWrong": "This is the app server’s figure alone. A request also waits at the database, and this game adds each hop’s p99 into the path’s."
+        },
+        {
+          "id": "c",
+          "text": "85 ms",
+          "whyWrong": "This averages the two hops. A request crosses both, so their times add rather than average; percentiles never average in this game."
+        },
+        {
+          "id": "d",
+          "text": "20 ms",
+          "whyWrong": "This is the database’s figure alone, as if a request’s time were decided where its path ends. Every hop it crossed on the way counts too."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "This game adds up each hop’s p99 along the path: 150 + 20 = 170 ms. Real tails rarely line up on the same request, so the true figure is lower, but the sum is what the game judges you on, and it makes every hop count.",
+    "tags": [
+      "hop-latency"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-path-p99",
+      "params": {
+        "appP99Ms": 150,
+        "dbP99Ms": 20
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-path-p99-0002",
+    "conceptId": "client-server-basics",
+    "depth": 1,
+    "prompt": "At peak, your app server’s p99 is 190 ms and your database’s is 105 ms. Every request passes through both. What p99 does this game report for the whole path?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "295 ms"
+        },
+        {
+          "id": "b",
+          "text": "190 ms",
+          "whyWrong": "This is the app server’s figure alone. A request also waits at the database, and this game adds each hop’s p99 into the path’s."
+        },
+        {
+          "id": "c",
+          "text": "148 ms",
+          "whyWrong": "This averages the two hops. A request crosses both, so their times add rather than average; percentiles never average in this game."
+        },
+        {
+          "id": "d",
+          "text": "105 ms",
+          "whyWrong": "This is the database’s figure alone, as if a request’s time were decided where its path ends. Every hop it crossed on the way counts too."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "This game adds up each hop’s p99 along the path: 190 + 105 = 295 ms. Real tails rarely line up on the same request, so the true figure is lower, but the sum is what the game judges you on, and it makes every hop count.",
+    "tags": [
+      "hop-latency"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-path-p99",
+      "params": {
+        "appP99Ms": 190,
+        "dbP99Ms": 105
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-path-p99-0003",
+    "conceptId": "client-server-basics",
+    "depth": 1,
+    "prompt": "At peak, your app server’s p99 is 200 ms and your database’s is 75 ms. Every request passes through both. What p99 does this game report for the whole path?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "275 ms"
+        },
+        {
+          "id": "b",
+          "text": "200 ms",
+          "whyWrong": "This is the app server’s figure alone. A request also waits at the database, and this game adds each hop’s p99 into the path’s."
+        },
+        {
+          "id": "c",
+          "text": "138 ms",
+          "whyWrong": "This averages the two hops. A request crosses both, so their times add rather than average; percentiles never average in this game."
+        },
+        {
+          "id": "d",
+          "text": "75 ms",
+          "whyWrong": "This is the database’s figure alone, as if a request’s time were decided where its path ends. Every hop it crossed on the way counts too."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "This game adds up each hop’s p99 along the path: 200 + 75 = 275 ms. Real tails rarely line up on the same request, so the true figure is lower, but the sum is what the game judges you on, and it makes every hop count.",
+    "tags": [
+      "hop-latency"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-path-p99",
+      "params": {
+        "appP99Ms": 200,
+        "dbP99Ms": 75
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-path-p99-0004",
+    "conceptId": "client-server-basics",
+    "depth": 1,
+    "prompt": "At peak, your app server’s p99 is 310 ms and your database’s is 110 ms. Every request passes through both. What p99 does this game report for the whole path?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "420 ms"
+        },
+        {
+          "id": "b",
+          "text": "310 ms",
+          "whyWrong": "This is the app server’s figure alone. A request also waits at the database, and this game adds each hop’s p99 into the path’s."
+        },
+        {
+          "id": "c",
+          "text": "210 ms",
+          "whyWrong": "This averages the two hops. A request crosses both, so their times add rather than average; percentiles never average in this game."
+        },
+        {
+          "id": "d",
+          "text": "110 ms",
+          "whyWrong": "This is the database’s figure alone, as if a request’s time were decided where its path ends. Every hop it crossed on the way counts too."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "This game adds up each hop’s p99 along the path: 310 + 110 = 420 ms. Real tails rarely line up on the same request, so the true figure is lower, but the sum is what the game judges you on, and it makes every hop count.",
+    "tags": [
+      "hop-latency"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-path-p99",
+      "params": {
+        "appP99Ms": 310,
+        "dbP99Ms": 110
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-path-p99-0005",
+    "conceptId": "client-server-basics",
+    "depth": 1,
+    "prompt": "At peak, your app server’s p99 is 270 ms and your database’s is 160 ms. Every request passes through both. What p99 does this game report for the whole path?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "430 ms"
+        },
+        {
+          "id": "b",
+          "text": "270 ms",
+          "whyWrong": "This is the app server’s figure alone. A request also waits at the database, and this game adds each hop’s p99 into the path’s."
+        },
+        {
+          "id": "c",
+          "text": "215 ms",
+          "whyWrong": "This averages the two hops. A request crosses both, so their times add rather than average; percentiles never average in this game."
+        },
+        {
+          "id": "d",
+          "text": "160 ms",
+          "whyWrong": "This is the database’s figure alone, as if a request’s time were decided where its path ends. Every hop it crossed on the way counts too."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "This game adds up each hop’s p99 along the path: 270 + 160 = 430 ms. Real tails rarely line up on the same request, so the true figure is lower, but the sum is what the game judges you on, and it makes every hop count.",
+    "tags": [
+      "hop-latency"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-path-p99",
+      "params": {
+        "appP99Ms": 270,
+        "dbP99Ms": 160
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-path-p99-0006",
+    "conceptId": "client-server-basics",
+    "depth": 1,
+    "prompt": "At peak, your app server’s p99 is 260 ms and your database’s is 55 ms. Every request passes through both. What p99 does this game report for the whole path?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "315 ms"
+        },
+        {
+          "id": "b",
+          "text": "260 ms",
+          "whyWrong": "This is the app server’s figure alone. A request also waits at the database, and this game adds each hop’s p99 into the path’s."
+        },
+        {
+          "id": "c",
+          "text": "158 ms",
+          "whyWrong": "This averages the two hops. A request crosses both, so their times add rather than average; percentiles never average in this game."
+        },
+        {
+          "id": "d",
+          "text": "55 ms",
+          "whyWrong": "This is the database’s figure alone, as if a request’s time were decided where its path ends. Every hop it crossed on the way counts too."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "This game adds up each hop’s p99 along the path: 260 + 55 = 315 ms. Real tails rarely line up on the same request, so the true figure is lower, but the sum is what the game judges you on, and it makes every hop count.",
+    "tags": [
+      "hop-latency"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-path-p99",
+      "params": {
+        "appP99Ms": 260,
+        "dbP99Ms": 55
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-path-p99-0007",
+    "conceptId": "client-server-basics",
+    "depth": 1,
+    "prompt": "At peak, your app server’s p99 is 120 ms and your database’s is 75 ms. Every request passes through both. What p99 does this game report for the whole path?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "195 ms"
+        },
+        {
+          "id": "b",
+          "text": "120 ms",
+          "whyWrong": "This is the app server’s figure alone. A request also waits at the database, and this game adds each hop’s p99 into the path’s."
+        },
+        {
+          "id": "c",
+          "text": "98 ms",
+          "whyWrong": "This averages the two hops. A request crosses both, so their times add rather than average; percentiles never average in this game."
+        },
+        {
+          "id": "d",
+          "text": "75 ms",
+          "whyWrong": "This is the database’s figure alone, as if a request’s time were decided where its path ends. Every hop it crossed on the way counts too."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "This game adds up each hop’s p99 along the path: 120 + 75 = 195 ms. Real tails rarely line up on the same request, so the true figure is lower, but the sum is what the game judges you on, and it makes every hop count.",
+    "tags": [
+      "hop-latency"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-path-p99",
+      "params": {
+        "appP99Ms": 120,
+        "dbP99Ms": 75
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-path-p99-0008",
+    "conceptId": "client-server-basics",
+    "depth": 1,
+    "prompt": "At peak, your app server’s p99 is 270 ms and your database’s is 120 ms. Every request passes through both. What p99 does this game report for the whole path?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "390 ms"
+        },
+        {
+          "id": "b",
+          "text": "270 ms",
+          "whyWrong": "This is the app server’s figure alone. A request also waits at the database, and this game adds each hop’s p99 into the path’s."
+        },
+        {
+          "id": "c",
+          "text": "195 ms",
+          "whyWrong": "This averages the two hops. A request crosses both, so their times add rather than average; percentiles never average in this game."
+        },
+        {
+          "id": "d",
+          "text": "120 ms",
+          "whyWrong": "This is the database’s figure alone, as if a request’s time were decided where its path ends. Every hop it crossed on the way counts too."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "This game adds up each hop’s p99 along the path: 270 + 120 = 390 ms. Real tails rarely line up on the same request, so the true figure is lower, but the sum is what the game judges you on, and it makes every hop count.",
+    "tags": [
+      "hop-latency"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-path-p99",
+      "params": {
+        "appP99Ms": 270,
+        "dbP99Ms": 120
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-path-p99-0009",
+    "conceptId": "client-server-basics",
+    "depth": 1,
+    "prompt": "At peak, your app server’s p99 is 260 ms and your database’s is 170 ms. Every request passes through both. What p99 does this game report for the whole path?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "430 ms"
+        },
+        {
+          "id": "b",
+          "text": "260 ms",
+          "whyWrong": "This is the app server’s figure alone. A request also waits at the database, and this game adds each hop’s p99 into the path’s."
+        },
+        {
+          "id": "c",
+          "text": "215 ms",
+          "whyWrong": "This averages the two hops. A request crosses both, so their times add rather than average; percentiles never average in this game."
+        },
+        {
+          "id": "d",
+          "text": "170 ms",
+          "whyWrong": "This is the database’s figure alone, as if a request’s time were decided where its path ends. Every hop it crossed on the way counts too."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "This game adds up each hop’s p99 along the path: 260 + 170 = 430 ms. Real tails rarely line up on the same request, so the true figure is lower, but the sum is what the game judges you on, and it makes every hop count.",
+    "tags": [
+      "hop-latency"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-path-p99",
+      "params": {
+        "appP99Ms": 260,
+        "dbP99Ms": 170
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-path-p99-0010",
+    "conceptId": "client-server-basics",
+    "depth": 1,
+    "prompt": "At peak, your app server’s p99 is 270 ms and your database’s is 45 ms. Every request passes through both. What p99 does this game report for the whole path?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "315 ms"
+        },
+        {
+          "id": "b",
+          "text": "270 ms",
+          "whyWrong": "This is the app server’s figure alone. A request also waits at the database, and this game adds each hop’s p99 into the path’s."
+        },
+        {
+          "id": "c",
+          "text": "158 ms",
+          "whyWrong": "This averages the two hops. A request crosses both, so their times add rather than average; percentiles never average in this game."
+        },
+        {
+          "id": "d",
+          "text": "45 ms",
+          "whyWrong": "This is the database’s figure alone, as if a request’s time were decided where its path ends. Every hop it crossed on the way counts too."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "This game adds up each hop’s p99 along the path: 270 + 45 = 315 ms. Real tails rarely line up on the same request, so the true figure is lower, but the sum is what the game judges you on, and it makes every hop count.",
+    "tags": [
+      "hop-latency"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-path-p99",
+      "params": {
+        "appP99Ms": 270,
+        "dbP99Ms": 45
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-path-p99-0011",
+    "conceptId": "client-server-basics",
+    "depth": 1,
+    "prompt": "At peak, your app server’s p99 is 250 ms and your database’s is 135 ms. Every request passes through both. What p99 does this game report for the whole path?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "385 ms"
+        },
+        {
+          "id": "b",
+          "text": "250 ms",
+          "whyWrong": "This is the app server’s figure alone. A request also waits at the database, and this game adds each hop’s p99 into the path’s."
+        },
+        {
+          "id": "c",
+          "text": "193 ms",
+          "whyWrong": "This averages the two hops. A request crosses both, so their times add rather than average; percentiles never average in this game."
+        },
+        {
+          "id": "d",
+          "text": "135 ms",
+          "whyWrong": "This is the database’s figure alone, as if a request’s time were decided where its path ends. Every hop it crossed on the way counts too."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "This game adds up each hop’s p99 along the path: 250 + 135 = 385 ms. Real tails rarely line up on the same request, so the true figure is lower, but the sum is what the game judges you on, and it makes every hop count.",
+    "tags": [
+      "hop-latency"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-path-p99",
+      "params": {
+        "appP99Ms": 250,
+        "dbP99Ms": 135
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-path-p99-0012",
+    "conceptId": "client-server-basics",
+    "depth": 1,
+    "prompt": "At peak, your app server’s p99 is 320 ms and your database’s is 75 ms. Every request passes through both. What p99 does this game report for the whole path?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "395 ms"
+        },
+        {
+          "id": "b",
+          "text": "320 ms",
+          "whyWrong": "This is the app server’s figure alone. A request also waits at the database, and this game adds each hop’s p99 into the path’s."
+        },
+        {
+          "id": "c",
+          "text": "198 ms",
+          "whyWrong": "This averages the two hops. A request crosses both, so their times add rather than average; percentiles never average in this game."
+        },
+        {
+          "id": "d",
+          "text": "75 ms",
+          "whyWrong": "This is the database’s figure alone, as if a request’s time were decided where its path ends. Every hop it crossed on the way counts too."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "This game adds up each hop’s p99 along the path: 320 + 75 = 395 ms. Real tails rarely line up on the same request, so the true figure is lower, but the sum is what the game judges you on, and it makes every hop count.",
+    "tags": [
+      "hop-latency"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-path-p99",
+      "params": {
+        "appP99Ms": 320,
+        "dbP99Ms": 75
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-path-p99-0013",
+    "conceptId": "client-server-basics",
+    "depth": 1,
+    "prompt": "At peak, your app server’s p99 is 220 ms and your database’s is 110 ms. Every request passes through both. What p99 does this game report for the whole path?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "330 ms"
+        },
+        {
+          "id": "b",
+          "text": "220 ms",
+          "whyWrong": "This is the app server’s figure alone. A request also waits at the database, and this game adds each hop’s p99 into the path’s."
+        },
+        {
+          "id": "c",
+          "text": "165 ms",
+          "whyWrong": "This averages the two hops. A request crosses both, so their times add rather than average; percentiles never average in this game."
+        },
+        {
+          "id": "d",
+          "text": "110 ms",
+          "whyWrong": "This is the database’s figure alone, as if a request’s time were decided where its path ends. Every hop it crossed on the way counts too."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "This game adds up each hop’s p99 along the path: 220 + 110 = 330 ms. Real tails rarely line up on the same request, so the true figure is lower, but the sum is what the game judges you on, and it makes every hop count.",
+    "tags": [
+      "hop-latency"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-path-p99",
+      "params": {
+        "appP99Ms": 220,
+        "dbP99Ms": 110
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-path-p99-0014",
+    "conceptId": "client-server-basics",
+    "depth": 1,
+    "prompt": "At peak, your app server’s p99 is 300 ms and your database’s is 50 ms. Every request passes through both. What p99 does this game report for the whole path?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "350 ms"
+        },
+        {
+          "id": "b",
+          "text": "300 ms",
+          "whyWrong": "This is the app server’s figure alone. A request also waits at the database, and this game adds each hop’s p99 into the path’s."
+        },
+        {
+          "id": "c",
+          "text": "175 ms",
+          "whyWrong": "This averages the two hops. A request crosses both, so their times add rather than average; percentiles never average in this game."
+        },
+        {
+          "id": "d",
+          "text": "50 ms",
+          "whyWrong": "This is the database’s figure alone, as if a request’s time were decided where its path ends. Every hop it crossed on the way counts too."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "This game adds up each hop’s p99 along the path: 300 + 50 = 350 ms. Real tails rarely line up on the same request, so the true figure is lower, but the sum is what the game judges you on, and it makes every hop count.",
+    "tags": [
+      "hop-latency"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-path-p99",
+      "params": {
+        "appP99Ms": 300,
+        "dbP99Ms": 50
+      }
+    }
+  },
+  {
+    "id": "q-client-server-basics-d-request-path-p99-0015",
+    "conceptId": "client-server-basics",
+    "depth": 1,
+    "prompt": "At peak, your app server’s p99 is 390 ms and your database’s is 190 ms. Every request passes through both. What p99 does this game report for the whole path?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "580 ms"
+        },
+        {
+          "id": "b",
+          "text": "390 ms",
+          "whyWrong": "This is the app server’s figure alone. A request also waits at the database, and this game adds each hop’s p99 into the path’s."
+        },
+        {
+          "id": "c",
+          "text": "290 ms",
+          "whyWrong": "This averages the two hops. A request crosses both, so their times add rather than average; percentiles never average in this game."
+        },
+        {
+          "id": "d",
+          "text": "190 ms",
+          "whyWrong": "This is the database’s figure alone, as if a request’s time were decided where its path ends. Every hop it crossed on the way counts too."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "This game adds up each hop’s p99 along the path: 390 + 190 = 580 ms. Real tails rarely line up on the same request, so the true figure is lower, but the sum is what the game judges you on, and it makes every hop count.",
+    "tags": [
+      "hop-latency"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-client-server-basics",
+      "templateId": "tpl-request-path-p99",
+      "params": {
+        "appP99Ms": 390,
+        "dbP99Ms": 190
+      }
+    }
+  }
+]

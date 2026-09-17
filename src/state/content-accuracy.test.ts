@@ -1,10 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import { BALANCE } from '../config/balance'
+import { COMPONENT_DEFS } from '../content/components'
 import { CONCEPTS } from '../content/concepts'
+import { DEMOS } from '../content/demos'
 import { loadQuestions } from '../content/questions'
-import { capacityAndUtilizationAuthored } from '../content/questions/capacity-and-utilization/authored'
-import { percentilesAuthored } from '../content/questions/percentiles/authored'
-import { CONCEPT_IDS, type Block, type Concept, type ConceptId, type Question } from '../content/schema'
+import { AUTHORED } from '../content/questions/authored'
+import { CONCEPT_IDS, type Block, type Concept } from '../content/schema'
 import { meanResponseTimeMs, p50LatencyMs, p99LatencyMs, qualityMultiplier, simulateTick, utilization } from '../engine'
 import { linearInput, metricsFor, unwrap } from '../engine/test-helpers'
 
@@ -13,10 +14,9 @@ import { linearInput, metricsFor, unwrap } from '../engine/test-helpers'
 // resolves turns with, so a question and the game can't disagree. The structural rules —
 // 03-CONTENT-SCHEMA §8 — live in `content/validate.ts` and run under `npm run validate`.
 
-const POOLS: Readonly<Record<ConceptId, readonly Question[]>> = {
-  'capacity-and-utilization': capacityAndUtilizationAuthored,
-  percentiles: percentilesAuthored,
-}
+/** Concepts with an authored batch. M7b writes the rest, a batch at a time. */
+const WITH_AUTHORED = CONCEPT_IDS.filter((id) => AUTHORED[id].length > 0)
+const POOLS = AUTHORED
 
 const words = (text: string) => text.trim().split(/\s+/).filter(Boolean).length
 
@@ -155,6 +155,159 @@ describe('what percentiles claims about the model (02-SIMULATION §5.2, §6)', (
   })
 })
 
+const APP_TIERS = COMPONENT_DEFS['app-server'].tiers
+const DB_TIERS = COMPONENT_DEFS.database.tiers
+const smallestApp = APP_TIERS[0]
+const largestApp = APP_TIERS[APP_TIERS.length - 1]
+const largestDb = DB_TIERS[DB_TIERS.length - 1]
+const ROOMY = { capacityRps: 100_000, serviceTimeMs: 1 }
+
+describe('what client-server-basics claims about the model (02-SIMULATION §4–5)', () => {
+  it('is right that 200/s served with three queries each sends the database 600/s', () => {
+    const tick = unwrap(simulateTick(linearInput({ peakRps: 200, app: ROOMY, database: ROOMY, fanoutFactor: 3 })))
+    expect(metricsFor(tick, 'db').inboundRps).toBe(600)
+  })
+
+  it('is right that a request the app server drops makes no queries', () => {
+    const tick = unwrap(
+      simulateTick(linearInput({ peakRps: 150, app: { capacityRps: 100, serviceTimeMs: 10 }, database: ROOMY, fanoutFactor: 2 })),
+    )
+    expect(metricsFor(tick, 'app').droppedRps).toBe(50)
+    expect(metricsFor(tick, 'db').inboundRps).toBe(200)
+  })
+
+  it('is right that a 100/s mean with a 2.5× busy hour puts 250/s on the path', () => {
+    const input = linearInput({ peakRps: 100, app: ROOMY, database: ROOMY })
+    const tick = unwrap(simulateTick({ ...input, workload: { ...input.workload, peakMultiplier: 2.5 } }))
+    expect(tick.peakRps).toBe(250)
+    expect(tick.perEdge[0]?.rps).toBe(250)
+  })
+
+  it('is right that a same-datacenter round trip is about five thousand memory reads', () => {
+    const memoryReadNs = 100
+    const datacenterRoundTripNs = 500_000
+    expect(datacenterRoundTripNs / memoryReadNs).toBe(5000)
+  })
+
+  it('is right that 100 km of fiber costs roughly a millisecond per round trip', () => {
+    const fiberKmPerSecond = 299_792 / 1.47
+    expect(((2 * 100) / fiberKmPerSecond) * 1000).toBeCloseTo(1, 1)
+  })
+})
+
+describe('what latency-and-throughput claims about the model (02-SIMULATION §5.2, ADR-0020)', () => {
+  it('is right that a 400/s app server in front of a 150/s database completes at most 150/s', () => {
+    for (const peakRps of [200, 400, 900]) {
+      const tick = unwrap(
+        simulateTick(
+          linearInput({ peakRps, app: { capacityRps: 400, serviceTimeMs: 10 }, database: { capacityRps: 150, serviceTimeMs: 5 } }),
+        ),
+      )
+      expect(peakRps * (1 - tick.perClass['dynamic-read'].errorRate)).toBeCloseTo(150, 9)
+    }
+  })
+
+  it('is right that 200/s at a 150/s component loses a quarter, not a third', () => {
+    const tick = unwrap(
+      simulateTick(linearInput({ peakRps: 200, app: { capacityRps: 150, serviceTimeMs: 10 }, database: ROOMY })),
+    )
+    expect(tick.perClass['dynamic-read'].errorRate).toBeCloseTo(0.25, 12)
+    expect((200 - 150) / 150).toBeCloseTo(1 / 3, 12)
+  })
+
+  it('is right that response time with nothing queued is the service time', () => {
+    expect(meanResponseTimeMs(12, 0)).toBe(12)
+  })
+
+  it('quotes the app server sizes as they are: 12 ms and 10/s, 10 ms and 500/s, fifty times the capacity', () => {
+    expect(smallestApp).toMatchObject({ serviceTimeMs: 12, capacityRps: 10 })
+    expect(largestApp).toMatchObject({ serviceTimeMs: 10, capacityRps: 500 })
+    expect((largestApp?.capacityRps ?? 0) / (smallestApp?.capacityRps ?? 1)).toBe(50)
+  })
+
+  it('does Little’s law arithmetic right: 200/s at 40 ms is 8 in flight, and one at a time is 25/s', () => {
+    expect(200 * 0.04).toBeCloseTo(8, 12)
+    expect(200 * 0.08).toBeCloseTo(16, 12)
+    expect(1 / 0.04).toBeCloseTo(25, 12)
+    expect(8 / 0.04).toBeCloseTo(200, 12)
+  })
+})
+
+describe('what vertical-scaling claims about the model and the catalog (02-SIMULATION §5.2, §8)', () => {
+  it('is right that doubling capacity at 95% takes the mean from 20 service times to under 2', () => {
+    expect(meanResponseTimeMs(1, 0.95)).toBeCloseTo(20, 10)
+    expect(meanResponseTimeMs(1, utilization(95, 200))).toBeCloseTo(1.9, 1)
+    expect(meanResponseTimeMs(1, utilization(95, 200))).toBeLessThan(2)
+  })
+
+  it('is right that doubling capacity at 30% takes the mean from 1.43 to 1.18', () => {
+    expect(meanResponseTimeMs(1, 0.3)).toBeCloseTo(1.43, 2)
+    expect(meanResponseTimeMs(1, utilization(30, 200))).toBeCloseTo(1.18, 2)
+  })
+
+  it('is right that the floor is about 4.6 service times, and about 46 ms for the largest app server', () => {
+    expect(p99LatencyMs(meanResponseTimeMs(1, 0))).toBeCloseTo(4.6, 1)
+    expect(Math.round(p99LatencyMs(meanResponseTimeMs(largestApp?.serviceTimeMs ?? 0, 0)))).toBe(46)
+  })
+
+  it('quotes the largest sizes as they are: 500/s app server and 600/s database', () => {
+    expect(largestApp?.capacityRps).toBe(500)
+    expect(largestDb?.capacityRps).toBe(600)
+  })
+
+  it('is right that an upgrade in front can make a healthy database drop load', () => {
+    const database = { capacityRps: 200, serviceTimeMs: 5 }
+    const before = unwrap(simulateTick(linearInput({ peakRps: 300, app: { capacityRps: 100, serviceTimeMs: 10 }, database })))
+    const after = unwrap(simulateTick(linearInput({ peakRps: 300, app: { capacityRps: 600, serviceTimeMs: 10 }, database })))
+    expect(metricsFor(before, 'db').status).toBe('healthy')
+    expect(metricsFor(before, 'db').droppedRps).toBe(0)
+    expect(metricsFor(after, 'db').droppedRps).toBe(100)
+  })
+
+  it('is right that each size up costs more per week than the one before, for both kinds', () => {
+    for (const tiers of [APP_TIERS, DB_TIERS]) {
+      for (let index = 1; index < tiers.length; index++) {
+        expect(tiers[index]?.runningCostPerTurnCents).toBeGreaterThan(tiers[index - 1]?.runningCostPerTurnCents ?? Infinity)
+      }
+    }
+  })
+
+  it('does Amdahl’s arithmetic right: 5% serial gives about 5.9× on 8 cores, 12.5× on 32, and never 20×', () => {
+    const speedup = (serial: number, cores: number) => 1 / (serial + (1 - serial) / cores)
+    expect(speedup(0.05, 8)).toBeCloseTo(5.9, 1)
+    expect(speedup(0.05, 32)).toBeCloseTo(12.5, 1)
+    expect(speedup(0.05, 1_000_000)).toBeLessThan(20)
+  })
+
+  it('names the gate the curriculum gives it: every database size above Small', () => {
+    expect(DB_TIERS.map((tier) => tier.gatedBy ?? null)).toEqual([null, 'vertical-scaling', 'vertical-scaling', 'vertical-scaling'])
+  })
+})
+
+describe('what the vertical scaling demo’s caption claims (03-CONTENT-SCHEMA §7)', () => {
+  const demo = DEMOS['vertical-scaling']
+  const variable = demo.variable
+  const serviceTimeMs = largestApp?.serviceTimeMs ?? 0
+  const p99At = (capacityRps: number) => {
+    if (variable.kind !== 'capacityRps') throw new Error('expected a capacity slider')
+    return p99LatencyMs(meanResponseTimeMs(serviceTimeMs, utilization(variable.loadRps, capacityRps)))
+  }
+
+  it('holds fifty requests a second on the largest app server, and slides up to its capacity', () => {
+    expect(variable).toMatchObject({ kind: 'capacityRps', loadRps: 50, max: largestApp?.capacityRps })
+    expect(demo.architecture.nodes.find((node) => node.id === demo.nodeId)).toMatchObject({ kind: 'app-server', tier: 3 })
+  })
+
+  it('is right that the first steps are worth seconds of p99', () => {
+    expect(p99At(variable.min)).toBeGreaterThan(1000)
+    expect(p99At(100)).toBeLessThan(100)
+  })
+
+  it('is right that the last 300/s of capacity are worth about 10 ms', () => {
+    expect(p99At(200) - p99At(500)).toBeCloseTo(10, 0)
+  })
+})
+
 /**
  * Every numeric question, recomputed the way the engine would. The key is the question id and
  * the value is what the engine says the answer is, in the question's own unit.
@@ -213,7 +366,17 @@ describe('numeric answers, recomputed through the engine', () => {
   })
 })
 
-describe.each(CONCEPT_IDS)('the %s authored batch (09-QUESTION-BANK §2.2, §7, §8)', (conceptId) => {
+describe('which concepts have an authored batch', () => {
+  it('is every concept but the three M7 added, which M7b writes', () => {
+    expect(CONCEPT_IDS.filter((id) => !WITH_AUTHORED.includes(id))).toEqual([
+      'client-server-basics',
+      'latency-and-throughput',
+      'vertical-scaling',
+    ])
+  })
+})
+
+describe.each(WITH_AUTHORED)('the %s authored batch (09-QUESTION-BANK §2.2, §7, §8)', (conceptId) => {
   const concept: Concept = CONCEPTS[conceptId]
   const pool = POOLS[conceptId]
 

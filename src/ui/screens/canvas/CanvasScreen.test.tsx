@@ -32,6 +32,9 @@ afterEach(cleanup)
 function setup() {
   const store = createGameStore({ storage: memoryStorage(), catalog: TEST_CATALOG, now: FIXED_NOW })
   store.getState().startRun(1)
+  // These cover the canvas, not the gates: every size is open, as if both concepts that gate
+  // sizes had been passed (ADR-0040).
+  store.setState({ knowledge: { unlockedConcepts: ['capacity-and-utilization', 'vertical-scaling'], checkHistory: [] } })
   render(<CanvasScreen store={store} />)
   const canvas = screen.getByRole('application', { name: 'Architecture canvas' })
   // jsdom lays nothing out. Give the canvas its real size at the origin, as a browser would.

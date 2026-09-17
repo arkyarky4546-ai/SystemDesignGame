@@ -10,14 +10,32 @@ import type { ConceptId, Question } from '../schema'
  * the next run (CLAUDE.md).
  */
 const LOADERS: Readonly<Record<ConceptId, () => Promise<readonly Question[]>>> = {
+  // No authored questions yet: M7b writes them.
+  'client-server-basics': async () => frozen(await import('./client-server-basics/derived.json')),
+  'latency-and-throughput': async () => frozen(await import('./latency-and-throughput/derived.json')),
   'capacity-and-utilization': async () => {
     const [authored, derived] = await Promise.all([
       import('./capacity-and-utilization/authored'),
       import('./capacity-and-utilization/derived.json'),
     ])
-    return [...authored.capacityAndUtilizationAuthored, ...(derived.default as unknown as readonly Question[])]
+    return [...authored.capacityAndUtilizationAuthored, ...frozen(derived)]
   },
-  percentiles: async () => (await import('./percentiles/authored')).percentilesAuthored,
+  percentiles: async () => {
+    const [authored, derived] = await Promise.all([
+      import('./percentiles/authored'),
+      import('./percentiles/derived.json'),
+    ])
+    return [...authored.percentilesAuthored, ...frozen(derived)]
+  },
+  'vertical-scaling': async () => frozen(await import('./vertical-scaling/derived.json')),
+}
+
+/**
+ * A frozen bank as questions. JSON imports are typed from their literal contents, which are
+ * wider than `Question`; `npm run validate` and `npm run screen` are what guarantee the shape.
+ */
+function frozen(module: { readonly default: unknown }): readonly Question[] {
+  return module.default as readonly Question[]
 }
 
 export async function loadQuestions(conceptId: ConceptId): Promise<readonly Question[]> {

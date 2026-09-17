@@ -114,6 +114,38 @@ describe('the saturation demo (03-CONTENT-SCHEMA §7)', () => {
   })
 })
 
+describe('the vertical scaling demo (03-CONTENT-SCHEMA §7)', () => {
+  it('resizes the app server while the load holds still, and shows what the real engine says', async () => {
+    const { user } = setup()
+    await user.click(library())
+    await user.click(screen.getByRole('button', { name: CONCEPTS['vertical-scaling'].title }))
+
+    const demo = DEMOS['vertical-scaling']
+    const variable = demo.variable
+    if (variable.kind !== 'capacityRps') throw new Error('expected a capacity slider')
+    const slider = screen.getByLabelText(variable.label, { exact: false }) as HTMLInputElement
+    expect(slider.min).toBe(String(variable.min))
+    expect(slider.max).toBe(String(variable.max))
+    const figure = slider.closest('figure')
+    if (!figure) throw new Error('expected the demo’s figure')
+
+    const tier = demo.architecture.nodes.find((node) => node.id === demo.nodeId)?.tier ?? -1
+    const app = CONTENT_CATALOG['app-server'][tier]
+    if (!app) throw new Error('expected the app server tier the demo names')
+    const before = app.capacityRps
+
+    // Just above the load, then the largest size: p99 falls from hundreds of ms towards the floor.
+    for (const capacity of [60, 500]) {
+      fireEvent.change(slider, { target: { value: String(capacity) } })
+      const u = utilization(variable.loadRps, capacity)
+      expect(await within(figure).findByText(formatUtilization(u)), `utilization at ${capacity}`).toBeTruthy()
+      expect(within(figure).getByText(formatMs(p99LatencyMs(meanResponseTimeMs(app.serviceTimeMs, u)))), `p99 at ${capacity}`).toBeTruthy()
+    }
+    // The slider resizes a copy: the tiers the game resolves turns against are untouched.
+    expect(CONTENT_CATALOG['app-server'][tier]?.capacityRps).toBe(before)
+  })
+})
+
 describe('lesson diagrams (03-CONTENT-SCHEMA §2)', () => {
   it('render through the real canvas component, from an architecture the game could build', async () => {
     const { user } = setup()
@@ -159,9 +191,11 @@ describe('the catalog names what gates a component (00-GAME-DESIGN §4)', () => 
   it('says which sizes are locked, and by which concept', async () => {
     const { user } = setup()
     const palette = screen.getByRole('region', { name: 'Catalog' })
-    expect(within(palette).getByText(/Medium, Large and Extra large need/)).toBeTruthy()
+    const appLine = within(palette).getByText(`Medium, Large and Extra large need ${CONCEPTS['capacity-and-utilization'].title}.`)
+    // The database's larger sizes wait on a different concept, and its card says which.
+    expect(within(palette).getByText(`Medium, Large and Extra large need ${CONCEPTS['vertical-scaling'].title}.`)).toBeTruthy()
 
-    await user.click(within(palette).getByRole('button', { name: 'Open the lesson' }))
+    await user.click(within(appLine).getByRole('button', { name: 'Open the lesson' }))
     expect(screen.getByRole('heading', { name: CONCEPTS['capacity-and-utilization'].title })).toBeTruthy()
   })
 

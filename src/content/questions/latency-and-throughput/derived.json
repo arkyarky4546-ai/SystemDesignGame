@@ -1,0 +1,2167 @@
+[
+  {
+    "id": "q-latency-and-throughput-d-throughput-path-ceiling-0001",
+    "conceptId": "latency-and-throughput",
+    "depth": 2,
+    "prompt": "At peak, 1,300/s arrive. Your app server can serve 200/s and your database 300/s, and each request makes one database query. How many requests per second complete the whole path?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "200/s"
+        },
+        {
+          "id": "b",
+          "text": "1,300/s",
+          "whyWrong": "This counts every arriving request as completed. Load past a component’s capacity is dropped, so a path can’t complete more than its narrowest hop."
+        },
+        {
+          "id": "c",
+          "text": "500/s",
+          "whyWrong": "This adds the two capacities as if a request could use either one. Each request crosses both hops in turn, so capacities don’t add along a path."
+        },
+        {
+          "id": "d",
+          "text": "300/s",
+          "whyWrong": "This is the larger of the two capacities. A request has to cross both hops, so the smaller one sets the limit."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "A request completes only if every hop serves it. The app server serves 200/s and passes those on; the database serves 200/s of them. So the path completes 200/s: never more than its narrowest hop, whatever the other can do.",
+    "tags": [
+      "throughput-ceiling"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-path-ceiling",
+      "params": {
+        "peakRps": 1300,
+        "appCapacityRps": 200,
+        "dbCapacityRps": 300
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-path-ceiling-0002",
+    "conceptId": "latency-and-throughput",
+    "depth": 2,
+    "prompt": "At peak, 150/s arrive. Your app server can serve 500/s and your database 80/s, and each request makes one database query. How many requests per second complete the whole path?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "80/s"
+        },
+        {
+          "id": "b",
+          "text": "150/s",
+          "whyWrong": "This counts every arriving request as completed. Load past a component’s capacity is dropped, so a path can’t complete more than its narrowest hop."
+        },
+        {
+          "id": "c",
+          "text": "580/s",
+          "whyWrong": "This adds the two capacities as if a request could use either one. Each request crosses both hops in turn, so capacities don’t add along a path."
+        },
+        {
+          "id": "d",
+          "text": "500/s",
+          "whyWrong": "This is the larger of the two capacities. A request has to cross both hops, so the smaller one sets the limit."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "A request completes only if every hop serves it. The app server serves 150/s and passes those on; the database serves 80/s of them. So the path completes 80/s: never more than its narrowest hop, whatever the other can do.",
+    "tags": [
+      "throughput-ceiling"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-path-ceiling",
+      "params": {
+        "peakRps": 150,
+        "appCapacityRps": 500,
+        "dbCapacityRps": 80
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-path-ceiling-0003",
+    "conceptId": "latency-and-throughput",
+    "depth": 2,
+    "prompt": "At peak, 250/s arrive. Your app server can serve 400/s and your database 120/s, and each request makes one database query. How many requests per second complete the whole path?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "120/s"
+        },
+        {
+          "id": "b",
+          "text": "250/s",
+          "whyWrong": "This counts every arriving request as completed. Load past a component’s capacity is dropped, so a path can’t complete more than its narrowest hop."
+        },
+        {
+          "id": "c",
+          "text": "520/s",
+          "whyWrong": "This adds the two capacities as if a request could use either one. Each request crosses both hops in turn, so capacities don’t add along a path."
+        },
+        {
+          "id": "d",
+          "text": "400/s",
+          "whyWrong": "This is the larger of the two capacities. A request has to cross both hops, so the smaller one sets the limit."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "A request completes only if every hop serves it. The app server serves 250/s and passes those on; the database serves 120/s of them. So the path completes 120/s: never more than its narrowest hop, whatever the other can do.",
+    "tags": [
+      "throughput-ceiling"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-path-ceiling",
+      "params": {
+        "peakRps": 250,
+        "appCapacityRps": 400,
+        "dbCapacityRps": 120
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-path-ceiling-0004",
+    "conceptId": "latency-and-throughput",
+    "depth": 2,
+    "prompt": "At peak, 350/s arrive. Your app server can serve 300/s and your database 500/s, and each request makes one database query. How many requests per second complete the whole path?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "300/s"
+        },
+        {
+          "id": "b",
+          "text": "350/s",
+          "whyWrong": "This counts every arriving request as completed. Load past a component’s capacity is dropped, so a path can’t complete more than its narrowest hop."
+        },
+        {
+          "id": "c",
+          "text": "800/s",
+          "whyWrong": "This adds the two capacities as if a request could use either one. Each request crosses both hops in turn, so capacities don’t add along a path."
+        },
+        {
+          "id": "d",
+          "text": "500/s",
+          "whyWrong": "This is the larger of the two capacities. A request has to cross both hops, so the smaller one sets the limit."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "A request completes only if every hop serves it. The app server serves 300/s and passes those on; the database serves 300/s of them. So the path completes 300/s: never more than its narrowest hop, whatever the other can do.",
+    "tags": [
+      "throughput-ceiling"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-path-ceiling",
+      "params": {
+        "peakRps": 350,
+        "appCapacityRps": 300,
+        "dbCapacityRps": 500
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-path-ceiling-0005",
+    "conceptId": "latency-and-throughput",
+    "depth": 2,
+    "prompt": "At peak, 900/s arrive. Your app server can serve 500/s and your database 80/s, and each request makes one database query. How many requests per second complete the whole path?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "80/s"
+        },
+        {
+          "id": "b",
+          "text": "900/s",
+          "whyWrong": "This counts every arriving request as completed. Load past a component’s capacity is dropped, so a path can’t complete more than its narrowest hop."
+        },
+        {
+          "id": "c",
+          "text": "580/s",
+          "whyWrong": "This adds the two capacities as if a request could use either one. Each request crosses both hops in turn, so capacities don’t add along a path."
+        },
+        {
+          "id": "d",
+          "text": "500/s",
+          "whyWrong": "This is the larger of the two capacities. A request has to cross both hops, so the smaller one sets the limit."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "A request completes only if every hop serves it. The app server serves 500/s and passes those on; the database serves 80/s of them. So the path completes 80/s: never more than its narrowest hop, whatever the other can do.",
+    "tags": [
+      "throughput-ceiling"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-path-ceiling",
+      "params": {
+        "peakRps": 900,
+        "appCapacityRps": 500,
+        "dbCapacityRps": 80
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-path-ceiling-0006",
+    "conceptId": "latency-and-throughput",
+    "depth": 2,
+    "prompt": "At peak, 700/s arrive. Your app server can serve 600/s and your database 200/s, and each request makes one database query. How many requests per second complete the whole path?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "200/s"
+        },
+        {
+          "id": "b",
+          "text": "700/s",
+          "whyWrong": "This counts every arriving request as completed. Load past a component’s capacity is dropped, so a path can’t complete more than its narrowest hop."
+        },
+        {
+          "id": "c",
+          "text": "800/s",
+          "whyWrong": "This adds the two capacities as if a request could use either one. Each request crosses both hops in turn, so capacities don’t add along a path."
+        },
+        {
+          "id": "d",
+          "text": "600/s",
+          "whyWrong": "This is the larger of the two capacities. A request has to cross both hops, so the smaller one sets the limit."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "A request completes only if every hop serves it. The app server serves 600/s and passes those on; the database serves 200/s of them. So the path completes 200/s: never more than its narrowest hop, whatever the other can do.",
+    "tags": [
+      "throughput-ceiling"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-path-ceiling",
+      "params": {
+        "peakRps": 700,
+        "appCapacityRps": 600,
+        "dbCapacityRps": 200
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-path-ceiling-0007",
+    "conceptId": "latency-and-throughput",
+    "depth": 2,
+    "prompt": "At peak, 750/s arrive. Your app server can serve 500/s and your database 200/s, and each request makes one database query. How many requests per second complete the whole path?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "200/s"
+        },
+        {
+          "id": "b",
+          "text": "750/s",
+          "whyWrong": "This counts every arriving request as completed. Load past a component’s capacity is dropped, so a path can’t complete more than its narrowest hop."
+        },
+        {
+          "id": "c",
+          "text": "700/s",
+          "whyWrong": "This adds the two capacities as if a request could use either one. Each request crosses both hops in turn, so capacities don’t add along a path."
+        },
+        {
+          "id": "d",
+          "text": "500/s",
+          "whyWrong": "This is the larger of the two capacities. A request has to cross both hops, so the smaller one sets the limit."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "A request completes only if every hop serves it. The app server serves 500/s and passes those on; the database serves 200/s of them. So the path completes 200/s: never more than its narrowest hop, whatever the other can do.",
+    "tags": [
+      "throughput-ceiling"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-path-ceiling",
+      "params": {
+        "peakRps": 750,
+        "appCapacityRps": 500,
+        "dbCapacityRps": 200
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-path-ceiling-0008",
+    "conceptId": "latency-and-throughput",
+    "depth": 2,
+    "prompt": "At peak, 1,050/s arrive. Your app server can serve 300/s and your database 500/s, and each request makes one database query. How many requests per second complete the whole path?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "300/s"
+        },
+        {
+          "id": "b",
+          "text": "1,050/s",
+          "whyWrong": "This counts every arriving request as completed. Load past a component’s capacity is dropped, so a path can’t complete more than its narrowest hop."
+        },
+        {
+          "id": "c",
+          "text": "800/s",
+          "whyWrong": "This adds the two capacities as if a request could use either one. Each request crosses both hops in turn, so capacities don’t add along a path."
+        },
+        {
+          "id": "d",
+          "text": "500/s",
+          "whyWrong": "This is the larger of the two capacities. A request has to cross both hops, so the smaller one sets the limit."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "A request completes only if every hop serves it. The app server serves 300/s and passes those on; the database serves 300/s of them. So the path completes 300/s: never more than its narrowest hop, whatever the other can do.",
+    "tags": [
+      "throughput-ceiling"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-path-ceiling",
+      "params": {
+        "peakRps": 1050,
+        "appCapacityRps": 300,
+        "dbCapacityRps": 500
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-path-ceiling-0009",
+    "conceptId": "latency-and-throughput",
+    "depth": 2,
+    "prompt": "At peak, 600/s arrive. Your app server can serve 150/s and your database 400/s, and each request makes one database query. How many requests per second complete the whole path?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "150/s"
+        },
+        {
+          "id": "b",
+          "text": "600/s",
+          "whyWrong": "This counts every arriving request as completed. Load past a component’s capacity is dropped, so a path can’t complete more than its narrowest hop."
+        },
+        {
+          "id": "c",
+          "text": "550/s",
+          "whyWrong": "This adds the two capacities as if a request could use either one. Each request crosses both hops in turn, so capacities don’t add along a path."
+        },
+        {
+          "id": "d",
+          "text": "400/s",
+          "whyWrong": "This is the larger of the two capacities. A request has to cross both hops, so the smaller one sets the limit."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "A request completes only if every hop serves it. The app server serves 150/s and passes those on; the database serves 150/s of them. So the path completes 150/s: never more than its narrowest hop, whatever the other can do.",
+    "tags": [
+      "throughput-ceiling"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-path-ceiling",
+      "params": {
+        "peakRps": 600,
+        "appCapacityRps": 150,
+        "dbCapacityRps": 400
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-path-ceiling-0010",
+    "conceptId": "latency-and-throughput",
+    "depth": 2,
+    "prompt": "At peak, 1,100/s arrive. Your app server can serve 400/s and your database 80/s, and each request makes one database query. How many requests per second complete the whole path?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "80/s"
+        },
+        {
+          "id": "b",
+          "text": "1,100/s",
+          "whyWrong": "This counts every arriving request as completed. Load past a component’s capacity is dropped, so a path can’t complete more than its narrowest hop."
+        },
+        {
+          "id": "c",
+          "text": "480/s",
+          "whyWrong": "This adds the two capacities as if a request could use either one. Each request crosses both hops in turn, so capacities don’t add along a path."
+        },
+        {
+          "id": "d",
+          "text": "400/s",
+          "whyWrong": "This is the larger of the two capacities. A request has to cross both hops, so the smaller one sets the limit."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "A request completes only if every hop serves it. The app server serves 400/s and passes those on; the database serves 80/s of them. So the path completes 80/s: never more than its narrowest hop, whatever the other can do.",
+    "tags": [
+      "throughput-ceiling"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-path-ceiling",
+      "params": {
+        "peakRps": 1100,
+        "appCapacityRps": 400,
+        "dbCapacityRps": 80
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-path-ceiling-0011",
+    "conceptId": "latency-and-throughput",
+    "depth": 2,
+    "prompt": "At peak, 600/s arrive. Your app server can serve 400/s and your database 600/s, and each request makes one database query. How many requests per second complete the whole path?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "400/s"
+        },
+        {
+          "id": "b",
+          "text": "600/s",
+          "whyWrong": "This counts every arriving request as completed. Load past a component’s capacity is dropped, so a path can’t complete more than its narrowest hop."
+        },
+        {
+          "id": "c",
+          "text": "1,000/s",
+          "whyWrong": "This adds the two capacities as if a request could use either one. Each request crosses both hops in turn, so capacities don’t add along a path."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "A request completes only if every hop serves it. The app server serves 400/s and passes those on; the database serves 400/s of them. So the path completes 400/s: never more than its narrowest hop, whatever the other can do.",
+    "tags": [
+      "throughput-ceiling"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-path-ceiling",
+      "params": {
+        "peakRps": 600,
+        "appCapacityRps": 400,
+        "dbCapacityRps": 600
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-path-ceiling-0012",
+    "conceptId": "latency-and-throughput",
+    "depth": 2,
+    "prompt": "At peak, 450/s arrive. Your app server can serve 100/s and your database 80/s, and each request makes one database query. How many requests per second complete the whole path?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "80/s"
+        },
+        {
+          "id": "b",
+          "text": "450/s",
+          "whyWrong": "This counts every arriving request as completed. Load past a component’s capacity is dropped, so a path can’t complete more than its narrowest hop."
+        },
+        {
+          "id": "c",
+          "text": "180/s",
+          "whyWrong": "This adds the two capacities as if a request could use either one. Each request crosses both hops in turn, so capacities don’t add along a path."
+        },
+        {
+          "id": "d",
+          "text": "100/s",
+          "whyWrong": "This is the larger of the two capacities. A request has to cross both hops, so the smaller one sets the limit."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "A request completes only if every hop serves it. The app server serves 100/s and passes those on; the database serves 80/s of them. So the path completes 80/s: never more than its narrowest hop, whatever the other can do.",
+    "tags": [
+      "throughput-ceiling"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-path-ceiling",
+      "params": {
+        "peakRps": 450,
+        "appCapacityRps": 100,
+        "dbCapacityRps": 80
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-path-ceiling-0013",
+    "conceptId": "latency-and-throughput",
+    "depth": 2,
+    "prompt": "At peak, 750/s arrive. Your app server can serve 800/s and your database 600/s, and each request makes one database query. How many requests per second complete the whole path?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "600/s"
+        },
+        {
+          "id": "b",
+          "text": "750/s",
+          "whyWrong": "This counts every arriving request as completed. Load past a component’s capacity is dropped, so a path can’t complete more than its narrowest hop."
+        },
+        {
+          "id": "c",
+          "text": "1,400/s",
+          "whyWrong": "This adds the two capacities as if a request could use either one. Each request crosses both hops in turn, so capacities don’t add along a path."
+        },
+        {
+          "id": "d",
+          "text": "800/s",
+          "whyWrong": "This is the larger of the two capacities. A request has to cross both hops, so the smaller one sets the limit."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "A request completes only if every hop serves it. The app server serves 750/s and passes those on; the database serves 600/s of them. So the path completes 600/s: never more than its narrowest hop, whatever the other can do.",
+    "tags": [
+      "throughput-ceiling"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-path-ceiling",
+      "params": {
+        "peakRps": 750,
+        "appCapacityRps": 800,
+        "dbCapacityRps": 600
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-path-ceiling-0014",
+    "conceptId": "latency-and-throughput",
+    "depth": 2,
+    "prompt": "At peak, 1,050/s arrive. Your app server can serve 300/s and your database 200/s, and each request makes one database query. How many requests per second complete the whole path?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "200/s"
+        },
+        {
+          "id": "b",
+          "text": "1,050/s",
+          "whyWrong": "This counts every arriving request as completed. Load past a component’s capacity is dropped, so a path can’t complete more than its narrowest hop."
+        },
+        {
+          "id": "c",
+          "text": "500/s",
+          "whyWrong": "This adds the two capacities as if a request could use either one. Each request crosses both hops in turn, so capacities don’t add along a path."
+        },
+        {
+          "id": "d",
+          "text": "300/s",
+          "whyWrong": "This is the larger of the two capacities. A request has to cross both hops, so the smaller one sets the limit."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "A request completes only if every hop serves it. The app server serves 300/s and passes those on; the database serves 200/s of them. So the path completes 200/s: never more than its narrowest hop, whatever the other can do.",
+    "tags": [
+      "throughput-ceiling"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-path-ceiling",
+      "params": {
+        "peakRps": 1050,
+        "appCapacityRps": 300,
+        "dbCapacityRps": 200
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-path-ceiling-0015",
+    "conceptId": "latency-and-throughput",
+    "depth": 2,
+    "prompt": "At peak, 700/s arrive. Your app server can serve 500/s and your database 400/s, and each request makes one database query. How many requests per second complete the whole path?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "400/s"
+        },
+        {
+          "id": "b",
+          "text": "700/s",
+          "whyWrong": "This counts every arriving request as completed. Load past a component’s capacity is dropped, so a path can’t complete more than its narrowest hop."
+        },
+        {
+          "id": "c",
+          "text": "900/s",
+          "whyWrong": "This adds the two capacities as if a request could use either one. Each request crosses both hops in turn, so capacities don’t add along a path."
+        },
+        {
+          "id": "d",
+          "text": "500/s",
+          "whyWrong": "This is the larger of the two capacities. A request has to cross both hops, so the smaller one sets the limit."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "A request completes only if every hop serves it. The app server serves 500/s and passes those on; the database serves 400/s of them. So the path completes 400/s: never more than its narrowest hop, whatever the other can do.",
+    "tags": [
+      "throughput-ceiling"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-path-ceiling",
+      "params": {
+        "peakRps": 700,
+        "appCapacityRps": 500,
+        "dbCapacityRps": 400
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-completed-0001",
+    "conceptId": "latency-and-throughput",
+    "depth": 1,
+    "prompt": "An app server takes 50 ms to serve a request with nothing queued, and its capacity is 60/s. At peak, 30/s arrive. How many requests per second does it complete?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "30/s"
+        },
+        {
+          "id": "b",
+          "text": "20/s",
+          "whyWrong": "This divides a second by the service time, which is a server’s throughput only if it works on one request at a time. Servers work on many at once; capacity is what caps them."
+        },
+        {
+          "id": "c",
+          "text": "60/s",
+          "whyWrong": "This is what the server could complete, not what it does. With less arriving than its capacity, it completes only what arrives."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "It completes all 30/s: the load is under its 60/s capacity, so nothing is dropped. The 50 ms service time says how long each request takes, not how many the server can take, because it works on many at once.",
+    "tags": [
+      "throughput-not-inverse",
+      "throughput-ceiling"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-completed",
+      "params": {
+        "serviceTimeMs": 50,
+        "capacityRps": 60,
+        "peakRps": 30
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-completed-0002",
+    "conceptId": "latency-and-throughput",
+    "depth": 1,
+    "prompt": "An app server takes 5 ms to serve a request with nothing queued, and its capacity is 400/s. At peak, 630/s arrive. How many requests per second does it complete?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "400/s"
+        },
+        {
+          "id": "b",
+          "text": "200/s",
+          "whyWrong": "This divides a second by the service time, which is a server’s throughput only if it works on one request at a time. Servers work on many at once; capacity is what caps them."
+        },
+        {
+          "id": "c",
+          "text": "630/s",
+          "whyWrong": "This counts every arriving request as completed. Past capacity the excess is dropped, so the server completes at most its capacity."
+        },
+        {
+          "id": "d",
+          "text": "230/s",
+          "whyWrong": "This is the load the server turns away, not the load it completes."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "It completes 400/s, its capacity, and drops the other 230/s. The 5 ms service time says how long each request takes, not how many the server can take, because it works on many at once.",
+    "tags": [
+      "throughput-not-inverse",
+      "throughput-ceiling"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-completed",
+      "params": {
+        "serviceTimeMs": 5,
+        "capacityRps": 400,
+        "peakRps": 630
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-completed-0003",
+    "conceptId": "latency-and-throughput",
+    "depth": 1,
+    "prompt": "An app server takes 8 ms to serve a request with nothing queued, and its capacity is 400/s. At peak, 720/s arrive. How many requests per second does it complete?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "400/s"
+        },
+        {
+          "id": "b",
+          "text": "125/s",
+          "whyWrong": "This divides a second by the service time, which is a server’s throughput only if it works on one request at a time. Servers work on many at once; capacity is what caps them."
+        },
+        {
+          "id": "c",
+          "text": "720/s",
+          "whyWrong": "This counts every arriving request as completed. Past capacity the excess is dropped, so the server completes at most its capacity."
+        },
+        {
+          "id": "d",
+          "text": "320/s",
+          "whyWrong": "This is the load the server turns away, not the load it completes."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "It completes 400/s, its capacity, and drops the other 320/s. The 8 ms service time says how long each request takes, not how many the server can take, because it works on many at once.",
+    "tags": [
+      "throughput-not-inverse",
+      "throughput-ceiling"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-completed",
+      "params": {
+        "serviceTimeMs": 8,
+        "capacityRps": 400,
+        "peakRps": 720
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-completed-0004",
+    "conceptId": "latency-and-throughput",
+    "depth": 1,
+    "prompt": "An app server takes 20 ms to serve a request with nothing queued, and its capacity is 250/s. At peak, 380/s arrive. How many requests per second does it complete?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "250/s"
+        },
+        {
+          "id": "b",
+          "text": "50/s",
+          "whyWrong": "This divides a second by the service time, which is a server’s throughput only if it works on one request at a time. Servers work on many at once; capacity is what caps them."
+        },
+        {
+          "id": "c",
+          "text": "380/s",
+          "whyWrong": "This counts every arriving request as completed. Past capacity the excess is dropped, so the server completes at most its capacity."
+        },
+        {
+          "id": "d",
+          "text": "130/s",
+          "whyWrong": "This is the load the server turns away, not the load it completes."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "It completes 250/s, its capacity, and drops the other 130/s. The 20 ms service time says how long each request takes, not how many the server can take, because it works on many at once.",
+    "tags": [
+      "throughput-not-inverse",
+      "throughput-ceiling"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-completed",
+      "params": {
+        "serviceTimeMs": 20,
+        "capacityRps": 250,
+        "peakRps": 380
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-completed-0005",
+    "conceptId": "latency-and-throughput",
+    "depth": 1,
+    "prompt": "An app server takes 10 ms to serve a request with nothing queued, and its capacity is 400/s. At peak, 670/s arrive. How many requests per second does it complete?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "400/s"
+        },
+        {
+          "id": "b",
+          "text": "100/s",
+          "whyWrong": "This divides a second by the service time, which is a server’s throughput only if it works on one request at a time. Servers work on many at once; capacity is what caps them."
+        },
+        {
+          "id": "c",
+          "text": "670/s",
+          "whyWrong": "This counts every arriving request as completed. Past capacity the excess is dropped, so the server completes at most its capacity."
+        },
+        {
+          "id": "d",
+          "text": "270/s",
+          "whyWrong": "This is the load the server turns away, not the load it completes."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "It completes 400/s, its capacity, and drops the other 270/s. The 10 ms service time says how long each request takes, not how many the server can take, because it works on many at once.",
+    "tags": [
+      "throughput-not-inverse",
+      "throughput-ceiling"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-completed",
+      "params": {
+        "serviceTimeMs": 10,
+        "capacityRps": 400,
+        "peakRps": 670
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-completed-0006",
+    "conceptId": "latency-and-throughput",
+    "depth": 1,
+    "prompt": "An app server takes 25 ms to serve a request with nothing queued, and its capacity is 600/s. At peak, 660/s arrive. How many requests per second does it complete?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "600/s"
+        },
+        {
+          "id": "b",
+          "text": "40/s",
+          "whyWrong": "This divides a second by the service time, which is a server’s throughput only if it works on one request at a time. Servers work on many at once; capacity is what caps them."
+        },
+        {
+          "id": "c",
+          "text": "660/s",
+          "whyWrong": "This counts every arriving request as completed. Past capacity the excess is dropped, so the server completes at most its capacity."
+        },
+        {
+          "id": "d",
+          "text": "60/s",
+          "whyWrong": "This is the load the server turns away, not the load it completes."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "It completes 600/s, its capacity, and drops the other 60/s. The 25 ms service time says how long each request takes, not how many the server can take, because it works on many at once.",
+    "tags": [
+      "throughput-not-inverse",
+      "throughput-ceiling"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-completed",
+      "params": {
+        "serviceTimeMs": 25,
+        "capacityRps": 600,
+        "peakRps": 660
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-completed-0007",
+    "conceptId": "latency-and-throughput",
+    "depth": 1,
+    "prompt": "An app server takes 20 ms to serve a request with nothing queued, and its capacity is 400/s. At peak, 230/s arrive. How many requests per second does it complete?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "230/s"
+        },
+        {
+          "id": "b",
+          "text": "50/s",
+          "whyWrong": "This divides a second by the service time, which is a server’s throughput only if it works on one request at a time. Servers work on many at once; capacity is what caps them."
+        },
+        {
+          "id": "c",
+          "text": "400/s",
+          "whyWrong": "This is what the server could complete, not what it does. With less arriving than its capacity, it completes only what arrives."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "It completes all 230/s: the load is under its 400/s capacity, so nothing is dropped. The 20 ms service time says how long each request takes, not how many the server can take, because it works on many at once.",
+    "tags": [
+      "throughput-not-inverse",
+      "throughput-ceiling"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-completed",
+      "params": {
+        "serviceTimeMs": 20,
+        "capacityRps": 400,
+        "peakRps": 230
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-completed-0008",
+    "conceptId": "latency-and-throughput",
+    "depth": 1,
+    "prompt": "An app server takes 10 ms to serve a request with nothing queued, and its capacity is 250/s. At peak, 230/s arrive. How many requests per second does it complete?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "230/s"
+        },
+        {
+          "id": "b",
+          "text": "100/s",
+          "whyWrong": "This divides a second by the service time, which is a server’s throughput only if it works on one request at a time. Servers work on many at once; capacity is what caps them."
+        },
+        {
+          "id": "c",
+          "text": "250/s",
+          "whyWrong": "This is what the server could complete, not what it does. With less arriving than its capacity, it completes only what arrives."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "It completes all 230/s: the load is under its 250/s capacity, so nothing is dropped. The 10 ms service time says how long each request takes, not how many the server can take, because it works on many at once.",
+    "tags": [
+      "throughput-not-inverse",
+      "throughput-ceiling"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-completed",
+      "params": {
+        "serviceTimeMs": 10,
+        "capacityRps": 250,
+        "peakRps": 230
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-completed-0009",
+    "conceptId": "latency-and-throughput",
+    "depth": 1,
+    "prompt": "An app server takes 4 ms to serve a request with nothing queued, and its capacity is 120/s. At peak, 150/s arrive. How many requests per second does it complete?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "120/s"
+        },
+        {
+          "id": "b",
+          "text": "250/s",
+          "whyWrong": "This divides a second by the service time, which is a server’s throughput only if it works on one request at a time. Servers work on many at once; capacity is what caps them."
+        },
+        {
+          "id": "c",
+          "text": "150/s",
+          "whyWrong": "This counts every arriving request as completed. Past capacity the excess is dropped, so the server completes at most its capacity."
+        },
+        {
+          "id": "d",
+          "text": "30/s",
+          "whyWrong": "This is the load the server turns away, not the load it completes."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "It completes 120/s, its capacity, and drops the other 30/s. The 4 ms service time says how long each request takes, not how many the server can take, because it works on many at once.",
+    "tags": [
+      "throughput-not-inverse",
+      "throughput-ceiling"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-completed",
+      "params": {
+        "serviceTimeMs": 4,
+        "capacityRps": 120,
+        "peakRps": 150
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-completed-0010",
+    "conceptId": "latency-and-throughput",
+    "depth": 1,
+    "prompt": "An app server takes 4 ms to serve a request with nothing queued, and its capacity is 150/s. At peak, 160/s arrive. How many requests per second does it complete?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "150/s"
+        },
+        {
+          "id": "b",
+          "text": "250/s",
+          "whyWrong": "This divides a second by the service time, which is a server’s throughput only if it works on one request at a time. Servers work on many at once; capacity is what caps them."
+        },
+        {
+          "id": "c",
+          "text": "160/s",
+          "whyWrong": "This counts every arriving request as completed. Past capacity the excess is dropped, so the server completes at most its capacity."
+        },
+        {
+          "id": "d",
+          "text": "10/s",
+          "whyWrong": "This is the load the server turns away, not the load it completes."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "It completes 150/s, its capacity, and drops the other 10/s. The 4 ms service time says how long each request takes, not how many the server can take, because it works on many at once.",
+    "tags": [
+      "throughput-not-inverse",
+      "throughput-ceiling"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-completed",
+      "params": {
+        "serviceTimeMs": 4,
+        "capacityRps": 150,
+        "peakRps": 160
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-completed-0011",
+    "conceptId": "latency-and-throughput",
+    "depth": 1,
+    "prompt": "An app server takes 8 ms to serve a request with nothing queued, and its capacity is 250/s. At peak, 230/s arrive. How many requests per second does it complete?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "230/s"
+        },
+        {
+          "id": "b",
+          "text": "125/s",
+          "whyWrong": "This divides a second by the service time, which is a server’s throughput only if it works on one request at a time. Servers work on many at once; capacity is what caps them."
+        },
+        {
+          "id": "c",
+          "text": "250/s",
+          "whyWrong": "This is what the server could complete, not what it does. With less arriving than its capacity, it completes only what arrives."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "It completes all 230/s: the load is under its 250/s capacity, so nothing is dropped. The 8 ms service time says how long each request takes, not how many the server can take, because it works on many at once.",
+    "tags": [
+      "throughput-not-inverse",
+      "throughput-ceiling"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-completed",
+      "params": {
+        "serviceTimeMs": 8,
+        "capacityRps": 250,
+        "peakRps": 230
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-completed-0012",
+    "conceptId": "latency-and-throughput",
+    "depth": 1,
+    "prompt": "An app server takes 25 ms to serve a request with nothing queued, and its capacity is 250/s. At peak, 320/s arrive. How many requests per second does it complete?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "250/s"
+        },
+        {
+          "id": "b",
+          "text": "40/s",
+          "whyWrong": "This divides a second by the service time, which is a server’s throughput only if it works on one request at a time. Servers work on many at once; capacity is what caps them."
+        },
+        {
+          "id": "c",
+          "text": "320/s",
+          "whyWrong": "This counts every arriving request as completed. Past capacity the excess is dropped, so the server completes at most its capacity."
+        },
+        {
+          "id": "d",
+          "text": "70/s",
+          "whyWrong": "This is the load the server turns away, not the load it completes."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "It completes 250/s, its capacity, and drops the other 70/s. The 25 ms service time says how long each request takes, not how many the server can take, because it works on many at once.",
+    "tags": [
+      "throughput-not-inverse",
+      "throughput-ceiling"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-completed",
+      "params": {
+        "serviceTimeMs": 25,
+        "capacityRps": 250,
+        "peakRps": 320
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-completed-0013",
+    "conceptId": "latency-and-throughput",
+    "depth": 1,
+    "prompt": "An app server takes 8 ms to serve a request with nothing queued, and its capacity is 600/s. At peak, 390/s arrive. How many requests per second does it complete?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "390/s"
+        },
+        {
+          "id": "b",
+          "text": "125/s",
+          "whyWrong": "This divides a second by the service time, which is a server’s throughput only if it works on one request at a time. Servers work on many at once; capacity is what caps them."
+        },
+        {
+          "id": "c",
+          "text": "600/s",
+          "whyWrong": "This is what the server could complete, not what it does. With less arriving than its capacity, it completes only what arrives."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "It completes all 390/s: the load is under its 600/s capacity, so nothing is dropped. The 8 ms service time says how long each request takes, not how many the server can take, because it works on many at once.",
+    "tags": [
+      "throughput-not-inverse",
+      "throughput-ceiling"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-completed",
+      "params": {
+        "serviceTimeMs": 8,
+        "capacityRps": 600,
+        "peakRps": 390
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-completed-0014",
+    "conceptId": "latency-and-throughput",
+    "depth": 1,
+    "prompt": "An app server takes 5 ms to serve a request with nothing queued, and its capacity is 600/s. At peak, 760/s arrive. How many requests per second does it complete?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "600/s"
+        },
+        {
+          "id": "b",
+          "text": "200/s",
+          "whyWrong": "This divides a second by the service time, which is a server’s throughput only if it works on one request at a time. Servers work on many at once; capacity is what caps them."
+        },
+        {
+          "id": "c",
+          "text": "760/s",
+          "whyWrong": "This counts every arriving request as completed. Past capacity the excess is dropped, so the server completes at most its capacity."
+        },
+        {
+          "id": "d",
+          "text": "160/s",
+          "whyWrong": "This is the load the server turns away, not the load it completes."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "It completes 600/s, its capacity, and drops the other 160/s. The 5 ms service time says how long each request takes, not how many the server can take, because it works on many at once.",
+    "tags": [
+      "throughput-not-inverse",
+      "throughput-ceiling"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-completed",
+      "params": {
+        "serviceTimeMs": 5,
+        "capacityRps": 600,
+        "peakRps": 760
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-completed-0015",
+    "conceptId": "latency-and-throughput",
+    "depth": 1,
+    "prompt": "An app server takes 10 ms to serve a request with nothing queued, and its capacity is 600/s. At peak, 530/s arrive. How many requests per second does it complete?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "530/s"
+        },
+        {
+          "id": "b",
+          "text": "100/s",
+          "whyWrong": "This divides a second by the service time, which is a server’s throughput only if it works on one request at a time. Servers work on many at once; capacity is what caps them."
+        },
+        {
+          "id": "c",
+          "text": "600/s",
+          "whyWrong": "This is what the server could complete, not what it does. With less arriving than its capacity, it completes only what arrives."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "It completes all 530/s: the load is under its 600/s capacity, so nothing is dropped. The 10 ms service time says how long each request takes, not how many the server can take, because it works on many at once.",
+    "tags": [
+      "throughput-not-inverse",
+      "throughput-ceiling"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-completed",
+      "params": {
+        "serviceTimeMs": 10,
+        "capacityRps": 600,
+        "peakRps": 530
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-error-share-0001",
+    "conceptId": "latency-and-throughput",
+    "depth": 2,
+    "prompt": "A component that can serve 300/s receives 750/s at peak. In this game, what share of the requests it receives fail?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "60%"
+        },
+        {
+          "id": "b",
+          "text": "150%",
+          "whyWrong": "This divides the dropped load by capacity. The error rate is a share of the requests that arrived, so it divides by what was received."
+        },
+        {
+          "id": "c",
+          "text": "40%",
+          "whyWrong": "This is the share of requests that succeed, not the share that fail. The two add up to 100%."
+        },
+        {
+          "id": "d",
+          "text": "0%",
+          "whyWrong": "This assumes load past capacity waits its turn and eventually succeeds. Past capacity a queue only grows; this game turns the excess away at once, and those requests fail."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "It serves 300/s and drops the other 450/s. The error rate is dropped ÷ received: 450 ÷ 750 = 60%. Dividing by capacity instead overstates it, because the failures are a share of the requests that arrived.",
+    "tags": [
+      "error-share"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-error-share",
+      "params": {
+        "capacityRps": 300,
+        "loadPercent": 250
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-error-share-0002",
+    "conceptId": "latency-and-throughput",
+    "depth": 2,
+    "prompt": "A component that can serve 50/s receives 70/s at peak. In this game, what share of the requests it receives fail?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "29%"
+        },
+        {
+          "id": "b",
+          "text": "40%",
+          "whyWrong": "This divides the dropped load by capacity. The error rate is a share of the requests that arrived, so it divides by what was received."
+        },
+        {
+          "id": "c",
+          "text": "71%",
+          "whyWrong": "This is the share of requests that succeed, not the share that fail. The two add up to 100%."
+        },
+        {
+          "id": "d",
+          "text": "0%",
+          "whyWrong": "This assumes load past capacity waits its turn and eventually succeeds. Past capacity a queue only grows; this game turns the excess away at once, and those requests fail."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "It serves 50/s and drops the other 20/s. The error rate is dropped ÷ received: 20 ÷ 70 = 29%. Dividing by capacity instead overstates it, because the failures are a share of the requests that arrived.",
+    "tags": [
+      "error-share"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-error-share",
+      "params": {
+        "capacityRps": 50,
+        "loadPercent": 140
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-error-share-0003",
+    "conceptId": "latency-and-throughput",
+    "depth": 2,
+    "prompt": "A component that can serve 120/s receives 150/s at peak. In this game, what share of the requests it receives fail?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "20%"
+        },
+        {
+          "id": "b",
+          "text": "25%",
+          "whyWrong": "This divides the dropped load by capacity. The error rate is a share of the requests that arrived, so it divides by what was received."
+        },
+        {
+          "id": "c",
+          "text": "80%",
+          "whyWrong": "This is the share of requests that succeed, not the share that fail. The two add up to 100%."
+        },
+        {
+          "id": "d",
+          "text": "0%",
+          "whyWrong": "This assumes load past capacity waits its turn and eventually succeeds. Past capacity a queue only grows; this game turns the excess away at once, and those requests fail."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "It serves 120/s and drops the other 30/s. The error rate is dropped ÷ received: 30 ÷ 150 = 20%. Dividing by capacity instead overstates it, because the failures are a share of the requests that arrived.",
+    "tags": [
+      "error-share"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-error-share",
+      "params": {
+        "capacityRps": 120,
+        "loadPercent": 125
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-error-share-0004",
+    "conceptId": "latency-and-throughput",
+    "depth": 2,
+    "prompt": "A component that can serve 200/s receives 500/s at peak. In this game, what share of the requests it receives fail?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "60%"
+        },
+        {
+          "id": "b",
+          "text": "150%",
+          "whyWrong": "This divides the dropped load by capacity. The error rate is a share of the requests that arrived, so it divides by what was received."
+        },
+        {
+          "id": "c",
+          "text": "40%",
+          "whyWrong": "This is the share of requests that succeed, not the share that fail. The two add up to 100%."
+        },
+        {
+          "id": "d",
+          "text": "0%",
+          "whyWrong": "This assumes load past capacity waits its turn and eventually succeeds. Past capacity a queue only grows; this game turns the excess away at once, and those requests fail."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "It serves 200/s and drops the other 300/s. The error rate is dropped ÷ received: 300 ÷ 500 = 60%. Dividing by capacity instead overstates it, because the failures are a share of the requests that arrived.",
+    "tags": [
+      "error-share"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-error-share",
+      "params": {
+        "capacityRps": 200,
+        "loadPercent": 250
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-error-share-0005",
+    "conceptId": "latency-and-throughput",
+    "depth": 2,
+    "prompt": "A component that can serve 500/s receives 750/s at peak. In this game, what share of the requests it receives fail?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "33%"
+        },
+        {
+          "id": "b",
+          "text": "50%",
+          "whyWrong": "This divides the dropped load by capacity. The error rate is a share of the requests that arrived, so it divides by what was received."
+        },
+        {
+          "id": "c",
+          "text": "67%",
+          "whyWrong": "This is the share of requests that succeed, not the share that fail. The two add up to 100%."
+        },
+        {
+          "id": "d",
+          "text": "0%",
+          "whyWrong": "This assumes load past capacity waits its turn and eventually succeeds. Past capacity a queue only grows; this game turns the excess away at once, and those requests fail."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "It serves 500/s and drops the other 250/s. The error rate is dropped ÷ received: 250 ÷ 750 = 33%. Dividing by capacity instead overstates it, because the failures are a share of the requests that arrived.",
+    "tags": [
+      "error-share"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-error-share",
+      "params": {
+        "capacityRps": 500,
+        "loadPercent": 150
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-error-share-0006",
+    "conceptId": "latency-and-throughput",
+    "depth": 2,
+    "prompt": "A component that can serve 80/s receives 120/s at peak. In this game, what share of the requests it receives fail?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "33%"
+        },
+        {
+          "id": "b",
+          "text": "50%",
+          "whyWrong": "This divides the dropped load by capacity. The error rate is a share of the requests that arrived, so it divides by what was received."
+        },
+        {
+          "id": "c",
+          "text": "67%",
+          "whyWrong": "This is the share of requests that succeed, not the share that fail. The two add up to 100%."
+        },
+        {
+          "id": "d",
+          "text": "0%",
+          "whyWrong": "This assumes load past capacity waits its turn and eventually succeeds. Past capacity a queue only grows; this game turns the excess away at once, and those requests fail."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "It serves 80/s and drops the other 40/s. The error rate is dropped ÷ received: 40 ÷ 120 = 33%. Dividing by capacity instead overstates it, because the failures are a share of the requests that arrived.",
+    "tags": [
+      "error-share"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-error-share",
+      "params": {
+        "capacityRps": 80,
+        "loadPercent": 150
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-error-share-0007",
+    "conceptId": "latency-and-throughput",
+    "depth": 2,
+    "prompt": "A component that can serve 100/s receives 110/s at peak. In this game, what share of the requests it receives fail?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "9%"
+        },
+        {
+          "id": "b",
+          "text": "10%",
+          "whyWrong": "This divides the dropped load by capacity. The error rate is a share of the requests that arrived, so it divides by what was received."
+        },
+        {
+          "id": "c",
+          "text": "91%",
+          "whyWrong": "This is the share of requests that succeed, not the share that fail. The two add up to 100%."
+        },
+        {
+          "id": "d",
+          "text": "0%",
+          "whyWrong": "This assumes load past capacity waits its turn and eventually succeeds. Past capacity a queue only grows; this game turns the excess away at once, and those requests fail."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "It serves 100/s and drops the other 10/s. The error rate is dropped ÷ received: 10 ÷ 110 = 9%. Dividing by capacity instead overstates it, because the failures are a share of the requests that arrived.",
+    "tags": [
+      "error-share"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-error-share",
+      "params": {
+        "capacityRps": 100,
+        "loadPercent": 110
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-error-share-0008",
+    "conceptId": "latency-and-throughput",
+    "depth": 2,
+    "prompt": "A component that can serve 400/s receives 600/s at peak. In this game, what share of the requests it receives fail?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "33%"
+        },
+        {
+          "id": "b",
+          "text": "50%",
+          "whyWrong": "This divides the dropped load by capacity. The error rate is a share of the requests that arrived, so it divides by what was received."
+        },
+        {
+          "id": "c",
+          "text": "67%",
+          "whyWrong": "This is the share of requests that succeed, not the share that fail. The two add up to 100%."
+        },
+        {
+          "id": "d",
+          "text": "0%",
+          "whyWrong": "This assumes load past capacity waits its turn and eventually succeeds. Past capacity a queue only grows; this game turns the excess away at once, and those requests fail."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "It serves 400/s and drops the other 200/s. The error rate is dropped ÷ received: 200 ÷ 600 = 33%. Dividing by capacity instead overstates it, because the failures are a share of the requests that arrived.",
+    "tags": [
+      "error-share"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-error-share",
+      "params": {
+        "capacityRps": 400,
+        "loadPercent": 150
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-error-share-0009",
+    "conceptId": "latency-and-throughput",
+    "depth": 2,
+    "prompt": "A component that can serve 200/s receives 280/s at peak. In this game, what share of the requests it receives fail?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "29%"
+        },
+        {
+          "id": "b",
+          "text": "40%",
+          "whyWrong": "This divides the dropped load by capacity. The error rate is a share of the requests that arrived, so it divides by what was received."
+        },
+        {
+          "id": "c",
+          "text": "71%",
+          "whyWrong": "This is the share of requests that succeed, not the share that fail. The two add up to 100%."
+        },
+        {
+          "id": "d",
+          "text": "0%",
+          "whyWrong": "This assumes load past capacity waits its turn and eventually succeeds. Past capacity a queue only grows; this game turns the excess away at once, and those requests fail."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "It serves 200/s and drops the other 80/s. The error rate is dropped ÷ received: 80 ÷ 280 = 29%. Dividing by capacity instead overstates it, because the failures are a share of the requests that arrived.",
+    "tags": [
+      "error-share"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-error-share",
+      "params": {
+        "capacityRps": 200,
+        "loadPercent": 140
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-error-share-0010",
+    "conceptId": "latency-and-throughput",
+    "depth": 2,
+    "prompt": "A component that can serve 120/s receives 180/s at peak. In this game, what share of the requests it receives fail?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "33%"
+        },
+        {
+          "id": "b",
+          "text": "50%",
+          "whyWrong": "This divides the dropped load by capacity. The error rate is a share of the requests that arrived, so it divides by what was received."
+        },
+        {
+          "id": "c",
+          "text": "67%",
+          "whyWrong": "This is the share of requests that succeed, not the share that fail. The two add up to 100%."
+        },
+        {
+          "id": "d",
+          "text": "0%",
+          "whyWrong": "This assumes load past capacity waits its turn and eventually succeeds. Past capacity a queue only grows; this game turns the excess away at once, and those requests fail."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "It serves 120/s and drops the other 60/s. The error rate is dropped ÷ received: 60 ÷ 180 = 33%. Dividing by capacity instead overstates it, because the failures are a share of the requests that arrived.",
+    "tags": [
+      "error-share"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-error-share",
+      "params": {
+        "capacityRps": 120,
+        "loadPercent": 150
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-error-share-0011",
+    "conceptId": "latency-and-throughput",
+    "depth": 2,
+    "prompt": "A component that can serve 250/s receives 400/s at peak. In this game, what share of the requests it receives fail?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "38%"
+        },
+        {
+          "id": "b",
+          "text": "60%",
+          "whyWrong": "This divides the dropped load by capacity. The error rate is a share of the requests that arrived, so it divides by what was received."
+        },
+        {
+          "id": "c",
+          "text": "63%",
+          "whyWrong": "This is the share of requests that succeed, not the share that fail. The two add up to 100%."
+        },
+        {
+          "id": "d",
+          "text": "0%",
+          "whyWrong": "This assumes load past capacity waits its turn and eventually succeeds. Past capacity a queue only grows; this game turns the excess away at once, and those requests fail."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "It serves 250/s and drops the other 150/s. The error rate is dropped ÷ received: 150 ÷ 400 = 38%. Dividing by capacity instead overstates it, because the failures are a share of the requests that arrived.",
+    "tags": [
+      "error-share"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-error-share",
+      "params": {
+        "capacityRps": 250,
+        "loadPercent": 160
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-error-share-0012",
+    "conceptId": "latency-and-throughput",
+    "depth": 2,
+    "prompt": "A component that can serve 300/s receives 480/s at peak. In this game, what share of the requests it receives fail?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "38%"
+        },
+        {
+          "id": "b",
+          "text": "60%",
+          "whyWrong": "This divides the dropped load by capacity. The error rate is a share of the requests that arrived, so it divides by what was received."
+        },
+        {
+          "id": "c",
+          "text": "63%",
+          "whyWrong": "This is the share of requests that succeed, not the share that fail. The two add up to 100%."
+        },
+        {
+          "id": "d",
+          "text": "0%",
+          "whyWrong": "This assumes load past capacity waits its turn and eventually succeeds. Past capacity a queue only grows; this game turns the excess away at once, and those requests fail."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "It serves 300/s and drops the other 180/s. The error rate is dropped ÷ received: 180 ÷ 480 = 38%. Dividing by capacity instead overstates it, because the failures are a share of the requests that arrived.",
+    "tags": [
+      "error-share"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-error-share",
+      "params": {
+        "capacityRps": 300,
+        "loadPercent": 160
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-error-share-0013",
+    "conceptId": "latency-and-throughput",
+    "depth": 2,
+    "prompt": "A component that can serve 300/s receives 525/s at peak. In this game, what share of the requests it receives fail?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "43%"
+        },
+        {
+          "id": "b",
+          "text": "75%",
+          "whyWrong": "This divides the dropped load by capacity. The error rate is a share of the requests that arrived, so it divides by what was received."
+        },
+        {
+          "id": "c",
+          "text": "57%",
+          "whyWrong": "This is the share of requests that succeed, not the share that fail. The two add up to 100%."
+        },
+        {
+          "id": "d",
+          "text": "0%",
+          "whyWrong": "This assumes load past capacity waits its turn and eventually succeeds. Past capacity a queue only grows; this game turns the excess away at once, and those requests fail."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "It serves 300/s and drops the other 225/s. The error rate is dropped ÷ received: 225 ÷ 525 = 43%. Dividing by capacity instead overstates it, because the failures are a share of the requests that arrived.",
+    "tags": [
+      "error-share"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-error-share",
+      "params": {
+        "capacityRps": 300,
+        "loadPercent": 175
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-error-share-0014",
+    "conceptId": "latency-and-throughput",
+    "depth": 2,
+    "prompt": "A component that can serve 400/s receives 800/s at peak. In this game, what share of the requests it receives fail?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "50%"
+        },
+        {
+          "id": "b",
+          "text": "100%",
+          "whyWrong": "This divides the dropped load by capacity. The error rate is a share of the requests that arrived, so it divides by what was received."
+        },
+        {
+          "id": "c",
+          "text": "0%",
+          "whyWrong": "This assumes load past capacity waits its turn and eventually succeeds. Past capacity a queue only grows; this game turns the excess away at once, and those requests fail."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "It serves 400/s and drops the other 400/s. The error rate is dropped ÷ received: 400 ÷ 800 = 50%. Dividing by capacity instead overstates it, because the failures are a share of the requests that arrived.",
+    "tags": [
+      "error-share"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-error-share",
+      "params": {
+        "capacityRps": 400,
+        "loadPercent": 200
+      }
+    }
+  },
+  {
+    "id": "q-latency-and-throughput-d-throughput-error-share-0015",
+    "conceptId": "latency-and-throughput",
+    "depth": 2,
+    "prompt": "A component that can serve 120/s receives 192/s at peak. In this game, what share of the requests it receives fail?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "38%"
+        },
+        {
+          "id": "b",
+          "text": "60%",
+          "whyWrong": "This divides the dropped load by capacity. The error rate is a share of the requests that arrived, so it divides by what was received."
+        },
+        {
+          "id": "c",
+          "text": "63%",
+          "whyWrong": "This is the share of requests that succeed, not the share that fail. The two add up to 100%."
+        },
+        {
+          "id": "d",
+          "text": "0%",
+          "whyWrong": "This assumes load past capacity waits its turn and eventually succeeds. Past capacity a queue only grows; this game turns the excess away at once, and those requests fail."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "It serves 120/s and drops the other 72/s. The error rate is dropped ÷ received: 72 ÷ 192 = 38%. Dividing by capacity instead overstates it, because the failures are a share of the requests that arrived.",
+    "tags": [
+      "error-share"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-17",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-17-latency-and-throughput",
+      "templateId": "tpl-throughput-error-share",
+      "params": {
+        "capacityRps": 120,
+        "loadPercent": 160
+      }
+    }
+  }
+]

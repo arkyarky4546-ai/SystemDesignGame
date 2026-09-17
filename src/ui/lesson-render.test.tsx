@@ -1,19 +1,20 @@
 // @vitest-environment jsdom
-import { cleanup, render, screen } from '@testing-library/react'
+import { cleanup, render, screen, within } from '@testing-library/react'
 import { afterEach, describe, expect, it } from 'vitest'
 import { CONCEPTS } from '../content/concepts'
 import { CONCEPT_IDS } from '../content/schema'
 import { CONTENT_CATALOG } from '../state/catalog'
+import { LESSON } from './screens/learning/learning-copy'
 import { LessonScreen } from './screens/learning/LessonScreen'
 
 afterEach(cleanup)
 
-// M5's "both sample concepts validate and render". Validation is `content/validate.test.ts`;
-// this is the other half — every block kind a lesson uses has a renderer, and nothing a
-// lesson carries is silently dropped on the way to the screen.
-//
-// `percentiles` has no in-game route yet: it gates nothing, so no inspector names it. The
-// library that reaches every concept is M6's.
+/** The concepts whose check opens component sizes: app servers, then databases (ADR-0040). */
+const OPENS_SOMETHING: readonly string[] = ['capacity-and-utilization', 'vertical-scaling']
+
+// Every concept validates and renders. Validation is `content/validate.test.ts`; this is the
+// other half — every block kind a lesson uses has a renderer, and nothing a lesson carries is
+// silently dropped on the way to the screen.
 
 describe.each(CONCEPT_IDS)('the %s lesson renders', (conceptId) => {
   const concept = CONCEPTS[conceptId]
@@ -55,5 +56,40 @@ describe.each(CONCEPT_IDS)('the %s lesson renders', (conceptId) => {
     render(<LessonScreen conceptId={conceptId} catalog={CONTENT_CATALOG} onTakeCheck={() => {}} onClose={() => {}} />)
     expect(screen.getByRole('button', { name: 'Take the check' })).toBeTruthy()
     expect(screen.getByRole('button', { name: 'Back to canvas' })).toBeTruthy()
+  })
+
+  it('promises an unlock under the check only when passing it opens something', () => {
+    render(<LessonScreen conceptId={conceptId} catalog={CONTENT_CATALOG} onTakeCheck={() => {}} onClose={() => {}} />)
+    expect(screen.getByText(LESSON.checkNote(concept.check.drawCount, OPENS_SOMETHING.includes(conceptId)))).toBeTruthy()
+  })
+})
+
+describe.each(CONCEPT_IDS.filter((id) => CONCEPTS[id].lesson.deeper))('the %s lesson’s go-deeper section', (conceptId) => {
+  it('is collapsed, says what is inside, and holds every block', () => {
+    const deeper = CONCEPTS[conceptId].lesson.deeper
+    if (!deeper) throw new Error('expected a deeper section')
+    const { container } = render(
+      <LessonScreen conceptId={conceptId} catalog={CONTENT_CATALOG} onTakeCheck={() => {}} onClose={() => {}} />,
+    )
+
+    const details = container.querySelector('details')
+    const summary = details?.querySelector('summary')
+    if (!details || !summary) throw new Error('expected a collapsed section with a summary')
+    expect(details.open).toBe(false)
+    expect(within(summary).getByText(deeper.summary, { exact: false })).toBeTruthy()
+    for (const block of deeper.blocks) {
+      if (block.kind === 'prose' || block.kind === 'callout') expect(within(details).getByText(block.text)).toBeTruthy()
+      if (block.kind === 'formula') expect(within(details).getByText(block.formula)).toBeTruthy()
+    }
+  })
+})
+
+describe('the go-deeper sections', () => {
+  it('exist on the three lessons M7 wrote, where the prose ran past what everyone needs', () => {
+    expect(CONCEPT_IDS.filter((id) => CONCEPTS[id].lesson.deeper)).toEqual([
+      'client-server-basics',
+      'latency-and-throughput',
+      'vertical-scaling',
+    ])
   })
 })

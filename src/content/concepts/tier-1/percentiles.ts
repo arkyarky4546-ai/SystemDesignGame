@@ -3,19 +3,18 @@ import type { Concept } from '../../schema'
 /**
  * Tier 1 (04-CURRICULUM): after this the player can explain why p99 matters more than the
  * mean to a user. The curriculum gives it the dashboard's p99 panel, which doesn't exist as
- * a gated thing yet, so it unlocks nothing in M5.
+ * a gated thing yet, so it unlocks nothing.
  *
  * Every claim it makes about the model comes from 02-SIMULATION §5.2 and §6, ADR-0009 (the
  * summed per-hop p99) and ADR-0022 (the quality multiplier's cap). Its arithmetic is
- * recomputed against the engine in `src/state/content-accuracy.test.ts`. Its prerequisite,
- * `latency-and-throughput`, doesn't exist yet and is waived until M7 (ADR-0040).
+ * recomputed against the engine in `src/state/content-accuracy.test.ts`.
  */
 export const percentiles = {
   id: 'percentiles',
   tier: 1,
   title: 'Why the average lies',
   oneLiner: 'The number that describes your service is not the number your users are complaining about.',
-  prerequisites: [],
+  prerequisites: ['latency-and-throughput'],
   unlocks: { components: [] },
   lesson: {
     core: [

@@ -4,9 +4,12 @@ export const appServer = {
   kind: 'app-server',
   displayName: 'App server',
   placeable: true,
-  // Placeholder figures until M7 (ADR-0033): four steps spanning Act 1's 2.5–250 rps peak.
-  // Everything above Small waits on `capacity-and-utilization`: the curriculum gives server
-  // tier upgrades to that concept, and databases to `vertical-scaling` later (ADR-0040).
+  // Four steps spanning Act 1's 2.5–250 rps peak (ADR-0033). Capacity rises fifty-fold while
+  // service time barely moves, which is what `vertical-scaling` teaches, and its lesson is
+  // tested against these figures. The prices are M9's to tune with the balance harness
+  // (ADR-0048). Everything above Small waits on `capacity-and-utilization`: the curriculum
+  // gives server tier upgrades to that concept, and databases to `vertical-scaling`
+  // (ADR-0040).
   tiers: [
     { label: 'Small', capacityRps: 10, serviceTimeMs: 12, setupCostCents: 100_00, runningCostPerTurnCents: 20_00 },
     { label: 'Medium', capacityRps: 40, serviceTimeMs: 11, setupCostCents: 400_00, runningCostPerTurnCents: 50_00, gatedBy: 'capacity-and-utilization' },

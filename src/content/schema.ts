@@ -70,8 +70,19 @@ export type ComponentDef = {
 // (ADR-0040). M5 replaces them with Zod schemas and adds the blocks, slot composition and
 // question kinds nothing renders yet.
 
-/** Every concept in the game. Ids are permanent: saves key unlocks and check history by them. */
-export const CONCEPT_IDS = ['capacity-and-utilization', 'percentiles'] as const
+/**
+ * Every concept in the game, in curriculum order, which is the order the library lists them.
+ * Ids are permanent: saves key unlocks and check history by them. Tier 1's
+ * `single-point-of-failure` is not here yet: it needs a failure model the game doesn't have
+ * (ADR-0047).
+ */
+export const CONCEPT_IDS = [
+  'client-server-basics',
+  'latency-and-throughput',
+  'capacity-and-utilization',
+  'percentiles',
+  'vertical-scaling',
+] as const
 
 export type ConceptId = (typeof CONCEPT_IDS)[number]
 
@@ -402,6 +413,6 @@ export type Demo = {
 }
 
 /** Every demo in the game. Adding an id fails typecheck until `DEMOS` has one. */
-export const DEMO_IDS = ['saturation'] as const
+export const DEMO_IDS = ['saturation', 'vertical-scaling'] as const
 
 export type DemoId = (typeof DEMO_IDS)[number]
