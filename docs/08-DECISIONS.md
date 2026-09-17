@@ -1703,3 +1703,95 @@ failure mode the check exists to catch.
 - M5's validator reports the incident check as not applicable rather than passing it silently.
 - M8 cannot be marked complete without resolving this, since its acceptance criterion requires
   `the-first-outage`'s good responses to verifiably pass.
+
+---
+
+## ADR-0044 — The derived bank: where it is generated, and two §7 rules that needed adjusting
+2026-09-16 · Status: accepted · Extends ADR-0042 · Adds a dependency
+
+**Context.** M5a builds the derived-question pipeline: templates, a seeded sampler, frozen
+`derived.json` per concept, a bank manifest, and `tools/screen-questions.ts` implementing every
+row of `09-QUESTION-BANK.md` §7. Three of those rows turned out to be wrong for derived
+questions in ways worth recording, and the generator needs to write files, which the project
+could not type.
+
+**Decision.**
+
+- **`@types/node` is added as a devDependency,** with `"types": ["vite/client", "node"]`. The
+  generator writes `derived.json` and `bank-manifest.json`; §4.2 requires those files to be
+  committed, so there is no version of this that doesn't touch the filesystem. It is
+  types-only and never reaches the bundle.
+  - To keep it contained, eslint now refuses `node:*` imports from anywhere under `src/`. Flat
+    config *replaces* a rule rather than merging it, so the ban is repeated in each layer's
+    block; a probe in each of the four layers confirms it fires.
+
+- **Generation and screening live in `tools/bank.ts`,** which imports `src/engine` and
+  `src/content` directly and is therefore only ever loaded through Vite's SSR runner or
+  Vitest, never plain Node. The entry points are thin: they boot Vite, load the module, and do
+  the file I/O. That is what lets the same functions be unit-tested against planted fixtures.
+
+- **`defineTemplate` infers a template's parameter names** from its `params` list, so `build`
+  and every distractor read `params.meanRps` as a number. Without it, `Params` is an index
+  signature and every read is a maybe-number under `noUncheckedIndexedAccess` — which would
+  put `?? 0` into content a human has to review, and a silent zero is exactly the kind of
+  thing review is supposed to catch.
+
+- **`Provenance` gains `templateId` and `params`,** extending §10. Without the parameters a
+  frozen instance was sampled with, §7's most important row — recompute the answer through the
+  engine and assert equality — cannot be run on a committed bank at all. With them, a template
+  change that silently moves an answer fails `npm run screen`, and `npm run build` runs it.
+
+- **The bank's timestamp is a constant, not today's date.** Regenerating an unchanged bank has
+  to produce byte-identical output, or every run churns the diff and §4.2's "these 40 questions
+  changed" review signal is lost. `BANK_STAMP` is bumped by hand when a batch is genuinely
+  regenerated.
+
+- **Three §7 rules were adjusted, each for a reason that showed up in the first real batch.**
+  1. *Distractor distinctness, numeric half.* Applied only when an option is a number with a
+     unit and nothing else. Reading the digits out of prose flagged "Requests received ÷
+     capacity" against "Capacity ÷ requests received" as duplicates — a pair that is the whole
+     point of the question.
+  2. *Distractor distinctness, text half.* Compares three-word shingles rather than word sets.
+     Two options that are each other reversed have identical word sets and a Jaccard of 1.0,
+     and they are a good pair, not a duplicate.
+  3. *Near-duplicate detection.* Skips two instances of the same template. Sharing a prompt
+     skeleton is what a template is; the generator separately refuses to freeze two instances
+     with identical parameters. Left as written, the rule flagged 36 pairs and would have
+     buried the one real duplicate a reviewer needs to see.
+  4. *Answer leakage.* Skips questions whose options are all bare numbers. "184 ms" is longer
+     than "40 ms" because the number is bigger, not because the question gives itself away;
+     the unadjusted rule reported 88% leakage on a clean batch.
+
+- **§5's hard composition rules land now, not in M6.** Never more than two derived in a check,
+  never fewer than two authored, no two from one template, no two sharing more than one tag.
+  Derived questions enter the pool in M5a, so leaving the draw uncontrolled for a milestone
+  would have let a check become pure arithmetic drill. The tag and template rules relax, in
+  that order, when a small pool can't satisfy everything; the derived and authored counts never
+  do. M6 adds §5's full slot table on top.
+
+- **Two registries.** `questions/index.ts` keeps one dynamic loader per concept, which is what
+  code-splits the bank. `questions/authored.ts` and `questions/templates.ts` are flat
+  build-time registries for the generator, the screener and their tests, and never reach the
+  browser.
+
+- **`npm run build` now runs the validator and the screener** before Vite. A corrupted derived
+  answer fails the build, which is M5a's acceptance criterion.
+
+**Alternatives.**
+- Hand-written ambient declarations for `node:fs` and `node:path`: no dependency, but a
+  duplicated and drifting copy of types that already exist.
+- Printing the bank to stdout and redirecting in the npm script: breaks byte-identity on
+  Windows, where the shell rewrites line endings, and doesn't scale past one file.
+- Generating at install time instead of committing: ADR-0013 already settled this — a template
+  change has to be visible in review as a diff.
+- Storing derived questions' answers without their parameters: makes §7's hard row
+  unimplementable, which is the row that makes derived questions worth having.
+
+**Consequences.**
+- `tools/` may import `src/`; `src/` may import neither `tools/` nor Node. Lint enforces the
+  second half; the first is a convention held by the tools being loaded through Vite.
+- Regenerating the bank after changing a template rewrites `derived.json` and every affected
+  id keeps its number, because ids are positional within a template. Removing a template
+  orphans its ids in the manifest, which is correct: they were issued and are never reused.
+- The first batch is 48 derived questions from three templates against 15 authored. A check
+  can therefore draw at most two of them, per §5.

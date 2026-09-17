@@ -226,7 +226,7 @@ and a hand-written `percentiles`.
 
 ---
 
-## [ ] M5a — Question generator and screener
+## [x] M5a — Question generator and screener
 
 **Read:** `09-QUESTION-BANK.md` §2, §4, §7
 
