@@ -1,5 +1,5 @@
 import { COMPONENT_DEFS } from '../content/components'
-import { COMPONENT_KINDS, type ComponentKind, type ConceptId } from '../content/schema'
+import { COMPONENT_KINDS, type ComponentKind, type ConceptId, type GateConceptId } from '../content/schema'
 import { hasPassed, type Knowledge } from '../engine'
 
 // Which component sizes a player has earned (00-GAME-DESIGN §4). Components are locked
@@ -44,6 +44,37 @@ export function lockedTiers(knowledge: Knowledge, kind: ComponentKind): readonly
  */
 export function nextConceptFor(knowledge: Knowledge, kind: ComponentKind): ConceptId | null {
   return lockedTiers(knowledge, kind)[0]?.gatedBy ?? null
+}
+
+/**
+ * The most instances of this component the player may run (ADR-0050). One until a concept
+ * opens more: `single-point-of-failure` opens the second — N+1 — and `horizontal-scaling`
+ * lifts the cap. A gate naming a concept that isn't written yet can never be passed, so it
+ * stays shut and the cap stays where it was.
+ */
+export function maxReplicas(knowledge: Knowledge, kind: ComponentKind): number {
+  let cap = 1
+  for (const gate of COMPONENT_DEFS[kind].replicaGates ?? []) {
+    if (!hasPassed(knowledge, gate.gatedBy)) continue
+    cap = gate.opens.kind === 'uncapped' ? Infinity : Math.max(cap, gate.opens.replicas)
+  }
+  return cap
+}
+
+/**
+ * The concept that would open one more instance of this component, or null when the cap is
+ * already lifted or nothing lifts it. Named by the inspector beside the instance count.
+ */
+export function nextReplicaConceptFor(knowledge: Knowledge, kind: ComponentKind): GateConceptId | null {
+  const cap = maxReplicas(knowledge, kind)
+  if (cap === Infinity) return null
+  const gates = COMPONENT_DEFS[kind].replicaGates ?? []
+  const shut = gates.filter((gate) => !hasPassed(knowledge, gate.gatedBy))
+  // The gate that opens the fewest instances above today's cap is the next one to earn.
+  const next = shut
+    .filter((gate) => gate.opens.kind === 'uncapped' || gate.opens.replicas > cap)
+    .sort((a, b) => (a.opens.kind === 'uncapped' ? Infinity : a.opens.replicas) - (b.opens.kind === 'uncapped' ? Infinity : b.opens.replicas))
+  return next[0]?.gatedBy ?? null
 }
 
 /** One component size a concept opens, for naming what a pass just unlocked. */

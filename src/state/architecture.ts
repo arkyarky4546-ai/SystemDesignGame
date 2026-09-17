@@ -29,6 +29,8 @@ export type EditRefusal =
   | { readonly kind: 'fixed-component'; readonly nodeId: NodeId }
   | { readonly kind: 'not-placeable'; readonly componentKind: ComponentKind }
   | { readonly kind: 'invalid-tier'; readonly nodeId: NodeId; readonly tier: number }
+  /** More instances than the player has earned, or than the component supports (ADR-0050). */
+  | { readonly kind: 'invalid-replicas'; readonly nodeId: NodeId; readonly replicas: number; readonly cap: number }
   | { readonly kind: 'connection-refused'; readonly refusal: ConnectionRefusal }
 
 export type Edit<T = Architecture> = Result<T, EditRefusal>
@@ -157,6 +159,20 @@ export function setTier(architecture: Architecture, nodeId: NodeId, tier: number
     return refuse({ kind: 'invalid-tier', nodeId, tier })
   }
   return updateNode(architecture, nodeId, (current) => ({ ...current, tier }))
+}
+
+/**
+ * Sets how many instances a node runs, 1..`cap`. `cap` is what the player has earned, from
+ * `maxReplicas` — the caller passes it so this stays a pure edit over the architecture and
+ * knowledge stays in the UI layer (02-SIMULATION §5.7).
+ */
+export function setReplicas(architecture: Architecture, nodeId: NodeId, replicas: number, cap: number): Edit {
+  const node = findNode(architecture, nodeId)
+  if (!node) return refuse({ kind: 'unknown-node', nodeId })
+  if (!Number.isInteger(replicas) || replicas < 1 || replicas > cap) {
+    return refuse({ kind: 'invalid-replicas', nodeId, replicas, cap })
+  }
+  return updateNode(architecture, nodeId, (current) => ({ ...current, replicas }))
 }
 
 function updateNode(

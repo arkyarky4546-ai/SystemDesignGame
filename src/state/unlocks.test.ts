@@ -1,11 +1,13 @@
 import { describe, expect, it } from 'vitest'
 import { COMPONENT_DEFS } from '../content/components'
-import { recordCheckAttempt, type ComponentNode, type Knowledge, type RunState } from '../engine'
+import { COMPONENT_KINDS, CONCEPT_IDS, PLANNED_CONCEPT_IDS, PLANNED_CONCEPT_TITLES } from '../content/schema'
+import { recordCheckAttempt, type Architecture, type ComponentNode, type Knowledge, type RunState } from '../engine'
+import { setReplicas } from './architecture'
 import { CONTENT_CATALOG } from './catalog'
-import { SAVE_VERSION, createSave, saveKey, serializeSave, type SaveFile } from './save'
+import { MIGRATIONS, SAVE_VERSION, createSave, saveKey, serializeSave, type SaveFile } from './save'
 import { createGameStore } from './store'
 import { FIXED_NOW, memoryStorage } from './test-helpers'
-import { isTierUnlocked, lockedTiers, nextConceptFor, tierGatedBy, tiersUnlockedBy } from './unlocks'
+import { isTierUnlocked, lockedTiers, maxReplicas, nextConceptFor, nextReplicaConceptFor, tierGatedBy, tiersUnlockedBy } from './unlocks'
 
 const NOTHING_LEARNED: Knowledge = { unlockedConcepts: [], checkHistory: [] }
 const LEARNED = recordCheckAttempt(NOTHING_LEARNED, {
@@ -91,9 +93,89 @@ describe('a run saved before the gate existed (M4b acceptance)', () => {
     expect(metrics?.capacityRps).toBe(CONTENT_CATALOG['app-server'][tier]?.capacityRps)
   })
 
-  it('does not change the save version (M4b acceptance)', () => {
-    // M4b adds concepts and questions, and touches nothing a save holds. Bumping this means
-    // a migration and a fixture, per `save.ts`.
-    expect(SAVE_VERSION).toBe(2)
+  it('did not change the save version (M4b acceptance)', () => {
+    // M4b added concepts and questions and touched nothing a save holds, so it left the
+    // version at M3's 2. M6a moved it on with a migration and a fixture, as `save.ts`
+    // requires; what M4b must never do is move it without one.
+    expect(SAVE_VERSION).toBe(MIGRATIONS.length)
+    expect(MIGRATIONS.length).toBeGreaterThanOrEqual(2)
+  })
+})
+
+describe('instance unlocks (02-SIMULATION §5.7, ADR-0050)', () => {
+  it('holds every component at one instance until a concept opens more', () => {
+    for (const kind of COMPONENT_KINDS) {
+      expect(maxReplicas(NOTHING_LEARNED, kind), kind).toBe(1)
+      expect(maxReplicas(LEARNED, kind), kind).toBe(1)
+    }
+  })
+
+  it('splits the app server’s instances between the two concepts that teach them', () => {
+    const gates = COMPONENT_DEFS['app-server'].replicaGates ?? []
+    expect(gates).toEqual([
+      { gatedBy: 'single-point-of-failure', opens: { kind: 'up-to', replicas: 2 } },
+      { gatedBy: 'horizontal-scaling', opens: { kind: 'uncapped' } },
+    ])
+    expect(nextReplicaConceptFor(NOTHING_LEARNED, 'app-server')).toBe('single-point-of-failure')
+  })
+
+  it('opens the second instance on single-point-of-failure and lifts the cap on horizontal-scaling', () => {
+    // Neither concept has a lesson yet (M7 writes the first), so this passes them directly:
+    // what is being checked is the gate, not how a check is taken.
+    const spof: Knowledge = { unlockedConcepts: ['single-point-of-failure'], checkHistory: [] }
+    expect(maxReplicas(spof, 'app-server')).toBe(2)
+    expect(nextReplicaConceptFor(spof, 'app-server')).toBe('horizontal-scaling')
+
+    const both: Knowledge = { unlockedConcepts: ['single-point-of-failure', 'horizontal-scaling'], checkHistory: [] }
+    expect(maxReplicas(both, 'app-server')).toBe(Infinity)
+    expect(nextReplicaConceptFor(both, 'app-server')).toBeNull()
+  })
+
+  it('gives the database no instance gate at all: §5.4 is Tier 3’s subject', () => {
+    expect(COMPONENT_DEFS.database.replicaGates).toBeUndefined()
+    expect(nextReplicaConceptFor(NOTHING_LEARNED, 'database')).toBeNull()
+  })
+
+  it('names a concept the curriculum promises but nobody has written yet', () => {
+    // The gate has to be nameable before its lesson exists, or the catalog can't say what
+    // opens it (ADR-0051). Nothing can pass it, so it stays shut.
+    for (const id of PLANNED_CONCEPT_IDS) {
+      expect(CONCEPT_IDS).not.toContain(id)
+      expect(PLANNED_CONCEPT_TITLES[id].length).toBeGreaterThan(0)
+    }
+  })
+})
+
+describe('setting an instance count (ADR-0050)', () => {
+  const architecture = createGameStore({ storage: memoryStorage(), catalog: CONTENT_CATALOG, now: FIXED_NOW })
+
+  function starter(): Architecture {
+    architecture.getState().startRun(2)
+    const run = architecture.getState().run
+    if (!run) throw new Error('expected a run')
+    return run.architecture
+  }
+
+  it('refuses a count above the cap, naming the cap', () => {
+    expect(setReplicas(starter(), 'app', 2, 1)).toEqual({
+      ok: false,
+      error: { kind: 'invalid-replicas', nodeId: 'app', replicas: 2, cap: 1 },
+    })
+  })
+
+  it('refuses zero, a fraction and an unknown node', () => {
+    const base = starter()
+    expect(setReplicas(base, 'app', 0, 4).ok).toBe(false)
+    expect(setReplicas(base, 'app', 1.5, 4).ok).toBe(false)
+    expect(setReplicas(base, 'nope', 2, 4)).toEqual({ ok: false, error: { kind: 'unknown-node', nodeId: 'nope' } })
+  })
+
+  it('sets the count when the cap allows it, changing nothing else', () => {
+    const base = starter()
+    const edit = setReplicas(base, 'app', 3, 4)
+    if (!edit.ok) throw new Error('expected the edit to apply')
+    expect(edit.value.nodes.find((node) => node.id === 'app')?.replicas).toBe(3)
+    expect(edit.value.edges).toEqual(base.edges)
+    expect(edit.value.nodes.find((node) => node.id === 'db')).toEqual(base.nodes.find((node) => node.id === 'db'))
   })
 })

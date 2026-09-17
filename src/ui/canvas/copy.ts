@@ -16,8 +16,12 @@ export function nodeName(architecture: Architecture, nodeId: NodeId): string {
 
 export type LoadLevel = 'unknown' | NodeStatus
 
-/** How a utilization (0..1) reads on the canvas: the engine's status, or unknown until a turn has run. */
-export function loadLevel(utilization: number | undefined): LoadLevel {
+/**
+ * How a node reads on the canvas: `failed` when every instance was down, otherwise the
+ * engine's status for its utilization (0..1), or unknown until a turn has run.
+ */
+export function loadLevel(utilization: number | undefined, failed = false): LoadLevel {
+  if (failed) return 'failed'
   return utilization === undefined ? 'unknown' : nodeStatus(utilization)
 }
 
@@ -58,6 +62,10 @@ export function describeEditRefusal(refusal: EditRefusal, architecture: Architec
       return `${COMPONENT_DEFS[refusal.componentKind].displayName} is always present and can’t be added.`
     case 'invalid-tier':
       return 'That size doesn’t exist for this component.'
+    case 'invalid-replicas':
+      return refusal.cap <= 1
+        ? `${nodeName(architecture, refusal.nodeId)} runs one instance. Running more is something you haven’t learned yet.`
+        : `${nodeName(architecture, refusal.nodeId)} can run between 1 and ${refusal.cap} instances.`
     case 'connection-refused':
       return refusal.refusal.kind === 'kinds' ? refusal.refusal.reason : 'That connection isn’t allowed.'
   }
