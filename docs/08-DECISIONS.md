@@ -1928,3 +1928,55 @@ the layer rule, and one ran into what `03-CONTENT-SCHEMA.md` §7 actually asks f
 - The entry chunk still contains no questions: 142 KB gzipped against M10's 200 KB budget,
   with each concept's authored and derived questions in their own chunks. A test asserts that
   no chunk holds two concepts' questions.
+
+---
+
+## ADR-0047 — Tier 1's sixth concept needs a failure model no milestone builds
+2026-09-16 · Status: open, for the human · Blocks part of M7, M7b and M10
+
+**Context.** `04-CURRICULUM.md` Tier 1 ends with `single-point-of-failure` — "one of everything
+is zero of something" — whose stated outcome is "identify every SPOF in an architecture on
+sight". M7 is meant to write its lesson.
+
+Two things it depends on do not exist, and no milestone in `06-ROADMAP.md` adds them:
+
+1. **Nothing ever fails.** `02-SIMULATION.md` §5.7 specifies per-node failure, outage duration
+   and recovery, but M1 deferred it (`resolve.ts`: "Failures aren't modeled yet") and no later
+   milestone picks it up. `ComponentTier` has no `failureRatePerTurn`, and `NodeStatus` has no
+   `failed`.
+2. **Redundancy can't be built.** The resolver refuses any node with `replicas > 1`, because
+   §5.4 gives database replicas different semantics from multiplying capacity and M1 chose not
+   to resolve them wrongly. So the fix a SPOF lesson teaches — add a second one — is not a move
+   the player can make.
+
+Writing the lesson anyway would break CLAUDE.md's first rule. It would be accurate about
+systems and inaccurate about this game, and it would teach a remedy the game refuses.
+
+M8 needs the same thing: `SimInjection` includes `node-failure`, and `the-first-outage` is
+about a single server saturating.
+
+**Options.**
+1. **Add §5.7's single-node failure before M7's sixth lesson.** The plumbing is half there:
+   `nodeCapacityRps` already takes a `healthFactor`, and drawing failures in `simulateTurn`
+   rather than `simulateTick` keeps the resolver pure and every determinism test intact. It
+   needs `failureRatePerTurn` on `ComponentTier`, outage and recovery constants in `BALANCE`,
+   and a `failed` node status. It does not fix redundancy.
+2. **Add app-server replicas as well.** For an app server, replicas multiply capacity and
+   nothing else, which §5.2 already describes; the hard case §5.4 warns about is the database.
+   Allowing `replicas > 1` for app servers only would make N+1 buildable and the lesson
+   teachable, and is what Tier 2's `horizontal-scaling` needs anyway.
+3. **Move `single-point-of-failure` out of Tier 1,** to whichever milestone adds failures, and
+   ship Tier 1 as five concepts.
+
+**Recommendation.** 1 and 2 together, as their own milestone before M7's last lesson. They are
+the same feature from two sides, M8 needs the first, and Tier 2's first concept needs the
+second. Option 3 ships a Tier 1 whose named outcome — spotting a SPOF — the game can neither
+demonstrate nor let you fix.
+
+**Consequences until it's decided.**
+- M7 can write five of Tier 1's six lessons. The sixth is not written rather than written
+  wrongly.
+- M8's `the-first-outage` and its `node-failure` injection are blocked on the same work, on top
+  of ADR-0043's separate question about verifying an incident's good responses.
+- M10's "a fresh player can reach turn 20 without reading external instructions" is unaffected;
+  its content-review criterion is not.
