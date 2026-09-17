@@ -10,10 +10,6 @@ import type { ContentSource, ValidationReport } from '../src/content/validate'
 // it's loaded through Vite's SSR module runner — the same resolver the app builds with, and
 // no new dependency (ADR-0042).
 
-// The only thing this needs from Node, declared rather than pulling in @types/node, which
-// would be a new dependency for one field (CLAUDE.md, ADR-0042).
-declare const process: { exitCode: number | undefined }
-
 const server = await createServer({
   configFile: false,
   server: { middlewareMode: true },
