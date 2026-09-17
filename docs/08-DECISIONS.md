@@ -1503,3 +1503,92 @@ The human chose from three reward models and three orderings.
 - The curriculum's split between `capacity-and-utilization` (server tier upgrades) and
   `vertical-scaling` (component tier 1→3 upgrades) is read here as app servers first, databases
   later. The human confirms that reading at M4b's checkpoint.
+
+---
+
+## ADR-0041 — How one concept is gated, drawn, graded and paid
+2026-09-16 · Status: accepted · Extends ADR-0040
+
+**Context.** ADR-0040 settled *what* M4b builds: one concept, `capacity-and-utilization`,
+playable end to end, with the first pass paying a `BALANCE` bonus. Building it left seven
+details open, each of which M5–M7 will inherit.
+
+**Decision.**
+
+- **The gate sits on the size, not the component.** `ComponentTier` gains an optional
+  `gatedBy: ConceptId`. App server Medium, Large and Extra large name
+  `capacity-and-utilization`; Small and every database size stay open. `03-CONTENT-SCHEMA.md`
+  §5 puts `gatedBy` on `ComponentDef`, which would gate the whole component — wrong here,
+  since a new run has to be able to build *something*. M5 carries both: the component's gate
+  for kinds that arrive whole (a cache, a load balancer) and the tier's for sizes.
+  - `state/unlocks.ts` reads it. The inspector disables a locked size, marks it "locked",
+    names the concept and offers "Open the lesson".
+  - A node already at a locked size keeps it. Nothing rewrites an architecture on load, so a
+    run saved before M4b runs exactly as it did.
+
+- **`Knowledge` and `CheckAttempt` moved into `engine/types.ts`.** ADR-0040 requires the bonus
+  to come from a pure engine function, and the engine can't import `state/`. `state/save.ts`
+  re-exports both, so nothing else changed its imports. `engine/knowledge.ts` holds
+  `hasPassed`, `nextAttemptNumber`, `missCounts`, `firstPassBonusCents` and
+  `recordCheckAttempt`.
+
+- **Drawing and grading live in `state/check.ts`,** beside `state/report.ts`, because they are
+  game rules over content rather than simulation. The engine stays the simulation.
+  - Seeded from `rngForCheck(run.seed, conceptId, attemptNumber)`, so replaying an attempt asks
+    the same questions, a retake asks different ones, and two runs asking their first attempt
+    get different draws.
+  - A depth-2 question is drawn first whenever the eligible pool has one, which is
+    `03-CONTENT-SCHEMA.md` §4's "at least one depth-2 question always appears". The rest is a
+    weighted draw without replacement, each question weighted
+    `1 + misses × BALANCE.check.missedQuestionWeight`.
+  - Difficulty depths and pass thresholds are `BALANCE.check` tables, so no rule number lives
+    outside `config/`.
+
+- **Partial credit is real, and the saved `correct` stays a whole number.** A `multi` scores
+  `correct ÷ correctTotal − wrong ÷ incorrectTotal`, floored at 0, so selecting every option
+  scores nothing. The pass decision uses that exact fractional score. `CheckAttempt.correct` is
+  `count` in the save schema, so `attemptFrom` rounds the score to the nearest whole question
+  for the record. The score the player reads is the exact one.
+  - This is the one place M4b stores less than it computes. M5's schema work should widen the
+    field and migrate, rather than round forever.
+
+- **The bonus is paid at the moment of passing, and the report states it.** Cash rises as soon
+  as the check passes, so the status bar shows it immediately. The weekly report needs to say
+  where it came from, but the bonus is already inside the cash the week *started* from, so it
+  can't be derived from the turn. `ui.pendingBonusCents` accumulates it between Advances and
+  rides along on `LastTurn`. It is never saved, so a reload before advancing loses the report
+  line and never the cash.
+
+- **Questions are code-split per concept from M4b, not from M6.** `content/questions/index.ts`
+  loads each concept's pool through a dynamic `import()`, as `09-QUESTION-BANK.md` §4.2 asks.
+  It costs a few lines now and means the initial bundle never contains a question: this build
+  is 136 KB gzipped against M10's 200 KB budget, with the pool in its own 5 KB chunk.
+
+- **The lesson renders only the blocks it uses.** `Block` is `prose`, `formula` and `callout`.
+  `diagram` and `demo` need the canvas renderer and the live sim widget, which are M6's, so
+  the lesson says in prose what it would otherwise draw.
+
+**Alternatives.**
+- Gating the whole app server: a new run couldn't build anything.
+- Refusing a locked tier inside `state/architecture.ts`: it would have to know about knowledge,
+  which is a layer it doesn't have. The inspector disables the option and re-checks before
+  applying, and a save that already holds one is honoured rather than refused.
+- Whole-question scoring, with a `multi` right only on an exact match: simpler, and it throws
+  away what `partialCredit` is for. `09-QUESTION-BANK.md` §6 makes partial credit the point of
+  depth 3.
+- Adding a field to `CheckAttempt` for the fractional score: a save shape change without a
+  version bump, which is exactly the drift the migration list exists to prevent.
+- Paying the bonus at the next Advance instead: the player passes a check to afford an upgrade
+  *now*; making them run a week first defeats it.
+
+**Consequences.**
+- **Staff needs a perfect check.** At `drawCount` 5, 85% of 5 is 4.25, so Staff passes only at
+  5 of 5, and Senior at 4 of 5. That falls out of `00-GAME-DESIGN.md` §6's thresholds and
+  §3's draw count; it isn't a bug and the constants weren't bent to soften it. M9 should look
+  at it with the balance harness — either `drawCount` rises for the higher difficulties or the
+  thresholds move.
+- A concept's first pass pays once per device, not once per run, because knowledge outlives
+  runs. A second run gets the unlock and no money.
+- M4's `turn-loop` test now starts with the concept already passed, since it covers the turn
+  loop rather than the gate.
+- `CONTENT_VERSION` stays 0: concept and question ids exist now, but none has been broken.

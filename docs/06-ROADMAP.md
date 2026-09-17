@@ -168,7 +168,7 @@ now pays a one-time bonus (ADR-0040).
 
 ---
 
-## [ ] M4b — First playable concept
+## [x] M4b — First playable concept
 
 **Read:** `03-CONTENT-SCHEMA.md` §1–4, `09-QUESTION-BANK.md` §2.2, §5, §8, `04-CURRICULUM.md`
 Tier 1, `00-GAME-DESIGN.md` §4, §6, `05-UI-DESIGN.md` §6–8, `02-SIMULATION.md` §5.2, §6, ADR-0040
