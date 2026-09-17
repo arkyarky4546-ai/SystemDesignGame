@@ -74,21 +74,59 @@ export function drawCheck(options: {
   const drawn: Question[] = []
   const remaining = [...eligible]
 
-  const required = remaining.filter((question) => question.depth === BALANCE.check.requiredDepth)
-  if (required.length > 0 && options.drawCount > 0) {
-    const first = takeOne(required, weightOf, rng)
-    rng = first.rng
-    drawn.push(first.question)
-    remaining.splice(remaining.indexOf(first.question), 1)
+  const take = (from: readonly Question[]) => {
+    const picked = takeOne(from, weightOf, rng)
+    rng = picked.rng
+    drawn.push(picked.question)
+    remaining.splice(remaining.indexOf(picked.question), 1)
   }
 
+  const required = remaining.filter((question) => question.depth === BALANCE.check.requiredDepth)
+  if (required.length > 0 && options.drawCount > 0) take(required)
+
   while (drawn.length < options.drawCount && remaining.length > 0) {
-    const next = takeOne(remaining, weightOf, rng)
-    rng = next.rng
-    drawn.push(next.question)
-    remaining.splice(remaining.indexOf(next.question), 1)
+    take(allowedNext(remaining, drawn, options.drawCount))
   }
   return drawn
+}
+
+const isDerived = (question: Question) => question.provenance.origin === 'derived'
+
+/**
+ * The questions that may fill the next slot, under 09-QUESTION-BANK §5's hard rules: never
+ * more than two derived in one check, never fewer than two authored, no two from one
+ * template, and no two sharing more than one tag.
+ *
+ * The composition rules come off in order when nothing satisfies them all — tags first, then
+ * templates — so a small pool still fills the check. The derived and authored counts are the
+ * two that never come off: they are what stops a check becoming arithmetic drill.
+ */
+function allowedNext(remaining: readonly Question[], drawn: readonly Question[], drawCount: number): readonly Question[] {
+  const derived = drawn.filter(isDerived).length
+  const authored = drawn.length - derived
+  const slotsLeft = drawCount - drawn.length
+  const authoredStillNeeded = Math.max(0, BALANCE.check.minAuthored - authored)
+
+  const byClass = remaining.filter(
+    (question) => !isDerived(question) || (derived < BALANCE.check.maxDerived && slotsLeft > authoredStillNeeded),
+  )
+  const base = byClass.length > 0 ? byClass : remaining
+
+  const templates = new Set(drawn.flatMap((question) => (question.provenance.templateId ? [question.provenance.templateId] : [])))
+  const byTemplate = base.filter(
+    (question) => question.provenance.templateId === undefined || !templates.has(question.provenance.templateId),
+  )
+  const afterTemplates = byTemplate.length > 0 ? byTemplate : base
+
+  const byTags = afterTemplates.filter((question) =>
+    drawn.every((other) => sharedTags(question, other) <= BALANCE.check.maxSharedTags),
+  )
+  return byTags.length > 0 ? byTags : afterTemplates
+}
+
+function sharedTags(a: Question, b: Question): number {
+  const tags = new Set(b.tags)
+  return a.tags.filter((tag) => tags.has(tag)).length
 }
 
 /** One weighted draw from `candidates`, without removing it. The caller removes what it takes. */

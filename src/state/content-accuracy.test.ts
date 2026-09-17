@@ -299,7 +299,9 @@ describe.each(CONCEPT_IDS)('the %s authored batch (09-QUESTION-BANK §2.2, §7, 
     for (const item of concept.lesson.misconceptions) expect([...tags], `misconception ${item.tag}`).toContain(item.tag)
   })
 
-  it('loads as its own chunk, so no question is in the initial bundle', async () => {
-    expect(await loadQuestions(conceptId)).toEqual(pool)
+  it('loads as its own chunk, with the authored pool first and the frozen derived bank after', async () => {
+    const loaded = await loadQuestions(conceptId)
+    expect(loaded.slice(0, pool.length)).toEqual(pool)
+    expect(loaded.slice(pool.length).every((question) => question.provenance.origin === 'derived')).toBe(true)
   })
 })

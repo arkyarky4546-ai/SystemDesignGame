@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it } from 'vitest'
 import { BALANCE } from '../config/balance'
 import { CONCEPTS } from '../content/concepts'
-import { capacityAndUtilizationAuthored } from '../content/questions/capacity-and-utilization/authored'
+import { loadQuestions } from '../content/questions'
 import type { Question } from '../content/schema'
 import type { Knowledge, RunState } from '../engine'
 import { CONTENT_CATALOG } from '../state/catalog'
@@ -19,6 +19,8 @@ afterEach(cleanup)
 const CONCEPT = CONCEPTS['capacity-and-utilization']
 const SEED = 1
 const NOTHING_LEARNED: Knowledge = { unlockedConcepts: [], checkHistory: [] }
+// The same pool the screen loads: the authored batch plus the frozen derived bank.
+const POOL = await loadQuestions('capacity-and-utilization')
 
 function setup() {
   const store = createGameStore({ storage: memoryStorage(), catalog: CONTENT_CATALOG, now: FIXED_NOW })
@@ -51,7 +53,7 @@ async function selectAppServer(user: ReturnType<typeof userEvent.setup>) {
  */
 function drawnQuestions(attemptNumber: number, knowledge: Knowledge = NOTHING_LEARNED) {
   return drawCheck({
-    pool: capacityAndUtilizationAuthored,
+    pool: POOL,
     conceptId: CONCEPT.id,
     drawCount: CONCEPT.check.drawCount,
     difficulty: 'junior',
@@ -61,14 +63,22 @@ function drawnQuestions(attemptNumber: number, knowledge: Knowledge = NOTHING_LE
   })
 }
 
-/** Answers the question on screen, correctly or deliberately wrongly. */
-async function answer(user: ReturnType<typeof userEvent.setup>, question: Question, correctly: boolean) {
+/**
+ * Answers the question on screen, correctly or deliberately wrongly, and returns the option
+ * ids that ended up selected. A single-choice question keeps only the last click, so a wrong
+ * answer there is one option rather than all of them.
+ */
+async function answer(
+  user: ReturnType<typeof userEvent.setup>,
+  question: Question,
+  correctly: boolean,
+): Promise<readonly string[]> {
   const kind = question.kind
   if (kind.type === 'numeric') {
     const field = screen.getByRole('spinbutton')
     await user.clear(field)
     await user.type(field, String(correctly ? kind.answer : kind.answer + kind.tolerance + 1))
-    return
+    return []
   }
   const correct = kind.type === 'single' ? [kind.correctId] : [...kind.correctIds]
   const wanted = correctly ? correct : kind.options.filter((option) => !correct.includes(option.id)).map((option) => option.id)
@@ -77,6 +87,7 @@ async function answer(user: ReturnType<typeof userEvent.setup>, question: Questi
     if (!option) throw new Error(`no option ${id} on ${question.id}`)
     await user.click(screen.getByText(option.text))
   }
+  return kind.type === 'single' ? wanted.slice(-1) : wanted
 }
 
 /** Runs the whole check, answering every question the same way. Leaves the result on screen. */
@@ -160,17 +171,20 @@ describe('M4b: one playable concept', () => {
     const questions = drawnQuestions(1)
     for (const other of questions.slice(1)) expect(screen.queryByText(other.prompt)).toBeNull()
 
-    await answer(user, first, false)
+    const chosen = await answer(user, first, false)
     await user.click(screen.getByRole('button', { name: 'Check answer' }))
     expect(screen.getByText('Not quite')).toBeTruthy()
     expect(screen.getByText(first.explanation)).toBeTruthy()
 
+    // Only the option the player actually chose explains itself, not every wrong one.
     if (first.kind.type !== 'numeric') {
-      const correct = first.kind.type === 'single' ? [first.kind.correctId] : [...first.kind.correctIds]
-      const chosen = first.kind.options.filter((option) => !correct.includes(option.id))
-      for (const option of chosen) {
-        if (option.whyWrong) expect(screen.getByText(option.whyWrong)).toBeTruthy()
+      const options = first.kind.options
+      for (const option of options) {
+        if (!option.whyWrong) continue
+        const shown = screen.queryByText(option.whyWrong)
+        expect(Boolean(shown), `${option.id} whyWrong`).toBe(chosen.includes(option.id))
       }
+      expect(chosen.length).toBeGreaterThan(0)
     }
   })
 
