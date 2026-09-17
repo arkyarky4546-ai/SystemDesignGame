@@ -1,6 +1,18 @@
 import { createStore, type StoreApi } from 'zustand/vanilla'
 import type { Difficulty } from '../config/difficulty'
-import { createRun, simulateTurn, type Architecture, type PricedCatalog, type RunState, type TickError, type TurnResult } from '../engine'
+import type { ConceptId } from '../content/schema'
+import {
+  createRun,
+  nextAttemptNumber,
+  recordCheckAttempt,
+  simulateTurn,
+  type Architecture,
+  type CheckAttempt,
+  type PricedCatalog,
+  type RunState,
+  type TickError,
+  type TurnResult,
+} from '../engine'
 import {
   DEFAULT_KNOWLEDGE,
   DEFAULT_SETTINGS,
@@ -27,7 +39,17 @@ export type LastTurn = {
   readonly result: TurnResult
   /** The run before the turn: its architecture is what ran, and its figures are where deltas start. */
   readonly before: RunState
+  /**
+   * First-pass bonuses paid during the week just run, integer cents (ADR-0040). They reach
+   * cash the moment a check is passed, so the report states them rather than adding them.
+   */
+  readonly bonusCents: number
 }
+
+/** What the player is reading or taking. Never saved: a reload returns to the canvas. */
+export type LearningView =
+  | { readonly kind: 'lesson'; readonly conceptId: ConceptId }
+  | { readonly kind: 'check'; readonly conceptId: ConceptId; readonly attemptNumber: number }
 
 /** Transient state for the screens. Never saved. */
 export type UiState = {
@@ -42,6 +64,13 @@ export type UiState = {
    * before its first week shows it again.
    */
   readonly guideOpen: boolean
+  /** The lesson or check on screen instead of the canvas, or null on the canvas. */
+  readonly learning: LearningView | null
+  /**
+   * First-pass bonuses paid since the last Advance, integer cents. The next weekly report
+   * states them; a reload before advancing loses the line, never the cash (ADR-0041).
+   */
+  readonly pendingBonusCents: number
 }
 
 export type GameState = {
@@ -69,6 +98,18 @@ export type GameActions = {
   readonly dismissSaveProblem: () => void
   readonly openGuide: () => void
   readonly closeGuide: () => void
+  /** Opens a concept's lesson over the canvas. */
+  readonly openLesson: (conceptId: ConceptId) => void
+  /** Opens the next attempt at a concept's check. */
+  readonly openCheck: (conceptId: ConceptId) => void
+  /** Returns to the canvas from a lesson or check. */
+  readonly closeLearning: () => void
+  /**
+   * Records one finished attempt and pays the first-pass bonus into the run's cash
+   * (ADR-0040). Returns what was paid, in integer cents: 0 for a failed attempt, a retake
+   * after passing, or an attempt with no run to pay into.
+   */
+  readonly recordCheck: (attempt: CheckAttempt) => number
 }
 
 export type GameStore = GameState & GameActions
@@ -81,7 +122,14 @@ export type GameStoreDeps = {
   readonly now: () => Date
 }
 
-const INITIAL_UI: UiState = { lastTurn: null, turnError: null, saveProblem: null, guideOpen: false }
+const INITIAL_UI: UiState = {
+  lastTurn: null,
+  turnError: null,
+  saveProblem: null,
+  guideOpen: false,
+  learning: null,
+  pendingBonusCents: 0,
+}
 
 const isNewRun = (run: RunState | null): boolean => run !== null && run.turn === 0
 
@@ -124,7 +172,7 @@ export function createGameStore(deps: GameStoreDeps): StoreApi<GameStore> {
       startRun: (seed) => {
         set((state) => ({
           run: createRun({ seed, difficulty: state.settings.difficulty }),
-          ui: { ...state.ui, lastTurn: null, turnError: null, guideOpen: true },
+          ui: { ...state.ui, lastTurn: null, turnError: null, guideOpen: true, learning: null, pendingBonusCents: 0 },
         }))
         persist()
       },
@@ -146,7 +194,12 @@ export function createGameStore(deps: GameStoreDeps): StoreApi<GameStore> {
         }
         set((state) => ({
           run: result.value.nextRun,
-          ui: { ...state.ui, lastTurn: { result: result.value, before: run }, turnError: null },
+          ui: {
+            ...state.ui,
+            lastTurn: { result: result.value, before: run, bonusCents: state.ui.pendingBonusCents },
+            turnError: null,
+            pendingBonusCents: 0,
+          },
         }))
         persist()
       },
@@ -157,7 +210,10 @@ export function createGameStore(deps: GameStoreDeps): StoreApi<GameStore> {
       },
 
       abandonRun: () => {
-        set((state) => ({ run: null, ui: { ...state.ui, lastTurn: null, turnError: null, guideOpen: false } }))
+        set((state) => ({
+          run: null,
+          ui: { ...state.ui, lastTurn: null, turnError: null, guideOpen: false, learning: null, pendingBonusCents: 0 },
+        }))
         persist()
       },
 
@@ -183,6 +239,30 @@ export function createGameStore(deps: GameStoreDeps): StoreApi<GameStore> {
       openGuide: () => set((state) => ({ ui: { ...state.ui, guideOpen: true } })),
 
       closeGuide: () => set((state) => ({ ui: { ...state.ui, guideOpen: false } })),
+
+      openLesson: (conceptId) => set((state) => ({ ui: { ...state.ui, learning: { kind: 'lesson', conceptId } } })),
+
+      openCheck: (conceptId) => {
+        const { knowledge } = get()
+        const attemptNumber = nextAttemptNumber(knowledge, conceptId)
+        set((state) => ({ ui: { ...state.ui, learning: { kind: 'check', conceptId, attemptNumber } } }))
+      },
+
+      closeLearning: () => set((state) => ({ ui: { ...state.ui, learning: null } })),
+
+      recordCheck: (attempt) => {
+        const { run, knowledge } = get()
+        const recorded = recordCheckAttempt(knowledge, attempt)
+        // Nothing can pay a bonus with no run on. The only way to a check is from one.
+        const bonusCents = run ? recorded.bonusCents : 0
+        set((state) => ({
+          knowledge: recorded.knowledge,
+          run: run ? { ...run, cashCents: run.cashCents + bonusCents } : null,
+          ui: { ...state.ui, pendingBonusCents: state.ui.pendingBonusCents + bonusCents },
+        }))
+        persist()
+        return bonusCents
+      },
     }
   })
 }
