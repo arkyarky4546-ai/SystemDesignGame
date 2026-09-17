@@ -15,6 +15,8 @@ export const capacityAndUtilization = {
   title: 'Capacity, utilization, and the cliff',
   oneLiner: 'How close a component is to its limit decides how slow it feels, long before it runs out.',
   prerequisites: [],
+  // It opens app server sizes rather than a component kind, so the gate is on the tiers.
+  unlocks: { components: [] },
   lesson: {
     core: [
       {

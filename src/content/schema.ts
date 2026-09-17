@@ -38,6 +38,12 @@ export type ComponentTier = {
 export type ComponentDef = {
   readonly kind: ComponentKind
   readonly displayName: string
+  /**
+   * The concept that makes this kind placeable at all, or absent when it is available from
+   * the start. 03-CONTENT-SCHEMA §5 requires it; every Tier 1 kind is already on the canvas,
+   * so it stays optional until a kind arrives whole (ADR-0042).
+   */
+  readonly gatedBy?: ConceptId
   /** Whether the player can place and remove it. Ingress is where traffic arrives, so it is always present. */
   readonly placeable: boolean
   /**
@@ -65,7 +71,7 @@ export type ComponentDef = {
 // question kinds nothing renders yet.
 
 /** Every concept in the game. Ids are permanent: saves key unlocks and check history by them. */
-export const CONCEPT_IDS = ['capacity-and-utilization'] as const
+export const CONCEPT_IDS = ['capacity-and-utilization', 'percentiles'] as const
 
 export type ConceptId = (typeof CONCEPT_IDS)[number]
 
@@ -168,6 +174,12 @@ export type Concept = {
   /** Shown on locked components. One sentence, no jargon. */
   readonly oneLiner: string
   readonly prerequisites: readonly ConceptId[]
+  /**
+   * What passing the check makes available (03-CONTENT-SCHEMA §1). Whole component kinds go
+   * here; individual sizes are gated on `ComponentTier.gatedBy` instead, so a kind whose
+   * smallest size is free can still have larger ones locked (ADR-0041).
+   */
+  readonly unlocks: { readonly components: readonly ComponentKind[] }
   readonly lesson: Lesson
   readonly check: Check
   readonly reviewStatus: ReviewStatus

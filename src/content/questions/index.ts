@@ -8,8 +8,17 @@ import type { ConceptId, Question } from '../schema'
 const LOADERS: Readonly<Record<ConceptId, () => Promise<readonly Question[]>>> = {
   'capacity-and-utilization': async () =>
     (await import('./capacity-and-utilization/authored')).capacityAndUtilizationAuthored,
+  percentiles: async () => (await import('./percentiles/authored')).percentilesAuthored,
 }
 
-export function loadQuestions(conceptId: ConceptId): Promise<readonly Question[]> {
-  return LOADERS[conceptId]()
+export async function loadQuestions(conceptId: ConceptId): Promise<readonly Question[]> {
+  const pool = await LOADERS[conceptId]()
+  // In dev only, so authoring mistakes surface as you write them. Production trusts the
+  // validator, which runs in CI and in the definition of done (ADR-0042).
+  if (import.meta.env.DEV) {
+    const { QuestionSchema, parseContent } = await import('../parse')
+    const problems = pool.flatMap((question) => parseContent(QuestionSchema, question, `questions/${conceptId}`))
+    if (problems.length > 0) throw new Error(problems.map((problem) => problem.message).join('\n'))
+  }
+  return pool
 }
