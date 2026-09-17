@@ -5,7 +5,7 @@ import { PERSISTENCE } from '../config/persistence'
 import { reputationModifier, usersForMeanRps } from './economy'
 import { rngForTurn } from './rng'
 import { createRun, grownMeanRps, simulateTurn } from './run'
-import { TEST_CATALOG, deepFreeze, playHeadless, unwrap } from './test-helpers'
+import { NO_FAILURES, TEST_CATALOG, deepFreeze, playHeadless, unwrap } from './test-helpers'
 import type { ComponentNode, RunCheckpoint, RunState, TurnInput, TurnResult } from './types'
 
 const SEEDS = [1, 2, 3, 20260914, 0xdeadbeef]
@@ -55,7 +55,7 @@ describe('simulateTurn', () => {
       ok: false,
       error: { kind: 'no-datastore-path', requestClasses: ['static-read', 'dynamic-read', 'write'] },
     })
-    const unpriced = { ...JUNIOR, catalog: { ...TEST_CATALOG, database: [{ capacityRps: 80, serviceTimeMs: 6, setupCostCents: -1, runningCostPerTurnCents: 0 }] } }
+    const unpriced = { ...JUNIOR, catalog: { ...TEST_CATALOG, database: [{ capacityRps: 80, serviceTimeMs: 6, setupCostCents: -1, runningCostPerTurnCents: 0, failureRatePerTurn: 0 }] } }
     expect(simulateTurn(run, unpriced)).toEqual({ ok: false, error: { kind: 'invalid-tier-costs', nodeId: 'db' } })
   })
 
@@ -123,10 +123,13 @@ describe('traffic growth (02-SIMULATION §3)', () => {
   })
 })
 
+// M2's subject is the run loop's arithmetic over 20 turns, so it runs on hardware that
+// doesn't break. Failures are M6a's, and `failures.test.ts` plays the same 20 turns with
+// them enabled — including the finding that one early outage ends a run's growth (ADR-0053).
 describe('a headless run (M2 acceptance)', () => {
   describe.each(DIFFICULTIES)('on %s', (difficulty) => {
     it.each(SEEDS)('advances 20 turns with plausible numbers from seed %i', (seed) => {
-      const results = playHeadless({ seed, difficulty, turns: 20 })
+      const results = playHeadless({ seed, difficulty, turns: 20, catalog: NO_FAILURES })
       expect(results).toHaveLength(20)
 
       let previous = createRun({ seed, difficulty })
@@ -269,9 +272,9 @@ describe('history (01-ARCHITECTURE §7)', () => {
 })
 
 function checkpointOf(run: RunCheckpoint): RunCheckpoint {
-  const { cashCents, reputation, workload, architecture, builtArchitecture, act, bailoutAvailable, growthPenaltyTurns } =
+  const { cashCents, reputation, workload, architecture, builtArchitecture, act, bailoutAvailable, growthPenaltyTurns, outages } =
     run
-  return { cashCents, reputation, workload, architecture, builtArchitecture, act, bailoutAvailable, growthPenaltyTurns }
+  return { cashCents, reputation, workload, architecture, builtArchitecture, act, bailoutAvailable, growthPenaltyTurns, outages }
 }
 
 function growthBounds(previous: RunState, difficulty: TurnInput['difficulty']): [number, number] {

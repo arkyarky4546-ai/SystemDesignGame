@@ -7,6 +7,7 @@ import type {
   InputError,
   NodeId,
   NodeMetrics,
+  NodeOutage,
   NodeStatus,
   ResourceNode,
   Result,
@@ -21,8 +22,8 @@ import type {
 // bit-identical on every JavaScript engine.
 const LN_100 = 2 * Math.LN10
 
-// Failures aren't modeled yet (02-SIMULATION §5.7), so every node runs at full capacity.
-const FULL_HEALTH = 1
+// A node with every instance down. Its capacity is 0, so nothing it receives is served.
+const NO_HEALTH = 0
 
 const WORKLOAD_FIELDS: readonly (keyof Workload)[] = [
   'meanRps',
@@ -79,12 +80,22 @@ export function p99LatencyMs(meanMs: number): number {
 
 /**
  * A node's load band from its utilization u (0..1): warning and saturated start at the
- * `BALANCE.status` thresholds, inclusive (05-UI-DESIGN §2).
+ * `BALANCE.status` thresholds, inclusive (05-UI-DESIGN §2). A node with no instance left
+ * serving is `failed` instead, which the resolver applies before this is consulted.
  */
 export function nodeStatus(u: number): NodeStatus {
   if (u >= BALANCE.status.saturatedUtilization) return 'saturated'
   if (u >= BALANCE.status.warningUtilization) return 'warning'
   return 'healthy'
+}
+
+/**
+ * The share of a node's instances still serving, 0..1 (02-SIMULATION §5.2's healthFactor).
+ * `failedInstances` of `replicas` are down; both are instance counts. One of one down is 0,
+ * one of three is 2/3, which is what makes N+1 survivable.
+ */
+export function healthFactor(replicas: number, failedInstances: number): number {
+  return Math.max(0, replicas - failedInstances) / replicas
 }
 
 /**
@@ -123,7 +134,7 @@ export function simulateTick(input: TickInput): Result<TickResult, TickError> {
 
   for (const { node, stats, from } of hops) {
     perEdge.push({ from, to: node.id, rps: flowRps })
-    const metrics = resolveNode(flowRps, stats, node.replicas)
+    const metrics = resolveNode(flowRps, stats, node.replicas, failedInstancesOf(input.outages, node.id))
     perNode.push([node.id, metrics])
 
     // §5.2 doesn't say how per-hop drops combine along a path. Each query is treated as
@@ -172,7 +183,9 @@ function findBottleneck(perNode: readonly (readonly [NodeId, NodeMetrics])[]): N
   let highestLoad = 0
   for (const [nodeId, metrics] of perNode) {
     if (metrics.status === 'healthy') continue
-    const load = metrics.inboundRps / metrics.capacityRps
+    // A failed node has no capacity to divide by, and it is the problem by definition, so
+    // it outranks every merely overloaded node (§5.7).
+    const load = metrics.status === 'failed' ? Infinity : metrics.inboundRps / metrics.capacityRps
     if (bottleneck === null || load > highestLoad) {
       bottleneck = nodeId
       highestLoad = load
@@ -181,8 +194,26 @@ function findBottleneck(perNode: readonly (readonly [NodeId, NodeMetrics])[]): N
   return bottleneck
 }
 
-function resolveNode(inboundRps: number, stats: TierStats, replicas: number): NodeMetrics {
-  const capacityRps = nodeCapacityRps(stats.capacityRps, replicas, FULL_HEALTH)
+function resolveNode(inboundRps: number, stats: TierStats, replicas: number, failedInstances: number): NodeMetrics {
+  const health = healthFactor(replicas, failedInstances)
+  const capacityRps = nodeCapacityRps(stats.capacityRps, replicas, health)
+  // A node with nothing left serving has no utilization to report and no queue to wait in:
+  // requests are refused rather than delayed, so it contributes no latency and all of its
+  // inbound load is dropped (§5.7). `status` carries the outage instead.
+  if (health === NO_HEALTH) {
+    return {
+      inboundRps,
+      capacityRps,
+      failedInstances,
+      utilization: 0,
+      servedRps: 0,
+      droppedRps: inboundRps,
+      meanMs: 0,
+      p50Ms: 0,
+      p99Ms: 0,
+      status: 'failed',
+    }
+  }
   const u = utilization(inboundRps, capacityRps)
   // min() rather than subtracting the excess keeps servedRps exactly monotonic in load.
   const servedRps = Math.min(inboundRps, capacityRps)
@@ -190,6 +221,7 @@ function resolveNode(inboundRps: number, stats: TierStats, replicas: number): No
   return {
     inboundRps,
     capacityRps,
+    failedInstances,
     utilization: u,
     servedRps,
     droppedRps: inboundRps - servedRps,
@@ -200,13 +232,19 @@ function resolveNode(inboundRps: number, stats: TierStats, replicas: number): No
   }
 }
 
+// An outage names the instances of one node that are down. A node with no entry is whole.
+function failedInstancesOf(outages: readonly NodeOutage[] | undefined, nodeId: NodeId): number {
+  return outages?.find((outage) => outage.nodeId === nodeId)?.failedInstances ?? 0
+}
+
 function tierStatsFor(node: ResourceNode, catalog: ComponentCatalog): Result<TierStats, InputError> {
   if (!Number.isInteger(node.replicas) || node.replicas < 1) {
     return { ok: false, error: { kind: 'invalid-node-config', nodeId: node.id, field: 'replicas' } }
   }
-  // §5.4 gives database replicas different semantics from multiplying capacity, so
-  // replicas wait for the milestone that models them rather than resolving wrongly now.
-  if (node.replicas !== 1) {
+  // §5.2's capacity × replicas is the whole story for an app server, so it takes any count.
+  // §5.4 gives database replicas different semantics — read/write routing, replication lag,
+  // stale reads — so they keep refusing more than one until Tier 3 models them (ADR-0050).
+  if (node.kind !== 'app-server' && node.replicas !== 1) {
     return { ok: false, error: { kind: 'unsupported-replicas', nodeId: node.id, replicas: node.replicas } }
   }
   if (node.kind === 'app-server' && !isNonNegative(node.config.fanoutFactor)) {

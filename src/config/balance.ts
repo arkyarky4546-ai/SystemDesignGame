@@ -103,6 +103,18 @@ export const BALANCE = {
     bailoutGrowthPenaltyTurns: 4,
     /** Users below this share of the act's starting users roll the run back, 0..1. Placeholder (ADR-0024). */
     churnFloorOfActStart: 0.1,
+    /**
+     * Turns a node stays down when a failure takes its last instance (02-SIMULATION §5.7).
+     * Placeholder, and the shortest an outage can be: one turn is one week, and a week of
+     * total downtime is already the harshest thing that happens to a run.
+     */
+    outageDurationTurns: 1,
+    /**
+     * Turns a node runs a replica short after losing one it could survive (§5.7).
+     * Placeholder. Longer than a full outage: nobody is paged at 3am for a service that
+     * stayed up, so a redundant instance is replaced at a working pace.
+     */
+    recoveryTurns: 2,
   },
 
   forecast: {

@@ -88,6 +88,15 @@ export type TierStats = {
   readonly serviceTimeMs: number
 }
 
+/** Per-tier risk: the failure half of `ComponentDef.tiers` (03-CONTENT-SCHEMA §5). */
+export type TierRisk = {
+  /**
+   * Chance one instance of this size fails in a turn, 0..1 (02-SIMULATION §5.7). Drawn per
+   * node per turn by `simulateTurn`, never by the resolver.
+   */
+  readonly failureRatePerTurn: number
+}
+
 export type ComponentCatalog = { readonly [K in ResourceKind]: readonly TierStats[] }
 
 /** Per-tier prices: the cost half of `ComponentDef.tiers` (03-CONTENT-SCHEMA §5). */
@@ -98,30 +107,47 @@ export type TierCosts = {
   readonly runningCostPerTurnCents: number
 }
 
-export type TierDef = TierStats & TierCosts
+export type TierDef = TierStats & TierCosts & TierRisk
 
-/** Performance and prices for every tier. Assignable to `ComponentCatalog`. */
+/** Performance, prices and failure rates for every tier. Assignable to `ComponentCatalog`. */
 export type PricedCatalog = { readonly [K in ResourceKind]: readonly TierDef[] }
+
+/**
+ * Instances of one node that are down this turn (02-SIMULATION §5.7). Drawn by
+ * `simulateTurn` and passed into the resolver, which stays pure (ADR-0051).
+ */
+export type NodeOutage = {
+  readonly nodeId: NodeId
+  /** Instances down, 1..replicas. Equal to `replicas` means the node serves nothing. */
+  readonly failedInstances: number
+  /** Turns this outage still covers, counting the one being resolved. Reaches 0 on recovery. */
+  readonly turnsRemaining: number
+}
 
 export type TickInput = {
   readonly turn: number
   readonly architecture: Architecture
   readonly workload: Workload
   readonly catalog: ComponentCatalog
+  /** Instances down this turn (§5.7). Absent means nothing has failed. */
+  readonly outages?: readonly NodeOutage[]
 }
 
 /**
  * How loaded a node is, from its utilization against `BALANCE.status` (02-SIMULATION §9).
- * §9's `failed` arrives with component failures (§5.7).
+ * `failed` overrides the band: the node has no instance left serving, so it has no
+ * utilization to report (§5.7).
  */
-export type NodeStatus = 'healthy' | 'warning' | 'saturated'
+export type NodeStatus = 'healthy' | 'warning' | 'saturated' | 'failed'
 
 /** One resource node resolved at peak load. */
 export type NodeMetrics = {
   /** Load arriving at the node, rps. */
   readonly inboundRps: number
-  /** Total capacity after replicas and health, rps. */
+  /** Total capacity after replicas and health, rps. 0 while every instance is down. */
   readonly capacityRps: number
+  /** Instances down this turn, 0 when the node is whole (§5.7). */
+  readonly failedInstances: number
   /** Utilization u, 0..BALANCE.queueing.maxUtilization. */
   readonly utilization: number
   /** Load the node serves and passes on, rps. */
@@ -222,6 +248,12 @@ export type RunCheckpoint = {
   readonly bailoutAvailable: boolean
   /** Turns of bailout-slowed growth still to come. */
   readonly growthPenaltyTurns: number
+  /**
+   * Outages still running, one entry per affected node (§5.7). A rollback restores these
+   * with the rest of the act's start, so no outage outlives the architecture it was drawn
+   * against.
+   */
+  readonly outages: readonly NodeOutage[]
 }
 
 /** One playthrough, as saved and as advanced by `simulateTurn` (01-ARCHITECTURE §4). */
@@ -242,6 +274,17 @@ export type SimEvent =
   | { readonly kind: 'act-started'; readonly act: number }
   | { readonly kind: 'bailout'; readonly cashCents: number }
   | { readonly kind: 'rollback'; readonly reason: 'bankruptcy' | 'churn'; readonly act: number }
+  /** Hardware went down this week (§5.7). `replicas` is what the node was running at the time. */
+  | {
+      readonly kind: 'node-failed'
+      readonly nodeId: NodeId
+      readonly failedInstances: number
+      readonly replicas: number
+      /** Turns the outage runs for in all, including the week it started. */
+      readonly turns: number
+    }
+  /** The outage ran its course: the node was back and serving normally this week. */
+  | { readonly kind: 'node-recovered'; readonly nodeId: NodeId }
 
 /** One turn's metrics as kept in a run's history. */
 export type TurnSummary = {

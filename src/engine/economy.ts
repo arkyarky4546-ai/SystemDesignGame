@@ -40,14 +40,18 @@ export function serviceLevel(tick: TickResult): ServiceLevel {
   const shares = requestClassShares(tick.workload)
   let p99Ms = 0
   let errorRate = 0
+  let totalShare = 0
   for (const requestClass of REQUEST_CLASSES) {
     const share = shares[requestClass]
     const metrics = tick.perClass[requestClass]
     errorRate += share * metrics.errorRate
+    totalShare += share
     if (share > 0) p99Ms = Math.max(p99Ms, metrics.p99Ms)
   }
-  // Shares only sum to 1 within rounding, so keep the weighted rate inside 0..1.
-  return { p99Ms, errorRate: clamp(errorRate, 0, 1) }
+  // The shares are products of fractions, so they sum to 1 only within rounding. Dividing by
+  // the sum rather than assuming it makes the blend a true weighted mean: when every class
+  // is at the same rate the service is at exactly that rate, which is what an outage needs.
+  return { p99Ms, errorRate: totalShare > 0 ? clamp(errorRate / totalShare, 0, 1) : 0 }
 }
 
 /**

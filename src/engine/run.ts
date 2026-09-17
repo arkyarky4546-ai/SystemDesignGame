@@ -15,6 +15,7 @@ import {
   usersForMeanRps,
   type PricedNode,
 } from './economy'
+import { drawFailures } from './failures'
 import { layoutByFlow } from './layout'
 import { simulateTick } from './resolve'
 import { nextNormal, rngForTurn, type Rng } from './rng'
@@ -61,6 +62,7 @@ export function createRun(options: { readonly seed: number; readonly difficulty:
     act: actForUsers(startingUsers),
     bailoutAvailable: true,
     growthPenaltyTurns: 0,
+    outages: [],
   }
   return { ...start, seed: options.seed >>> 0, turn: 0, actStart: start, history: [], archive: EMPTY_ARCHIVE }
 }
@@ -126,7 +128,22 @@ export function simulateTurn(run: RunState, input: TurnInput): Result<TurnResult
   const turn = run.turn + 1
   const workload = { ...run.workload, meanRps: grownMeanRps(run, input.difficulty, rngForTurn(run.seed, turn)) }
 
-  const tick = simulateTick({ turn, architecture: run.architecture, workload, catalog: input.catalog })
+  // Failures are drawn here, not in the resolver, so `simulateTick` stays pure (ADR-0051).
+  const failures = drawFailures({
+    seed: run.seed,
+    turn,
+    architecture: run.architecture,
+    catalog: input.catalog,
+    outages: run.outages,
+  })
+
+  const tick = simulateTick({
+    turn,
+    architecture: run.architecture,
+    workload,
+    catalog: input.catalog,
+    outages: failures.outages,
+  })
   if (!tick.ok) return tick
   const priced = priceNodes(run.architecture, input.catalog)
   if (!priced.ok) return priced
@@ -162,10 +179,14 @@ export function simulateTurn(run: RunState, input: TurnInput): Result<TurnResult
       act: run.act,
       bailoutAvailable: run.bailoutAvailable,
       growthPenaltyTurns: Math.max(0, run.growthPenaltyTurns - 1),
+      outages: failures.outages,
     },
     run.actStart,
     input.difficulty,
   )
+
+  // Hardware went down before any of it was settled, so the week reads in that order.
+  const events: readonly SimEvent[] = [...failures.events, ...settled.events]
 
   const summary: TurnSummary = {
     turn,
@@ -183,7 +204,7 @@ export function simulateTurn(run: RunState, input: TurnInput): Result<TurnResult
     sloMet: reputation.sloMet,
     cashCents: settled.state.cashCents,
     reputation: settled.state.reputation,
-    events: settled.events,
+    events,
   }
 
   return {
@@ -194,7 +215,7 @@ export function simulateTurn(run: RunState, input: TurnInput): Result<TurnResult
       economy,
       reputation,
       users,
-      events: settled.events,
+      events,
       nextRun: {
         ...settled.state,
         seed: run.seed,

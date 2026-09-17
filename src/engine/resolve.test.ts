@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { BALANCE } from '../config/balance'
 import { meanResponseTimeMs, nodeStatus, p50LatencyMs, p99LatencyMs, simulateTick } from './resolve'
 import { deepFreeze, edge, linearInput, metricsFor, unwrap } from './test-helpers'
-import { REQUEST_CLASSES, type ComponentNode, type TickInput } from './types'
+import { REQUEST_CLASSES, type ComponentNode, type NodeId, type TickInput } from './types'
 
 const SERVICE_MS = 20
 const ROOMY_DATABASE = { capacityRps: 1_000_000, serviceTimeMs: 5 }
@@ -130,13 +130,15 @@ describe('simulateTick input errors', () => {
     app: { capacityRps: 100, serviceTimeMs: 10 },
     database: { capacityRps: 100, serviceTimeMs: 10 },
   })
-  const withApp = (change: (node: ComponentNode) => ComponentNode): TickInput => ({
+  const withNode = (id: NodeId, change: (node: ComponentNode) => ComponentNode): TickInput => ({
     ...base,
     architecture: {
       ...base.architecture,
-      nodes: base.architecture.nodes.map((node) => (node.id === 'app' ? change(node) : node)),
+      nodes: base.architecture.nodes.map((node) => (node.id === id ? change(node) : node)),
     },
   })
+  const withApp = (change: (node: ComponentNode) => ComponentNode): TickInput => withNode('app', change)
+  const withDatabase = (change: (node: ComponentNode) => ComponentNode): TickInput => withNode('db', change)
 
   it('passes topology errors through', () => {
     const cyclic: TickInput = {
@@ -153,10 +155,10 @@ describe('simulateTick input errors', () => {
     })
   })
 
-  it('rejects replicas until the resolver models them', () => {
-    expect(simulateTick(withApp((node) => ({ ...node, replicas: 2 })))).toEqual({
+  it('rejects database replicas until §5.4 models what they mean', () => {
+    expect(simulateTick(withDatabase((node) => ({ ...node, replicas: 2 })))).toEqual({
       ok: false,
-      error: { kind: 'unsupported-replicas', nodeId: 'app', replicas: 2 },
+      error: { kind: 'unsupported-replicas', nodeId: 'db', replicas: 2 },
     })
   })
 

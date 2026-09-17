@@ -15,6 +15,7 @@ export {
   type PricedNode,
 } from './economy'
 export {
+  healthFactor,
   instancesNeeded,
   meanResponseTimeMs,
   nodeCapacityRps,
@@ -24,6 +25,7 @@ export {
   simulateTick,
   utilization,
 } from './resolve'
+export { drawFailures, type FailureDraw } from './failures'
 export {
   firstPassBonusCents,
   hasPassed,

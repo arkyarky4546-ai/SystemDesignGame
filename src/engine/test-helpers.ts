@@ -21,17 +21,23 @@ import type {
  */
 export const TEST_CATALOG: PricedCatalog = {
   'app-server': [
-    { capacityRps: 50, serviceTimeMs: 12, setupCostCents: 200_00, runningCostPerTurnCents: 25_00 },
-    { capacityRps: 150, serviceTimeMs: 11, setupCostCents: 600_00, runningCostPerTurnCents: 60_00 },
-    { capacityRps: 400, serviceTimeMs: 10, setupCostCents: 1_500_00, runningCostPerTurnCents: 140_00 },
-    { capacityRps: 1_000, serviceTimeMs: 10, setupCostCents: 4_000_00, runningCostPerTurnCents: 320_00 },
+    { capacityRps: 50, serviceTimeMs: 12, setupCostCents: 200_00, runningCostPerTurnCents: 25_00, failureRatePerTurn: 0.02 },
+    { capacityRps: 150, serviceTimeMs: 11, setupCostCents: 600_00, runningCostPerTurnCents: 60_00, failureRatePerTurn: 0.015 },
+    { capacityRps: 400, serviceTimeMs: 10, setupCostCents: 1_500_00, runningCostPerTurnCents: 140_00, failureRatePerTurn: 0.01 },
+    { capacityRps: 1_000, serviceTimeMs: 10, setupCostCents: 4_000_00, runningCostPerTurnCents: 320_00, failureRatePerTurn: 0.008 },
   ],
   database: [
-    { capacityRps: 80, serviceTimeMs: 6, setupCostCents: 300_00, runningCostPerTurnCents: 40_00 },
-    { capacityRps: 250, serviceTimeMs: 6, setupCostCents: 900_00, runningCostPerTurnCents: 100_00 },
-    { capacityRps: 700, serviceTimeMs: 5, setupCostCents: 2_400_00, runningCostPerTurnCents: 250_00 },
-    { capacityRps: 2_000, serviceTimeMs: 5, setupCostCents: 6_000_00, runningCostPerTurnCents: 600_00 },
+    { capacityRps: 80, serviceTimeMs: 6, setupCostCents: 300_00, runningCostPerTurnCents: 40_00, failureRatePerTurn: 0.012 },
+    { capacityRps: 250, serviceTimeMs: 6, setupCostCents: 900_00, runningCostPerTurnCents: 100_00, failureRatePerTurn: 0.009 },
+    { capacityRps: 700, serviceTimeMs: 5, setupCostCents: 2_400_00, runningCostPerTurnCents: 250_00, failureRatePerTurn: 0.006 },
+    { capacityRps: 2_000, serviceTimeMs: 5, setupCostCents: 6_000_00, runningCostPerTurnCents: 600_00, failureRatePerTurn: 0.005 },
   ],
+}
+
+/** TEST_CATALOG with every failure rate at zero, for tests about anything but failures. */
+export const NO_FAILURES: PricedCatalog = {
+  'app-server': TEST_CATALOG['app-server'].map((tier) => ({ ...tier, failureRatePerTurn: 0 })),
+  database: TEST_CATALOG.database.map((tier) => ({ ...tier, failureRatePerTurn: 0 })),
 }
 
 /**
