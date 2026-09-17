@@ -15,6 +15,7 @@ import {
   type SimEvent,
   type CheckAttempt,
   type Knowledge,
+  type NodeOutage,
   type TurnSummary,
   type Workload,
 } from '../engine'
@@ -132,6 +133,14 @@ const SimEventSchema: z.ZodType<SimEvent> = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('act-started'), act }),
   z.object({ kind: z.literal('bailout'), cashCents: cents }),
   z.object({ kind: z.literal('rollback'), reason: z.enum(['bankruptcy', 'churn']), act }),
+  z.object({
+    kind: z.literal('node-failed'),
+    nodeId: z.string(),
+    failedInstances: z.number().int().positive(),
+    replicas: replicas,
+    turns: z.number().int().positive(),
+  }),
+  z.object({ kind: z.literal('node-recovered'), nodeId: z.string() }),
 ])
 
 const TurnSummarySchema: z.ZodType<TurnSummary> = z.object({
@@ -160,6 +169,12 @@ const ArchiveSchema: z.ZodType<HistoryArchive> = z.object({
   peakUsers: nonNegative,
 })
 
+const NodeOutageSchema: z.ZodType<NodeOutage> = z.object({
+  nodeId: z.string(),
+  failedInstances: z.number().int().positive(),
+  turnsRemaining: z.number().int().positive(),
+})
+
 /** A run schema around a given architecture schema, so older formats share everything else. */
 function runSchema<A extends z.ZodType>(architecture: A) {
   const checkpoint = {
@@ -171,6 +186,7 @@ function runSchema<A extends z.ZodType>(architecture: A) {
     act,
     bailoutAvailable: z.boolean(),
     growthPenaltyTurns: count,
+    outages: z.array(NodeOutageSchema),
   }
   return z.object({
     ...checkpoint,
@@ -218,9 +234,55 @@ const UnplacedArchitectureSchema = z.object({
   edges: EdgesSchema,
 })
 
+// Before version 3, nothing in the game could fail, so a run had no outages and no turn
+// could record one. These frozen shapes serve v1 and v2.
+const SimEventV2Schema = z.discriminatedUnion('kind', [
+  z.object({ kind: z.literal('act-started'), act }),
+  z.object({ kind: z.literal('bailout'), cashCents: cents }),
+  z.object({ kind: z.literal('rollback'), reason: z.enum(['bankruptcy', 'churn']), act }),
+])
+
+const TurnSummaryV2Schema = z.object({
+  turn: count,
+  meanRps: nonNegative,
+  peakRps: nonNegative,
+  users: nonNegative,
+  p99Ms: nonNegative,
+  errorRate: fraction,
+  utilization: z.record(z.string(), fraction),
+  revenueCents: cents,
+  costCents: cents,
+  setupCostCents: cents,
+  sloMet: z.boolean(),
+  cashCents: cents,
+  reputation: fraction,
+  events: z.array(SimEventV2Schema),
+})
+
+function unbrokenRunSchema<A extends z.ZodType>(architecture: A) {
+  const checkpoint = {
+    cashCents: cents,
+    reputation: fraction,
+    workload: WorkloadSchema,
+    architecture,
+    builtArchitecture: architecture,
+    act,
+    bailoutAvailable: z.boolean(),
+    growthPenaltyTurns: count,
+  }
+  return z.object({
+    ...checkpoint,
+    seed,
+    turn: count,
+    actStart: z.object(checkpoint),
+    history: z.array(TurnSummaryV2Schema),
+    archive: ArchiveSchema,
+  })
+}
+
 // Version 1 (M2). It shares every schema except the architecture with the current format.
 // If any other saved shape changes, freeze a full copy here first.
-const RunV1Schema = runSchema(UnplacedArchitectureSchema)
+const RunV1Schema = unbrokenRunSchema(UnplacedArchitectureSchema)
 const SaveV1Schema = z.object({
   contentVersion: count,
   savedAt: z.string(),
@@ -273,7 +335,18 @@ function runFromV0(run: NonNullable<z.output<typeof SaveV0Schema>['run']>): z.ou
   return { ...checkpoint, seed: run.seed, turn: run.turn, actStart: checkpoint, history: [], archive: EMPTY_ARCHIVE }
 }
 
-function migrateV1(save: z.output<typeof SaveV1Schema>): Omit<SaveFile, 'version'> {
+// Version 2 (M3): nodes gained canvas positions. It shares every schema except the run with
+// the current format.
+const RunV2Schema = unbrokenRunSchema(ArchitectureSchema)
+const SaveV2Schema = z.object({
+  contentVersion: count,
+  savedAt: z.string(),
+  knowledge: KnowledgeSchema,
+  run: RunV2Schema.nullable(),
+  settings: SettingsSchema,
+})
+
+function migrateV1(save: z.output<typeof SaveV1Schema>): z.output<typeof SaveV2Schema> {
   const run = save.run
   if (!run) return { ...save, run: null }
   return {
@@ -288,6 +361,16 @@ function migrateV1(save: z.output<typeof SaveV1Schema>): Omit<SaveFile, 'version
         builtArchitecture: placeNodes(run.actStart.builtArchitecture),
       },
     },
+  }
+}
+
+// A save written before M6a had nothing failed, and loads with nothing failed (ADR-0051).
+function migrateV2(save: z.output<typeof SaveV2Schema>): Omit<SaveFile, 'version'> {
+  const run = save.run
+  if (!run) return { ...save, run: null }
+  return {
+    ...save,
+    run: { ...run, outages: [], actStart: { ...run.actStart, outages: [] } },
   }
 }
 
@@ -317,7 +400,11 @@ function migration<S extends z.ZodType>(
  * Append one per format change, add a fixture for the old version, and never edit or remove
  * an entry: old saves still pass through every step.
  */
-export const MIGRATIONS: readonly Migration[] = [migration(SaveV0Schema, migrateV0), migration(SaveV1Schema, migrateV1)]
+export const MIGRATIONS: readonly Migration[] = [
+  migration(SaveV0Schema, migrateV0),
+  migration(SaveV1Schema, migrateV1),
+  migration(SaveV2Schema, migrateV2),
+]
 
 /** Schema version of the save document, not the app version. One past the last migration. */
 export const SAVE_VERSION = MIGRATIONS.length

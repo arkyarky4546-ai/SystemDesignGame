@@ -3,6 +3,7 @@ import { createRun, simulateTurn, type ComponentNode, type RunState } from '../e
 import { TEST_CATALOG, playHeadless, unwrap } from '../engine/test-helpers'
 import v0Fixture from './fixtures/save-v0.json?raw'
 import v1Fixture from './fixtures/save-v1.json?raw'
+import v2Fixture from './fixtures/save-v2.json?raw'
 import {
   CORRUPT_KEY_PREFIX,
   DEFAULT_KNOWLEDGE,
@@ -145,6 +146,7 @@ describe('migrations (01-ARCHITECTURE §7)', () => {
       act: run.act,
       bailoutAvailable: run.bailoutAvailable,
       growthPenaltyTurns: run.growthPenaltyTurns,
+      outages: [],
     })
   })
 
@@ -185,6 +187,31 @@ describe('migrations (01-ARCHITECTURE §7)', () => {
     const next = unwrap(simulateTurn(run, { difficulty: 'junior', catalog: TEST_CATALOG }))
     expect(next.turn).toBe(original.run.turn + 1)
     expect(next.economy.setupCostCents).toBe(0)
+  })
+
+  it('migrates the v2 fixture with nothing failed, and plays on (M6a acceptance)', () => {
+    const original: { run: { turn: number; cashCents: number; history: unknown } } = JSON.parse(v2Fixture)
+    const save = unwrap(parseSave(v2Fixture))
+    const run = save.run
+    if (!run) throw new Error('the fixture has a run')
+    expect(save.version).toBe(SAVE_VERSION)
+    // Nothing in the game could fail when this save was written, so it loads with nothing
+    // down — in the run and in the checkpoint a rollback would return to (ADR-0051).
+    expect(run.outages).toEqual([])
+    expect(run.actStart.outages).toEqual([])
+    expect(run.cashCents).toBe(original.run.cashCents)
+    expect(run.history).toEqual(original.run.history)
+
+    const next = unwrap(simulateTurn(run, { difficulty: 'junior', catalog: TEST_CATALOG }))
+    expect(next.turn).toBe(original.run.turn + 1)
+  })
+
+  it('round-trips a run with a live outage', () => {
+    const start = createRun({ seed: 8, difficulty: 'junior' })
+    const outages = [{ nodeId: 'app', failedInstances: 1, turnsRemaining: 2 }]
+    const run: RunState = { ...start, outages, actStart: { ...start.actStart, outages } }
+    const save = saveOf(run)
+    expect(unwrap(parseSave(serializeSave(save)))).toStrictEqual(save)
   })
 
   it('moves a stored v0 save to the current key', () => {
