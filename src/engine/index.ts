@@ -15,6 +15,7 @@ export {
   type PricedNode,
 } from './economy'
 export {
+  instancesNeeded,
   meanResponseTimeMs,
   nodeCapacityRps,
   nodeStatus,
@@ -31,7 +32,7 @@ export {
   recordCheckAttempt,
 } from './knowledge'
 export { forecastTraffic, planTurn } from './plan'
-export { createRng, nextFloat, nextNormal, rngForCheck, rngForTurn, type Rng } from './rng'
+export { createRng, nextFloat, nextNormal, rngForCheck, rngForKey, rngForTurn, type Rng } from './rng'
 export { EMPTY_ARCHIVE, createRun, grownMeanRps, simulateTurn } from './run'
 export { layoutByFlow } from './layout'
 export { createsCycle, resolveLinearPath, type LinearPath } from './topology'

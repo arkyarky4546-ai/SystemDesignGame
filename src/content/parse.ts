@@ -82,6 +82,8 @@ const ProvenanceSchema: z.ZodType<Provenance> = z.object({
   generatedAt: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'generatedAt must be an ISO date'),
   generator: nonEmpty,
   batchId: nonEmpty,
+  templateId: nonEmpty.optional(),
+  params: z.record(nonEmpty, z.number()).optional(),
 })
 
 /** Question ids are permanent and shaped by 09-QUESTION-BANK §4.3. */

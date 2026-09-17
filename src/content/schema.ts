@@ -146,6 +146,14 @@ export type Provenance = {
   readonly generator: string
   /** Groups one generation session, so a bad question casts doubt on its batch. */
   readonly batchId: string
+  /** Derived only: the template that produced it. A draw never takes two from one template (§5). */
+  readonly templateId?: string
+  /**
+   * Derived only: the parameters this instance was sampled with. The screener recomputes the
+   * answer from them through the engine, which is what makes a derived question provably
+   * correct rather than trusted (§7).
+   */
+  readonly params?: Readonly<Record<string, number>>
 }
 
 /** `needs-expert-review` marks an item whose author wasn't fully confident (09-QUESTION-BANK §8). */
@@ -185,4 +193,99 @@ export type Concept = {
   readonly reviewStatus: ReviewStatus
   /** Where a human can verify the claims. */
   readonly sources?: readonly string[]
+}
+
+// Derived questions (09-QUESTION-BANK §2.1). A template declares parameter ranges and how to
+// build a question from one sample; the generator freezes `instanceCount` of them into
+// `derived.json`. The answer is computed by the real simulation engine, which is injected
+// rather than imported, because content is the bottom layer and may not reach the engine.
+
+/** One sampled parameter set, keyed by the `ParamSpec` name. */
+export type Params = Readonly<Record<string, number>>
+
+export type ParamSpec =
+  | { readonly kind: 'int'; readonly name: string; readonly min: number; readonly max: number; readonly step: number }
+  | { readonly kind: 'choice'; readonly name: string; readonly values: readonly number[] }
+
+/**
+ * The slice of the engine a template may call. Every function here is the same one the game
+ * resolves turns with, so a derived question and the simulation cannot disagree.
+ */
+export type TemplateEngine = {
+  /** Utilization from load and capacity, both rps. Unitless, capped as the resolver caps it. */
+  utilization: (inboundRps: number, capacityRps: number) => number
+  /** Mean response time W, ms, from a service time in ms and a utilization 0..1. */
+  meanResponseTimeMs: (serviceTimeMs: number, u: number) => number
+  /** Median response time, ms, from the mean W in ms. */
+  p50LatencyMs: (meanMs: number) => number
+  /** 99th-percentile response time, ms, from the mean W in ms. */
+  p99LatencyMs: (meanMs: number) => number
+  /** Instances needed for a peak in rps at a target utilization 0..1. */
+  instancesNeeded: (peakRps: number, perInstanceRps: number, targetUtilization: number) => number
+}
+
+/**
+ * A wrong answer that is the arithmetic consequence of one nameable mistake, so `whyWrong`
+ * is guaranteed accurate (09-QUESTION-BANK §2.1). Returning null drops the distractor for
+ * that instance, which is how a rule that doesn't apply to some parameters bows out.
+ */
+export type DistractorRule = {
+  /** The mistake, for the generation log: 'forgot headroom'. */
+  readonly label: string
+  readonly compute: (params: Params, correct: number, engine: TemplateEngine) => number | null
+  readonly whyWrong: string
+}
+
+/** What one sampled instance turns into, before the generator adds ids, options and metadata. */
+export type GeneratedQuestion = {
+  readonly prompt: string
+  /** The correct value, in `unit`. */
+  readonly answer: number
+  /** How the value is written in an option: "3", "85%", "184 ms". */
+  readonly format: (value: number) => string
+  readonly explanation: string
+  readonly tags: readonly string[]
+}
+
+export type QuestionTemplate = {
+  /** Stable: it is part of every instance's id, and saves reference those ids. */
+  readonly id: string
+  readonly conceptId: ConceptId
+  readonly depth: Depth
+  readonly params: readonly ParamSpec[]
+  /** Rejects nonsense parameter combinations before the question is built. */
+  readonly constraints?: (params: Params) => boolean
+  readonly build: (params: Params, engine: TemplateEngine) => GeneratedQuestion
+  /** How many instances to freeze into the bank. */
+  readonly instanceCount: number
+  readonly distractors: readonly DistractorRule[]
+}
+
+/** The parameter names a spec list declares, as a union of string literals. */
+type NamesOf<S extends readonly ParamSpec[]> = S[number]['name']
+
+/**
+ * Declares one template with its parameter names known to the type checker, so `build` and
+ * every distractor read `params.meanRps` as a number rather than a maybe-number. The
+ * generator supplies every name the spec list declares, which is what makes that safe.
+ */
+export function defineTemplate<const S extends readonly ParamSpec[]>(template: {
+  readonly id: string
+  readonly conceptId: ConceptId
+  readonly depth: Depth
+  readonly params: S
+  readonly constraints?: (params: Readonly<Record<NamesOf<S>, number>>) => boolean
+  readonly build: (params: Readonly<Record<NamesOf<S>, number>>, engine: TemplateEngine) => GeneratedQuestion
+  readonly instanceCount: number
+  readonly distractors: readonly {
+    readonly label: string
+    readonly compute: (
+      params: Readonly<Record<NamesOf<S>, number>>,
+      correct: number,
+      engine: TemplateEngine,
+    ) => number | null
+    readonly whyWrong: string
+  }[]
+}): QuestionTemplate {
+  return template as QuestionTemplate
 }

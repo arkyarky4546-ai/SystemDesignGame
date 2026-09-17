@@ -68,7 +68,17 @@ function fmix32(value: number): number {
  * Unitless.
  */
 export function rngForCheck(seed: number, conceptId: string, attemptNumber: number): Rng {
-  return createRng(fmix32((seed >>> 0) ^ fmix32(hashText(conceptId) ^ fmix32((attemptNumber + 0x9e3779b9) >>> 0))))
+  return rngForKey(seed, conceptId, attemptNumber)
+}
+
+/**
+ * A generator keyed by a seed, a string and an index, all mixed so neighbouring keys give
+ * unrelated streams. Question generation uses it with the template id and the instance
+ * number, so the frozen bank is byte-identical every time it is regenerated (09-QUESTION-BANK
+ * §2.1). Unitless.
+ */
+export function rngForKey(seed: number, key: string, index: number): Rng {
+  return createRng(fmix32((seed >>> 0) ^ fmix32(hashText(key) ^ fmix32((index + 0x9e3779b9) >>> 0))))
 }
 
 /** FNV-1a over the string's UTF-16 code units, as an unsigned 32-bit integer. */

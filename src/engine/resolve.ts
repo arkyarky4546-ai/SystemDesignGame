@@ -50,6 +50,18 @@ export function utilization(inboundRps: number, capacityRps: number): number {
   return Math.min(inboundRps / capacityRps, BALANCE.queueing.maxUtilization)
 }
 
+/**
+ * Instances needed to serve `peakRps` without passing `targetUtilization`, given one
+ * instance's capacity in rps. Both rates are rps; the target is a fraction 0..1. Rounds up,
+ * because a fraction of a server serves nothing, and never returns less than one.
+ *
+ * This is the arithmetic 09-QUESTION-BANK §2.1 builds capacity questions from, so a derived
+ * question and the game's own sizing can't disagree.
+ */
+export function instancesNeeded(peakRps: number, perInstanceRps: number, targetUtilization: number): number {
+  return Math.max(1, Math.ceil(peakRps / (perInstanceRps * targetUtilization)))
+}
+
 /** Mean response time W = serviceTime / (1 − u), ms, given service time in ms and utilization u. M/M/1 (ADR-0005). */
 export function meanResponseTimeMs(serviceTimeMs: number, u: number): number {
   return serviceTimeMs / (1 - u)
