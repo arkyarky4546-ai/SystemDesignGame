@@ -45,6 +45,12 @@ type CanvasScreenProps = {
   readonly guide?: ReactNode
 }
 
+/** Nodes the tick found with every instance down, for the canvas to read as down (§5.7). */
+const failedNodesOf = (tick: TickResult | null): ReadonlySet<NodeId> =>
+  new Set(
+    tick ? Object.entries(tick.perNode).flatMap(([nodeId, metrics]) => (metrics.status === 'failed' ? [nodeId] : [])) : [],
+  )
+
 const utilizationOf = (tick: TickResult | null): Readonly<Record<NodeId, number>> =>
   tick ? Object.fromEntries(Object.entries(tick.perNode).map(([nodeId, metrics]) => [nodeId, metrics.utilization])) : NO_UTILIZATION
 
@@ -83,6 +89,7 @@ export function CanvasScreen({ store, playback = null, busy = false, onAdvance, 
     [builtArchitecture, workload, history, catalog],
   )
   const utilization = useMemo(() => utilizationOf(lastTick), [lastTick])
+  const failedNodes = useMemo(() => failedNodesOf(lastTick), [lastTick])
   const edgeFlow = useMemo(
     () => (lastTick ? Object.fromEntries(lastTick.perEdge.map((flow) => [edgeKey(flow), flow.rps])) : NO_FLOW),
     [lastTick],
@@ -139,6 +146,7 @@ export function CanvasScreen({ store, playback = null, busy = false, onAdvance, 
     <ArchitectureCanvas
       architecture={architecture}
       utilization={utilization}
+      failedNodes={failedNodes}
       edgeFlow={edgeFlow}
       playback={canvasPlayback}
       selection={selection}

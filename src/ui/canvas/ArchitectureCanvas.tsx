@@ -55,6 +55,8 @@ export type ArchitectureCanvasProps = {
   readonly architecture: Architecture
   /** Peak utilization per node, 0..1. Missing until a turn has run. */
   readonly utilization: Readonly<Record<NodeId, number>>
+  /** Nodes with every instance down last week (02-SIMULATION §5.7). They read as down, not as loaded. */
+  readonly failedNodes: ReadonlySet<NodeId>
   /** Load each edge carried at peak last week, rps, keyed by `edgeKey`. */
   readonly edgeFlow: Readonly<Record<string, number>>
   /** The turn being replayed, or null. */
@@ -95,7 +97,7 @@ export const edgeKey = (edge: Edge): string => JSON.stringify([edge.from, edge.t
  * (01-ARCHITECTURE §9).
  */
 export function ArchitectureCanvas(props: ArchitectureCanvasProps) {
-  const { architecture, utilization, selection, editable, zoom } = props
+  const { architecture, utilization, failedNodes, selection, editable, zoom } = props
   const prefix = `canvas${useId().replace(/[^a-zA-Z0-9]/g, '')}`
   const latest = useRef(props)
   // A layout effect, so the turn animation's first frame already sees this render's load.
@@ -376,8 +378,13 @@ export function ArchitectureCanvas(props: ArchitectureCanvasProps) {
   useTurnFrames(
     props.playback,
     (progress) => {
-      const { utilization: target, playback } = latest.current
+      const { utilization: target, failedNodes: down, playback } = latest.current
       for (const [nodeId, element] of nodeElements.current) {
+        // A node that was down has no level to rise to, so it reads as down for every frame.
+        if (down.has(nodeId)) {
+          paintLoad(element, undefined, true)
+          continue
+        }
         const to = target[nodeId]
         if (to === undefined) continue
         const from = playback?.fromUtilization[nodeId] ?? 0
@@ -386,7 +393,7 @@ export function ArchitectureCanvas(props: ArchitectureCanvasProps) {
       if (progress < 1 && playback?.animate) svgElement.current?.setAttribute('data-flowing', 'true')
       else svgElement.current?.removeAttribute('data-flowing')
     },
-    [utilization],
+    [utilization, failedNodes],
   )
 
   // Under reduced motion the fills cut straight to their new level, and nodes whose reading
@@ -492,6 +499,7 @@ export function ArchitectureCanvas(props: ArchitectureCanvasProps) {
           name={nodeName(architecture, node.id)}
           domId={domIds.get(node.id) ?? node.id}
           utilization={utilization[node.id]}
+          failed={failedNodes.has(node.id)}
           selected={node.id === selectedNodeId}
           connectSource={node.id === connectFrom}
           editable={editable}

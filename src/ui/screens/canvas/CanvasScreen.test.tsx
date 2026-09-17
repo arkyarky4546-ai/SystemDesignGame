@@ -3,6 +3,7 @@ import { cleanup, fireEvent, render, screen, within } from '@testing-library/rea
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeAll, describe, expect, it } from 'vitest'
 import { COMPONENT_DEFS } from '../../../content/components'
+import { PLANNED_CONCEPT_TITLES } from '../../../content/schema'
 import { TEST_CATALOG } from '../../../engine/test-helpers'
 import { createGameStore } from '../../../state/store'
 import { FIXED_NOW, memoryStorage } from '../../../state/test-helpers'
@@ -101,6 +102,21 @@ describe('canvas with the keyboard alone (M3 acceptance)', () => {
     const inspector = screen.getByRole('region', { name: 'App server' })
     expect(within(inspector).getByText(/Database queries per request/).textContent).toBe('Database queries per request 1')
     expect(within(inspector).queryByRole('spinbutton')).toBeNull()
+  })
+
+  it('shows the instance count shut, naming what would open it (M6a acceptance)', async () => {
+    const { canvas, user } = setup()
+    canvas.focus()
+    await user.keyboard('{ArrowDown}{ArrowDown}')
+    const inspector = screen.getByRole('region', { name: 'App server' })
+    const instances = within(inspector).getByLabelText('Instances')
+    // The control is present and disabled, the way a size the player hasn't earned is
+    // listed and disabled. Nothing in Tier 1 opens it yet (ADR-0050, ADR-0051).
+    expect((instances as HTMLSelectElement).disabled).toBe(true)
+    expect((instances as HTMLSelectElement).value).toBe('1')
+    expect(within(inspector).getByText(/Running a second instance needs/).textContent).toContain(
+      PLANNED_CONCEPT_TITLES['single-point-of-failure'],
+    )
   })
 
   it('refuses an invalid connection with the specific reason, and cancels with Escape', async () => {
@@ -227,7 +243,7 @@ describe('pointer capture', () => {
 describe('utilization (05-UI-DESIGN §4)', () => {
   it('fills each node to last week’s utilization and marks saturation without relying on color', () => {
     // At 10 rps peak, a 20 rps app server runs at 50% and a 10/0.955 rps database at 95.5%.
-    const tier = (capacityRps: number) => ({ capacityRps, serviceTimeMs: 10, setupCostCents: 0, runningCostPerTurnCents: 0 })
+    const tier = (capacityRps: number) => ({ capacityRps, serviceTimeMs: 10, setupCostCents: 0, runningCostPerTurnCents: 0, failureRatePerTurn: 0 })
     const catalog = { 'app-server': [tier(20)], database: [tier(10 / 0.955)] }
     const store = createGameStore({ storage: memoryStorage(), catalog, now: FIXED_NOW })
     store.getState().startRun(1)
@@ -251,6 +267,41 @@ describe('utilization (05-UI-DESIGN §4)', () => {
     expect(db.getAttribute('aria-label')).toContain('saturated')
     expect(db.querySelector('[data-part="hatch"]')?.getAttribute('visibility')).toBe('visible')
     expect(db.textContent).toContain('▲ 95%')
+  })
+
+  it('shows a node that was down as down, without relying on color (M6a acceptance)', () => {
+    const tier = (capacityRps: number) => ({ capacityRps, serviceTimeMs: 10, setupCostCents: 0, runningCostPerTurnCents: 0, failureRatePerTurn: 0 })
+    const catalog = { 'app-server': [tier(20)], database: [tier(20)] }
+    const store = createGameStore({ storage: memoryStorage(), catalog, now: FIXED_NOW })
+    store.getState().startRun(1)
+    const run = store.getState().run
+    if (!run) throw new Error('expected a run')
+    const summary = {
+      turn: 1, meanRps: 10, peakRps: 10, users: 100, p99Ms: 0, errorRate: 1, revenueCents: 0, costCents: 1,
+      setupCostCents: 0, sloMet: false, cashCents: 1, reputation: 0, events: [], utilization: {},
+    }
+    store.setState({
+      run: {
+        ...run,
+        workload: { ...run.workload, meanRps: 10, peakMultiplier: 1 },
+        turn: 1,
+        history: [summary],
+        outages: [{ nodeId: 'app', failedInstances: 1, turnsRemaining: 1 }],
+      },
+    })
+    render(<CanvasScreen store={store} />)
+    const canvas = screen.getByRole('application', { name: 'Architecture canvas' })
+
+    const app = node(canvas, 'app')
+    expect(app.getAttribute('data-load')).toBe('failed')
+    // Three signals, none of them colour: the word, the glyph and the hatch (01-ARCHITECTURE §9).
+    expect(app.getAttribute('aria-label')).toContain('down all week')
+    expect(app.textContent).toContain('✕ down')
+    expect(app.querySelector('[data-part="hatch"]')?.getAttribute('visibility')).toBe('visible')
+    // It never reads as a utilization, because it served nothing.
+    expect(app.getAttribute('aria-label')).not.toContain('utilization')
+    // The database behind it saw no traffic at all, so it isn't marked as anything.
+    expect(node(canvas, 'db').getAttribute('data-load')).toBe('healthy')
   })
 
   it('draws busier edges heavier', () => {

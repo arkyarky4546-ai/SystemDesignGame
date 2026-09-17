@@ -5,6 +5,7 @@ import { architectureFor } from '../../../state/diagram'
 import { ArchitectureCanvas } from '../../canvas/ArchitectureCanvas'
 
 const NOTHING: Readonly<Record<NodeId, number>> = {}
+const NOBODY_DOWN: ReadonlySet<NodeId> = new Set()
 
 /**
  * A lesson diagram, drawn by the real canvas component (03-CONTENT-SCHEMA §2). Using the same
@@ -23,6 +24,7 @@ export function LessonDiagram({ architecture, caption }: { readonly architecture
         <ArchitectureCanvas
           architecture={built}
           utilization={NOTHING}
+          failedNodes={NOBODY_DOWN}
           edgeFlow={NOTHING}
           playback={null}
           selection={{ kind: 'none' }}

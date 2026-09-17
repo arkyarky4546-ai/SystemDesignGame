@@ -15,6 +15,14 @@ export type NotTheProblem = {
 }
 
 export type LoadFinding =
+  /** Something was down all week. Nothing about load is worth saying until it is back (§5.7). */
+  | {
+      readonly kind: 'outage'
+      /** Every node with no instance left serving, in path order. */
+      readonly downNodes: readonly NodeId[]
+      /** The first one: everything after it saw no traffic at all. */
+      readonly firstDown: NodeId
+    }
   | {
       readonly kind: 'bottleneck'
       /** The engine's bottleneck: the most loaded node at warning or above. */
@@ -47,6 +55,12 @@ export function findLoadFinding(tick: TickResult): LoadFinding | null {
   })
   const busiest = extreme(path, (a, b) => a > b)
   if (!busiest) return null
+
+  // An outage dominates the week: the nodes after it received nothing, so their utilization
+  // says nothing about how they would have coped (§5.7).
+  const downNodes = path.filter((node) => node.metrics.status === 'failed').map((node) => node.nodeId)
+  const firstDown = downNodes[0]
+  if (firstDown !== undefined) return { kind: 'outage', downNodes, firstDown }
 
   if (tick.bottleneck === null) {
     const mostHeadroom = extreme(

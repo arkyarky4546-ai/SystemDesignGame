@@ -77,7 +77,7 @@ export function TurnReport({ lastTurn, onClose }: TurnReportProps) {
           <ul className="flex flex-col gap-2">
             {result.events.map((event, index) => (
               <li key={index} className="border-l-2 border-pressure pl-3 text-sm leading-relaxed text-ink-bright">
-                {describeEvent(event)}
+                {describeEvent(event, (nodeId) => nodeName(ran, nodeId))}
               </li>
             ))}
           </ul>
@@ -212,11 +212,19 @@ export function TurnReport({ lastTurn, onClose }: TurnReportProps) {
                         <td className="py-1">{COMPONENT_DEFS[node.kind].tiers[node.tier]?.label}</td>
                         <td className="num py-1 text-right">{formatRps(metrics.inboundRps)}</td>
                         <td className="num py-1 text-right">{formatRps(metrics.capacityRps)}</td>
+                        {/* A node that was down has no utilization or response time: 0% would
+                            read as idle when it was serving nothing at all (02-SIMULATION §5.7). */}
                         <td className="num py-1 text-right">
-                          {metrics.status === 'saturated' ? '▲ ' : ''}
-                          {formatUtilization(metrics.utilization)}
+                          {metrics.status === 'failed' ? (
+                            '✕ down'
+                          ) : (
+                            <>
+                              {metrics.status === 'saturated' ? '▲ ' : ''}
+                              {formatUtilization(metrics.utilization)}
+                            </>
+                          )}
                         </td>
-                        <td className="num py-1 text-right">{formatMs(metrics.p99Ms)}</td>
+                        <td className="num py-1 text-right">{metrics.status === 'failed' ? '—' : formatMs(metrics.p99Ms)}</td>
                         <td className="num py-1 text-right">{metrics.droppedRps > 0 ? formatRps(metrics.droppedRps) : '0'}</td>
                       </tr>
                     )

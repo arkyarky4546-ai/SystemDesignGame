@@ -93,6 +93,14 @@ export const LOCKED = {
   optionSuffix: 'locked',
 } as const
 
+export const REDUNDANCY = {
+  /** Why the instance count is stuck where it is, and what moves it (02-SIMULATION §5.7). */
+  needs: (cap: number, conceptTitle: string) =>
+    cap <= 1
+      ? `Running a second instance needs ${conceptTitle}, later in the curriculum. Until then, if this one goes down, everything through it goes down with it.`
+      : `Running more than ${cap} needs ${conceptTitle}.`,
+} as const
+
 /** "Medium, Large and Extra large need Capacity, utilization, and the cliff." */
 export function lockedSizesLine(labels: readonly string[], conceptTitle: string): string {
   return `${joinLabels(labels)} need ${conceptTitle}.`

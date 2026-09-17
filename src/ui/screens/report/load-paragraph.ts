@@ -15,6 +15,13 @@ export function describeLoad(tick: TickResult, ran: Architecture): string {
   const name = (nodeId: NodeId) => nodeName(ran, nodeId)
   const utilizationOf = (nodeId: NodeId) => formatUtilization(tick.perNode[nodeId]?.utilization ?? 0)
 
+  if (finding.kind === 'outage') {
+    const down = listNames(finding.downNodes.map(name))
+    const rest = finding.downNodes.length > 1 ? ' were' : ' was'
+    // Nothing downstream of a dead node saw any traffic, so there is no load story to tell.
+    return `${down}${rest} down all week. Every request that had to cross ${finding.downNodes.length > 1 ? 'them' : name(finding.firstDown)} failed, so this week’s load figures say nothing about how the rest of your architecture would have coped.`
+  }
+
   if (finding.kind === 'all-healthy') {
     const headroom = finding.mostHeadroom
       ? `, and ${name(finding.mostHeadroom)} had the most headroom, at ${utilizationOf(finding.mostHeadroom)}`

@@ -1,16 +1,16 @@
 import { useId, useState, type ReactNode } from 'react'
 import { COMPONENT_DEFS } from '../../../content/components'
 import { CONCEPTS } from '../../../content/concepts'
-import type { ConceptId } from '../../../content/schema'
+import { PLANNED_CONCEPT_TITLES, type ConceptId, type PlannedConceptId } from '../../../content/schema'
 import { setupCostCents, type Architecture, type ComponentNode, type Edge, type Knowledge, type PricedCatalog, type TickResult } from '../../../engine'
-import { connect, connectionRefusal, disconnect, findNode, removeNode, setTier, type Edit } from '../../../state/architecture'
-import { isTierUnlocked, lockedTiers } from '../../../state/unlocks'
+import { connect, connectionRefusal, disconnect, findNode, removeNode, setReplicas, setTier, type Edit } from '../../../state/architecture'
+import { isTierUnlocked, lockedTiers, maxReplicas, nextReplicaConceptFor } from '../../../state/unlocks'
 import type { CanvasMessage, CanvasSelection } from '../../canvas/ArchitectureCanvas'
 import { describeConnectionRefusal, describeEditRefusal, nodeName } from '../../canvas/copy'
 import { Term, TermGroup } from '../../components/Term'
 import { formatDollars, formatMs, formatRps, formatUtilization } from '../../format'
 import type { TermId } from '../../glossary'
-import { LOCKED, lockedSizesLine } from '../learning/learning-copy'
+import { LOCKED, REDUNDANCY, lockedSizesLine } from '../learning/learning-copy'
 
 type NodeInspectorProps = {
   /** What the next Advance will run: the player's plan. */
@@ -175,6 +175,19 @@ function NodeDetails(
         </div>
       )}
 
+      {def.tiers.length > 0 && (
+        <Instances
+          node={node}
+          knowledge={props.knowledge}
+          onChoose={(replicas) =>
+            apply(
+              setReplicas(architecture, node.id, replicas, maxReplicas(props.knowledge, node.kind)),
+              `${name} set to ${replicas} ${replicas === 1 ? 'instance' : 'instances'}.`,
+            )
+          }
+        />
+      )}
+
       {tier && (
         <Figures title="At this size">
           <Figure label="Capacity" term="capacity" value={formatRps(tier.capacityRps)} />
@@ -283,6 +296,50 @@ function NodeDetails(
  * concept rather than the mechanism, and opens its lesson, so the player who hits the
  * ceiling has one press between them and the thing that lifts it.
  */
+/**
+ * How many instances this component runs, and what would let it run more (ADR-0050). The
+ * cap is 1 until `single-point-of-failure` opens the second, so today the control is there
+ * and shut — the same way a size the player hasn't earned is listed and disabled.
+ */
+function Instances({
+  node,
+  knowledge,
+  onChoose,
+}: {
+  readonly node: ComponentNode
+  readonly knowledge: Knowledge
+  readonly onChoose: (replicas: number) => void
+}) {
+  const cap = maxReplicas(knowledge, node.kind)
+  const gate = nextReplicaConceptFor(knowledge, node.kind)
+  const choices = Number.isFinite(cap) ? cap : Math.max(node.replicas + 1, 4)
+  return (
+    <div className="flex flex-col gap-1">
+      <label className="flex flex-col gap-1 text-xs">
+        Instances
+        <select
+          className={`${FIELD} num`}
+          value={node.replicas}
+          disabled={cap <= 1}
+          onChange={(event) => onChoose(Number(event.target.value))}
+        >
+          {Array.from({ length: Math.max(choices, node.replicas) }, (_, index) => index + 1).map((count) => (
+            <option key={count} value={count} disabled={count > cap && count !== node.replicas}>
+              {count}
+            </option>
+          ))}
+        </select>
+      </label>
+      {gate && <p className="text-xs leading-relaxed">{REDUNDANCY.needs(cap, titleOf(gate))}</p>}
+    </div>
+  )
+}
+
+// A gate may name a concept with a lesson, or one 04-CURRICULUM has only promised.
+function titleOf(gate: ConceptId | PlannedConceptId): string {
+  return gate in CONCEPTS ? CONCEPTS[gate as ConceptId].title : PLANNED_CONCEPT_TITLES[gate as PlannedConceptId]
+}
+
 function LockedSizes({
   kind,
   knowledge,

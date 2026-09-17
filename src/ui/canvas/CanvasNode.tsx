@@ -10,6 +10,8 @@ type CanvasNodeProps = {
   readonly name: string
   readonly domId: string
   readonly utilization: number | undefined
+  /** Whether every instance of this node was down last week (02-SIMULATION §5.7). */
+  readonly failed: boolean
   readonly selected: boolean
   readonly connectSource: boolean
   readonly editable: boolean
@@ -23,11 +25,18 @@ const FILL_CLASS: Readonly<Record<LoadLevel, string>> = {
   healthy: 'fill-flow',
   warning: 'fill-pressure',
   saturated: 'fill-fault',
+  failed: 'fill-fault',
 }
 // A dark outline behind node text keeps it readable over fills and the saturation hatch.
 const HALO = { strokeWidth: 3, strokeLinejoin: 'round', paintOrder: 'stroke' } as const
 
-const LEVEL_WORD = { unknown: 'no load measured yet', healthy: 'healthy', warning: 'under pressure', saturated: 'saturated' } as const
+const LEVEL_WORD = {
+  unknown: 'no load measured yet',
+  healthy: 'healthy',
+  warning: 'under pressure',
+  saturated: 'saturated',
+  failed: 'down all week, serving nothing',
+} as const
 
 type LoadVisual = {
   readonly level: LoadLevel
@@ -39,25 +48,34 @@ type LoadVisual = {
 }
 
 /**
- * How a node shows a utilization (0..1, or undefined before any turn has run). Rendering and
- * the turn animation both use it, so a finished animation leaves exactly what React drew.
+ * How a node shows a utilization (0..1, or undefined before any turn has run), or an
+ * outage. Rendering and the turn animation both use it, so a finished animation leaves
+ * exactly what React drew.
+ *
+ * A node that was down has no utilization to show: it fills completely and reads "✕ down",
+ * so the outage is a word and a glyph as well as a colour (01-ARCHITECTURE §9).
  */
-export function loadVisual(utilization: number | undefined): LoadVisual {
-  const level = loadLevel(utilization)
-  const fillHeight = utilization === undefined ? 0 : NODE_HEIGHT * utilization
+export function loadVisual(utilization: number | undefined, failed = false): LoadVisual {
+  const level = loadLevel(utilization, failed)
+  const fillHeight = level === 'failed' ? NODE_HEIGHT : utilization === undefined ? 0 : NODE_HEIGHT * utilization
   return {
     level,
     fillY: NODE_HEIGHT - fillHeight,
     fillHeight,
     fillClass: FILL_CLASS[level],
-    hatch: level === 'saturated' ? 'visible' : 'hidden',
-    reading: utilization === undefined ? '—' : `${level === 'saturated' ? '▲ ' : ''}${formatUtilization(utilization)}`,
+    hatch: level === 'saturated' || level === 'failed' ? 'visible' : 'hidden',
+    reading:
+      level === 'failed'
+        ? '✕ down'
+        : utilization === undefined
+          ? '—'
+          : `${level === 'saturated' ? '▲ ' : ''}${formatUtilization(utilization)}`,
   }
 }
 
-/** Paints a utilization onto a rendered node's group, for animation frames. */
-export function paintLoad(group: SVGGElement, utilization: number | undefined): void {
-  const visual = loadVisual(utilization)
+/** Paints a utilization, or an outage, onto a rendered node's group, for animation frames. */
+export function paintLoad(group: SVGGElement, utilization: number | undefined, failed = false): void {
+  const visual = loadVisual(utilization, failed)
   group.setAttribute('data-load', visual.level)
   const fill = group.querySelector('[data-part="fill"]')
   fill?.setAttribute('y', String(visual.fillY))
@@ -78,14 +96,14 @@ export function paintLoad(group: SVGGElement, utilization: number | undefined): 
  * present, so the turn animation only ever changes attributes.
  */
 export const CanvasNode = memo(function CanvasNode(props: CanvasNodeProps) {
-  const { node, name, domId, utilization, selected, connectSource, editable } = props
+  const { node, name, domId, utilization, failed, selected, connectSource, editable } = props
   const origin = nodeOrigin(node.position)
   const def = COMPONENT_DEFS[node.kind]
   const tierLabel = def.tiers[node.tier]?.label ?? ''
-  const visual = loadVisual(utilization)
-  const label = [name, tierLabel, utilization === undefined ? '' : `utilization ${formatUtilization(utilization)}`, LEVEL_WORD[visual.level]]
-    .filter(Boolean)
-    .join(', ')
+  const visual = loadVisual(utilization, failed)
+  // A node that was down has no utilization worth reading out: it served nothing.
+  const reading = visual.level === 'failed' || utilization === undefined ? '' : `utilization ${formatUtilization(utilization)}`
+  const label = [name, tierLabel, reading, LEVEL_WORD[visual.level]].filter(Boolean).join(', ')
 
   return (
     <g

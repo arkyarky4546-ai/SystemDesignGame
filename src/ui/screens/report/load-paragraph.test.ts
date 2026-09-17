@@ -58,6 +58,33 @@ describe('the weekly report’s bottleneck paragraph (M4 acceptance, 07-TESTING 
     )
   })
 
+  it('says the outage and nothing about load when a node was down (M6a acceptance)', () => {
+    const input = linearInput({ peakRps: 70, app: tier(100), database: tier(64) })
+    const tick = unwrap(simulateTick({ ...input, outages: [{ nodeId: 'app', failedInstances: 1, turnsRemaining: 1 }] }))
+    const text = describeLoad(tick, input.architecture)
+    expect(text).toBe(
+      'App server was down all week. Every request that had to cross App server failed, so this week’s load figures say nothing about how the rest of your architecture would have coped.',
+    )
+    // The database was fine only because nothing reached it, so the paragraph can't call it
+    // "not the problem" — that would teach the player to look in the wrong place.
+    expect(text).not.toContain('wasn’t the problem')
+    expect(text).not.toMatch(/!/)
+  })
+
+  it('names every node that was down, in path order', () => {
+    const input = linearInput({ peakRps: 70, app: tier(100), database: tier(64) })
+    const tick = unwrap(
+      simulateTick({
+        ...input,
+        outages: [
+          { nodeId: 'db', failedInstances: 1, turnsRemaining: 1 },
+          { nodeId: 'app', failedInstances: 1, turnsRemaining: 1 },
+        ],
+      }),
+    )
+    expect(describeLoad(tick, input.architecture)).toContain('App server and Database were down all week.')
+  })
+
   it('keeps the interface voice: no exclamation points (05-UI-DESIGN §8)', () => {
     for (const [peak, app, database] of [
       [70, 100, 64],
