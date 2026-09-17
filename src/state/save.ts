@@ -13,15 +13,21 @@ import {
   type Result,
   type RunState,
   type SimEvent,
+  type CheckAttempt,
+  type Knowledge,
   type TurnSummary,
   type Workload,
 } from '../engine'
 
+// `Knowledge` and `CheckAttempt` live in the engine, which reads them to award the
+// first-pass bonus (ADR-0040). Re-exported here so save's callers keep one import.
+export type { CheckAttempt, Knowledge }
+
 // Save files: serialize, validate, migrate, quarantine, export (01-ARCHITECTURE §7, ADR-0025).
 
 /**
- * Bumped when content changes in a way that breaks saved concept or question ids. No
- * content exists yet.
+ * Bumped when content changes in a way that breaks saved concept or question ids. M4b
+ * issued the first of both, and has broken neither (ADR-0041).
  */
 export const CONTENT_VERSION = 0
 
@@ -31,23 +37,6 @@ export const CORRUPT_KEY_PREFIX = 'nines.save.corrupt.'
 /** The localStorage key a given save version lives under. */
 export function saveKey(version: number): string {
   return `${SAVE_KEY_PREFIX}${version}`
-}
-
-/** One attempt at a concept's check. Question ids are permanent (ADR-0015). */
-export type CheckAttempt = {
-  readonly conceptId: string
-  /** 1 for the first attempt. Seeds option shuffling in M6. */
-  readonly attemptNumber: number
-  readonly correct: number
-  readonly total: number
-  readonly passed: boolean
-  readonly missedQuestionIds: readonly string[]
-}
-
-/** What the player has learned. Outlives every run (00-GAME-DESIGN §8). */
-export type Knowledge = {
-  readonly unlockedConcepts: readonly string[]
-  readonly checkHistory: readonly CheckAttempt[]
 }
 
 export type Settings = {

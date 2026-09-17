@@ -357,3 +357,26 @@ export type TurnResult = TickResult & {
   readonly events: readonly SimEvent[]
   readonly nextRun: RunState
 }
+
+/**
+ * One attempt at a concept's check (03-CONTENT-SCHEMA §4). Question ids are permanent
+ * (09-QUESTION-BANK §4.3), so a past attempt still weights the retakes that follow it.
+ */
+export type CheckAttempt = {
+  readonly conceptId: string
+  /** 1 for the first attempt. Seeds the draw and, in M6, the option shuffle. */
+  readonly attemptNumber: number
+  readonly correct: number
+  readonly total: number
+  readonly passed: boolean
+  readonly missedQuestionIds: readonly string[]
+}
+
+/**
+ * What the player has learned. Outlives every run (00-GAME-DESIGN §8), so a concept passed
+ * in one run stays unlocked in the next — and pays its first-pass bonus only once.
+ */
+export type Knowledge = {
+  readonly unlockedConcepts: readonly string[]
+  readonly checkHistory: readonly CheckAttempt[]
+}

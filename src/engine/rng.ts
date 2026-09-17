@@ -60,3 +60,22 @@ function fmix32(value: number): number {
   h ^= h >>> 16
   return h >>> 0
 }
+
+/**
+ * The generator for one attempt at a concept's check, seeded from hash(seed, conceptId,
+ * attemptNumber). Replaying an attempt draws the same questions in the same order, and a
+ * retake draws a different set because its attempt number differs (03-CONTENT-SCHEMA §4).
+ * Unitless.
+ */
+export function rngForCheck(seed: number, conceptId: string, attemptNumber: number): Rng {
+  return createRng(fmix32((seed >>> 0) ^ fmix32(hashText(conceptId) ^ fmix32((attemptNumber + 0x9e3779b9) >>> 0))))
+}
+
+/** FNV-1a over the string's UTF-16 code units, as an unsigned 32-bit integer. */
+function hashText(text: string): number {
+  let hash = 0x811c9dc5
+  for (let index = 0; index < text.length; index++) {
+    hash = Math.imul(hash ^ text.charCodeAt(index), 0x01000193)
+  }
+  return hash >>> 0
+}

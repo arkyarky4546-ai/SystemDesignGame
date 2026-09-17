@@ -125,4 +125,41 @@ export const BALANCE = {
     /** Database queries per request on a newly placed app server, the starter included. Unitless. Placeholder. */
     appFanoutFactor: 1,
   },
+
+  knowledge: {
+    /**
+     * Paid into the run's cash the first time a concept's check is passed, integer cents
+     * (00-GAME-DESIGN §4, ADR-0040). A retake after passing and practice mode pay nothing,
+     * so questions can't be farmed. Placeholder: about one Medium app server's setup, so a
+     * first pass buys the upgrade it just unlocked. M9 tunes it.
+     */
+    firstPassBonusCents: 500_00,
+  },
+
+  check: {
+    /**
+     * Question depths each difficulty draws from (03-CONTENT-SCHEMA §4). Not a placeholder:
+     * the spec gives these. Difficulty never changes which questions exist, only which of
+     * them a check can ask (00-GAME-DESIGN §6).
+     */
+    depths: byDifficulty<readonly (1 | 2 | 3)[]>({
+      intern: [1, 2],
+      junior: [1, 2],
+      senior: [1, 2, 3],
+      staff: [2, 3],
+    }),
+    /** Share of a check that has to be correct to pass, 0..1 (00-GAME-DESIGN §6). */
+    passThreshold: byDifficulty({ intern: 0.6, junior: 0.7, senior: 0.8, staff: 0.85 }),
+    /**
+     * The depth a check always draws first when its pool has one, so no check is pure
+     * recall (03-CONTENT-SCHEMA §4). Every difficulty draws this depth.
+     */
+    requiredDepth: 2 as 1 | 2 | 3,
+    /**
+     * Extra draw weight a question carries per past attempt that missed it, unitless
+     * (03-CONTENT-SCHEMA §4). A question missed once is this much more likely than one
+     * never missed. Placeholder.
+     */
+    missedQuestionWeight: 3,
+  },
 } as const
