@@ -7,6 +7,11 @@ import tseslint from 'typescript-eslint'
 const uiRuntime = ['react', 'react/*', 'react-dom', 'react-dom/*', 'zustand', 'zustand/*']
 const layer = (name) => [`**/${name}`, `**/${name}/**`]
 
+// Node's types are on for tools/, which writes the generated bank (ADR-0044). Nothing under
+// src/ may reach a Node API: the app runs in a browser and the engine stays headless. Flat
+// config replaces a rule rather than merging it, so every src/ block repeats this.
+const noNode = { group: ['node:*'], message: 'src/ runs in a browser. Node APIs belong in tools/.' }
+
 function forbidImports(files, patterns) {
   return {
     files,
@@ -19,9 +24,11 @@ function forbidImports(files, patterns) {
 export default defineConfig([
   globalIgnores(['dist/', '.wrangler/']),
   tseslint.configs.recommended,
+  forbidImports(['src/**/*.{ts,tsx}'], [noNode]),
   forbidImports(
     ['src/engine/**/*.{ts,tsx}'],
     [
+      noNode,
       {
         group: uiRuntime,
         message: 'engine/ is pure simulation and must not depend on React or the store.',
@@ -35,6 +42,7 @@ export default defineConfig([
   forbidImports(
     ['src/content/**/*.{ts,tsx}'],
     [
+      noNode,
       {
         group: uiRuntime,
         message: 'content/ is data and must not depend on React or the store.',
@@ -48,6 +56,7 @@ export default defineConfig([
   forbidImports(
     ['src/state/**/*.{ts,tsx}'],
     [
+      noNode,
       {
         group: layer('ui'),
         message: 'state/ must not import ui/ (ui → state → engine → content).',
