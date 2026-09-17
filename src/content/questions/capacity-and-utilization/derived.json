@@ -1,0 +1,2392 @@
+[
+  {
+    "id": "q-capacity-and-utilization-d-capacity-instances-needed-0001",
+    "conceptId": "capacity-and-utilization",
+    "depth": 2,
+    "prompt": "Your service averages 1700/s and its busiest hour runs at 2.5 times that. One app server of the size you are buying serves 500/s. How many do you need to stay at or under 80% utilization at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "11"
+        },
+        {
+          "id": "b",
+          "text": "9",
+          "whyWrong": "This sizes the fleet to exactly meet the peak, which puts every server at 100% utilization. At 100% the latency curve has no finite value and load starts being turned away; the target exists to keep you off it."
+        },
+        {
+          "id": "c",
+          "text": "7",
+          "whyWrong": "This multiplies by the target instead of dividing by it, which asks for less capacity than the peak needs rather than more. Headroom makes the fleet bigger, never smaller."
+        },
+        {
+          "id": "d",
+          "text": "5",
+          "whyWrong": "This sizes for the weekly mean. The game resolves every week at its busiest hour, so a fleet sized for the mean is short by the whole peak multiplier exactly when it matters."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak load is 1700 × 2.5 = 4250/s. Capacity has to reach peak ÷ 0.8, and each server gives 500/s, so you divide and round up. Rounding down would leave the fleet over the target on the busiest hour.",
+    "tags": [
+      "capacity-math",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-instances-needed",
+      "params": {
+        "meanRps": 1700,
+        "peakMultiplier": 2.5,
+        "capacityRps": 500,
+        "targetUtilization": 0.8
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-instances-needed-0002",
+    "conceptId": "capacity-and-utilization",
+    "depth": 2,
+    "prompt": "Your service averages 1300/s and its busiest hour runs at 3 times that. One app server of the size you are buying serves 250/s. How many do you need to stay at or under 75% utilization at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "21"
+        },
+        {
+          "id": "b",
+          "text": "16",
+          "whyWrong": "This sizes the fleet to exactly meet the peak, which puts every server at 100% utilization. At 100% the latency curve has no finite value and load starts being turned away; the target exists to keep you off it."
+        },
+        {
+          "id": "c",
+          "text": "12",
+          "whyWrong": "This multiplies by the target instead of dividing by it, which asks for less capacity than the peak needs rather than more. Headroom makes the fleet bigger, never smaller."
+        },
+        {
+          "id": "d",
+          "text": "7",
+          "whyWrong": "This sizes for the weekly mean. The game resolves every week at its busiest hour, so a fleet sized for the mean is short by the whole peak multiplier exactly when it matters."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak load is 1300 × 3 = 3900/s. Capacity has to reach peak ÷ 0.75, and each server gives 250/s, so you divide and round up. Rounding down would leave the fleet over the target on the busiest hour.",
+    "tags": [
+      "capacity-math",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-instances-needed",
+      "params": {
+        "meanRps": 1300,
+        "peakMultiplier": 3,
+        "capacityRps": 250,
+        "targetUtilization": 0.75
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-instances-needed-0003",
+    "conceptId": "capacity-and-utilization",
+    "depth": 2,
+    "prompt": "Your service averages 2900/s and its busiest hour runs at 1.5 times that. One app server of the size you are buying serves 200/s. How many do you need to stay at or under 70% utilization at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "32"
+        },
+        {
+          "id": "b",
+          "text": "22",
+          "whyWrong": "This sizes the fleet to exactly meet the peak, which puts every server at 100% utilization. At 100% the latency curve has no finite value and load starts being turned away; the target exists to keep you off it."
+        },
+        {
+          "id": "c",
+          "text": "16",
+          "whyWrong": "This multiplies by the target instead of dividing by it, which asks for less capacity than the peak needs rather than more. Headroom makes the fleet bigger, never smaller."
+        },
+        {
+          "id": "d",
+          "text": "21",
+          "whyWrong": "This sizes for the weekly mean. The game resolves every week at its busiest hour, so a fleet sized for the mean is short by the whole peak multiplier exactly when it matters."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak load is 2900 × 1.5 = 4350/s. Capacity has to reach peak ÷ 0.7, and each server gives 200/s, so you divide and round up. Rounding down would leave the fleet over the target on the busiest hour.",
+    "tags": [
+      "capacity-math",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-instances-needed",
+      "params": {
+        "meanRps": 2900,
+        "peakMultiplier": 1.5,
+        "capacityRps": 200,
+        "targetUtilization": 0.7
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-instances-needed-0004",
+    "conceptId": "capacity-and-utilization",
+    "depth": 2,
+    "prompt": "Your service averages 700/s and its busiest hour runs at 3 times that. One app server of the size you are buying serves 150/s. How many do you need to stay at or under 70% utilization at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "20"
+        },
+        {
+          "id": "b",
+          "text": "14",
+          "whyWrong": "This sizes the fleet to exactly meet the peak, which puts every server at 100% utilization. At 100% the latency curve has no finite value and load starts being turned away; the target exists to keep you off it."
+        },
+        {
+          "id": "c",
+          "text": "10",
+          "whyWrong": "This multiplies by the target instead of dividing by it, which asks for less capacity than the peak needs rather than more. Headroom makes the fleet bigger, never smaller."
+        },
+        {
+          "id": "d",
+          "text": "7",
+          "whyWrong": "This sizes for the weekly mean. The game resolves every week at its busiest hour, so a fleet sized for the mean is short by the whole peak multiplier exactly when it matters."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak load is 700 × 3 = 2100/s. Capacity has to reach peak ÷ 0.7, and each server gives 150/s, so you divide and round up. Rounding down would leave the fleet over the target on the busiest hour.",
+    "tags": [
+      "capacity-math",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-instances-needed",
+      "params": {
+        "meanRps": 700,
+        "peakMultiplier": 3,
+        "capacityRps": 150,
+        "targetUtilization": 0.7
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-instances-needed-0005",
+    "conceptId": "capacity-and-utilization",
+    "depth": 2,
+    "prompt": "Your service averages 1200/s and its busiest hour runs at 3 times that. One app server of the size you are buying serves 200/s. How many do you need to stay at or under 80% utilization at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "23"
+        },
+        {
+          "id": "b",
+          "text": "18",
+          "whyWrong": "This sizes the fleet to exactly meet the peak, which puts every server at 100% utilization. At 100% the latency curve has no finite value and load starts being turned away; the target exists to keep you off it."
+        },
+        {
+          "id": "c",
+          "text": "15",
+          "whyWrong": "This multiplies by the target instead of dividing by it, which asks for less capacity than the peak needs rather than more. Headroom makes the fleet bigger, never smaller."
+        },
+        {
+          "id": "d",
+          "text": "8",
+          "whyWrong": "This sizes for the weekly mean. The game resolves every week at its busiest hour, so a fleet sized for the mean is short by the whole peak multiplier exactly when it matters."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak load is 1200 × 3 = 3600/s. Capacity has to reach peak ÷ 0.8, and each server gives 200/s, so you divide and round up. Rounding down would leave the fleet over the target on the busiest hour.",
+    "tags": [
+      "capacity-math",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-instances-needed",
+      "params": {
+        "meanRps": 1200,
+        "peakMultiplier": 3,
+        "capacityRps": 200,
+        "targetUtilization": 0.8
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-instances-needed-0006",
+    "conceptId": "capacity-and-utilization",
+    "depth": 2,
+    "prompt": "Your service averages 1000/s and its busiest hour runs at 3 times that. One app server of the size you are buying serves 150/s. How many do you need to stay at or under 70% utilization at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "29"
+        },
+        {
+          "id": "b",
+          "text": "20",
+          "whyWrong": "This sizes the fleet to exactly meet the peak, which puts every server at 100% utilization. At 100% the latency curve has no finite value and load starts being turned away; the target exists to keep you off it."
+        },
+        {
+          "id": "c",
+          "text": "14",
+          "whyWrong": "This multiplies by the target instead of dividing by it, which asks for less capacity than the peak needs rather than more. Headroom makes the fleet bigger, never smaller."
+        },
+        {
+          "id": "d",
+          "text": "10",
+          "whyWrong": "This sizes for the weekly mean. The game resolves every week at its busiest hour, so a fleet sized for the mean is short by the whole peak multiplier exactly when it matters."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak load is 1000 × 3 = 3000/s. Capacity has to reach peak ÷ 0.7, and each server gives 150/s, so you divide and round up. Rounding down would leave the fleet over the target on the busiest hour.",
+    "tags": [
+      "capacity-math",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-instances-needed",
+      "params": {
+        "meanRps": 1000,
+        "peakMultiplier": 3,
+        "capacityRps": 150,
+        "targetUtilization": 0.7
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-instances-needed-0007",
+    "conceptId": "capacity-and-utilization",
+    "depth": 2,
+    "prompt": "Your service averages 2800/s and its busiest hour runs at 1.5 times that. One app server of the size you are buying serves 150/s. How many do you need to stay at or under 75% utilization at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "38"
+        },
+        {
+          "id": "b",
+          "text": "28",
+          "whyWrong": "This sizes the fleet to exactly meet the peak, which puts every server at 100% utilization. At 100% the latency curve has no finite value and load starts being turned away; the target exists to keep you off it."
+        },
+        {
+          "id": "c",
+          "text": "21",
+          "whyWrong": "This multiplies by the target instead of dividing by it, which asks for less capacity than the peak needs rather than more. Headroom makes the fleet bigger, never smaller."
+        },
+        {
+          "id": "d",
+          "text": "25",
+          "whyWrong": "This sizes for the weekly mean. The game resolves every week at its busiest hour, so a fleet sized for the mean is short by the whole peak multiplier exactly when it matters."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak load is 2800 × 1.5 = 4200/s. Capacity has to reach peak ÷ 0.75, and each server gives 150/s, so you divide and round up. Rounding down would leave the fleet over the target on the busiest hour.",
+    "tags": [
+      "capacity-math",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-instances-needed",
+      "params": {
+        "meanRps": 2800,
+        "peakMultiplier": 1.5,
+        "capacityRps": 150,
+        "targetUtilization": 0.75
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-instances-needed-0008",
+    "conceptId": "capacity-and-utilization",
+    "depth": 2,
+    "prompt": "Your service averages 500/s and its busiest hour runs at 1.5 times that. One app server of the size you are buying serves 150/s. How many do you need to stay at or under 60% utilization at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "9"
+        },
+        {
+          "id": "b",
+          "text": "5",
+          "whyWrong": "This sizes the fleet to exactly meet the peak, which puts every server at 100% utilization. At 100% the latency curve has no finite value and load starts being turned away; the target exists to keep you off it."
+        },
+        {
+          "id": "c",
+          "text": "3",
+          "whyWrong": "This multiplies by the target instead of dividing by it, which asks for less capacity than the peak needs rather than more. Headroom makes the fleet bigger, never smaller."
+        },
+        {
+          "id": "d",
+          "text": "6",
+          "whyWrong": "This sizes for the weekly mean. The game resolves every week at its busiest hour, so a fleet sized for the mean is short by the whole peak multiplier exactly when it matters."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak load is 500 × 1.5 = 750/s. Capacity has to reach peak ÷ 0.6, and each server gives 150/s, so you divide and round up. Rounding down would leave the fleet over the target on the busiest hour.",
+    "tags": [
+      "capacity-math",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-instances-needed",
+      "params": {
+        "meanRps": 500,
+        "peakMultiplier": 1.5,
+        "capacityRps": 150,
+        "targetUtilization": 0.6
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-instances-needed-0009",
+    "conceptId": "capacity-and-utilization",
+    "depth": 2,
+    "prompt": "Your service averages 3300/s and its busiest hour runs at 2 times that. One app server of the size you are buying serves 400/s. How many do you need to stay at or under 60% utilization at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "28"
+        },
+        {
+          "id": "b",
+          "text": "17",
+          "whyWrong": "This sizes the fleet to exactly meet the peak, which puts every server at 100% utilization. At 100% the latency curve has no finite value and load starts being turned away; the target exists to keep you off it."
+        },
+        {
+          "id": "c",
+          "text": "10",
+          "whyWrong": "This multiplies by the target instead of dividing by it, which asks for less capacity than the peak needs rather than more. Headroom makes the fleet bigger, never smaller."
+        },
+        {
+          "id": "d",
+          "text": "14",
+          "whyWrong": "This sizes for the weekly mean. The game resolves every week at its busiest hour, so a fleet sized for the mean is short by the whole peak multiplier exactly when it matters."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak load is 3300 × 2 = 6600/s. Capacity has to reach peak ÷ 0.6, and each server gives 400/s, so you divide and round up. Rounding down would leave the fleet over the target on the busiest hour.",
+    "tags": [
+      "capacity-math",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-instances-needed",
+      "params": {
+        "meanRps": 3300,
+        "peakMultiplier": 2,
+        "capacityRps": 400,
+        "targetUtilization": 0.6
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-instances-needed-0010",
+    "conceptId": "capacity-and-utilization",
+    "depth": 2,
+    "prompt": "Your service averages 1700/s and its busiest hour runs at 2.5 times that. One app server of the size you are buying serves 400/s. How many do you need to stay at or under 80% utilization at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "14"
+        },
+        {
+          "id": "b",
+          "text": "11",
+          "whyWrong": "This sizes the fleet to exactly meet the peak, which puts every server at 100% utilization. At 100% the latency curve has no finite value and load starts being turned away; the target exists to keep you off it."
+        },
+        {
+          "id": "c",
+          "text": "9",
+          "whyWrong": "This multiplies by the target instead of dividing by it, which asks for less capacity than the peak needs rather than more. Headroom makes the fleet bigger, never smaller."
+        },
+        {
+          "id": "d",
+          "text": "6",
+          "whyWrong": "This sizes for the weekly mean. The game resolves every week at its busiest hour, so a fleet sized for the mean is short by the whole peak multiplier exactly when it matters."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak load is 1700 × 2.5 = 4250/s. Capacity has to reach peak ÷ 0.8, and each server gives 400/s, so you divide and round up. Rounding down would leave the fleet over the target on the busiest hour.",
+    "tags": [
+      "capacity-math",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-instances-needed",
+      "params": {
+        "meanRps": 1700,
+        "peakMultiplier": 2.5,
+        "capacityRps": 400,
+        "targetUtilization": 0.8
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-instances-needed-0011",
+    "conceptId": "capacity-and-utilization",
+    "depth": 2,
+    "prompt": "Your service averages 1900/s and its busiest hour runs at 2 times that. One app server of the size you are buying serves 400/s. How many do you need to stay at or under 75% utilization at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "13"
+        },
+        {
+          "id": "b",
+          "text": "10",
+          "whyWrong": "This sizes the fleet to exactly meet the peak, which puts every server at 100% utilization. At 100% the latency curve has no finite value and load starts being turned away; the target exists to keep you off it."
+        },
+        {
+          "id": "c",
+          "text": "8",
+          "whyWrong": "This multiplies by the target instead of dividing by it, which asks for less capacity than the peak needs rather than more. Headroom makes the fleet bigger, never smaller."
+        },
+        {
+          "id": "d",
+          "text": "7",
+          "whyWrong": "This sizes for the weekly mean. The game resolves every week at its busiest hour, so a fleet sized for the mean is short by the whole peak multiplier exactly when it matters."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak load is 1900 × 2 = 3800/s. Capacity has to reach peak ÷ 0.75, and each server gives 400/s, so you divide and round up. Rounding down would leave the fleet over the target on the busiest hour.",
+    "tags": [
+      "capacity-math",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-instances-needed",
+      "params": {
+        "meanRps": 1900,
+        "peakMultiplier": 2,
+        "capacityRps": 400,
+        "targetUtilization": 0.75
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-instances-needed-0012",
+    "conceptId": "capacity-and-utilization",
+    "depth": 2,
+    "prompt": "Your service averages 1300/s and its busiest hour runs at 2 times that. One app server of the size you are buying serves 150/s. How many do you need to stay at or under 80% utilization at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "22"
+        },
+        {
+          "id": "b",
+          "text": "18",
+          "whyWrong": "This sizes the fleet to exactly meet the peak, which puts every server at 100% utilization. At 100% the latency curve has no finite value and load starts being turned away; the target exists to keep you off it."
+        },
+        {
+          "id": "c",
+          "text": "14",
+          "whyWrong": "This multiplies by the target instead of dividing by it, which asks for less capacity than the peak needs rather than more. Headroom makes the fleet bigger, never smaller."
+        },
+        {
+          "id": "d",
+          "text": "11",
+          "whyWrong": "This sizes for the weekly mean. The game resolves every week at its busiest hour, so a fleet sized for the mean is short by the whole peak multiplier exactly when it matters."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak load is 1300 × 2 = 2600/s. Capacity has to reach peak ÷ 0.8, and each server gives 150/s, so you divide and round up. Rounding down would leave the fleet over the target on the busiest hour.",
+    "tags": [
+      "capacity-math",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-instances-needed",
+      "params": {
+        "meanRps": 1300,
+        "peakMultiplier": 2,
+        "capacityRps": 150,
+        "targetUtilization": 0.8
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-instances-needed-0013",
+    "conceptId": "capacity-and-utilization",
+    "depth": 2,
+    "prompt": "Your service averages 900/s and its busiest hour runs at 3 times that. One app server of the size you are buying serves 400/s. How many do you need to stay at or under 60% utilization at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "12"
+        },
+        {
+          "id": "b",
+          "text": "7",
+          "whyWrong": "This sizes the fleet to exactly meet the peak, which puts every server at 100% utilization. At 100% the latency curve has no finite value and load starts being turned away; the target exists to keep you off it."
+        },
+        {
+          "id": "c",
+          "text": "5",
+          "whyWrong": "This multiplies by the target instead of dividing by it, which asks for less capacity than the peak needs rather than more. Headroom makes the fleet bigger, never smaller."
+        },
+        {
+          "id": "d",
+          "text": "4",
+          "whyWrong": "This sizes for the weekly mean. The game resolves every week at its busiest hour, so a fleet sized for the mean is short by the whole peak multiplier exactly when it matters."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak load is 900 × 3 = 2700/s. Capacity has to reach peak ÷ 0.6, and each server gives 400/s, so you divide and round up. Rounding down would leave the fleet over the target on the busiest hour.",
+    "tags": [
+      "capacity-math",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-instances-needed",
+      "params": {
+        "meanRps": 900,
+        "peakMultiplier": 3,
+        "capacityRps": 400,
+        "targetUtilization": 0.6
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-instances-needed-0014",
+    "conceptId": "capacity-and-utilization",
+    "depth": 2,
+    "prompt": "Your service averages 1500/s and its busiest hour runs at 2.5 times that. One app server of the size you are buying serves 250/s. How many do you need to stay at or under 80% utilization at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "19"
+        },
+        {
+          "id": "b",
+          "text": "15",
+          "whyWrong": "This sizes the fleet to exactly meet the peak, which puts every server at 100% utilization. At 100% the latency curve has no finite value and load starts being turned away; the target exists to keep you off it."
+        },
+        {
+          "id": "c",
+          "text": "12",
+          "whyWrong": "This multiplies by the target instead of dividing by it, which asks for less capacity than the peak needs rather than more. Headroom makes the fleet bigger, never smaller."
+        },
+        {
+          "id": "d",
+          "text": "8",
+          "whyWrong": "This sizes for the weekly mean. The game resolves every week at its busiest hour, so a fleet sized for the mean is short by the whole peak multiplier exactly when it matters."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak load is 1500 × 2.5 = 3750/s. Capacity has to reach peak ÷ 0.8, and each server gives 250/s, so you divide and round up. Rounding down would leave the fleet over the target on the busiest hour.",
+    "tags": [
+      "capacity-math",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-instances-needed",
+      "params": {
+        "meanRps": 1500,
+        "peakMultiplier": 2.5,
+        "capacityRps": 250,
+        "targetUtilization": 0.8
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-instances-needed-0015",
+    "conceptId": "capacity-and-utilization",
+    "depth": 2,
+    "prompt": "Your service averages 2200/s and its busiest hour runs at 1.5 times that. One app server of the size you are buying serves 250/s. How many do you need to stay at or under 60% utilization at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "22"
+        },
+        {
+          "id": "b",
+          "text": "14",
+          "whyWrong": "This sizes the fleet to exactly meet the peak, which puts every server at 100% utilization. At 100% the latency curve has no finite value and load starts being turned away; the target exists to keep you off it."
+        },
+        {
+          "id": "c",
+          "text": "8",
+          "whyWrong": "This multiplies by the target instead of dividing by it, which asks for less capacity than the peak needs rather than more. Headroom makes the fleet bigger, never smaller."
+        },
+        {
+          "id": "d",
+          "text": "15",
+          "whyWrong": "This sizes for the weekly mean. The game resolves every week at its busiest hour, so a fleet sized for the mean is short by the whole peak multiplier exactly when it matters."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak load is 2200 × 1.5 = 3300/s. Capacity has to reach peak ÷ 0.6, and each server gives 250/s, so you divide and round up. Rounding down would leave the fleet over the target on the busiest hour.",
+    "tags": [
+      "capacity-math",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-instances-needed",
+      "params": {
+        "meanRps": 2200,
+        "peakMultiplier": 1.5,
+        "capacityRps": 250,
+        "targetUtilization": 0.6
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-instances-needed-0016",
+    "conceptId": "capacity-and-utilization",
+    "depth": 2,
+    "prompt": "Your service averages 1100/s and its busiest hour runs at 1.5 times that. One app server of the size you are buying serves 150/s. How many do you need to stay at or under 60% utilization at peak?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "19"
+        },
+        {
+          "id": "b",
+          "text": "11",
+          "whyWrong": "This sizes the fleet to exactly meet the peak, which puts every server at 100% utilization. At 100% the latency curve has no finite value and load starts being turned away; the target exists to keep you off it."
+        },
+        {
+          "id": "c",
+          "text": "7",
+          "whyWrong": "This multiplies by the target instead of dividing by it, which asks for less capacity than the peak needs rather than more. Headroom makes the fleet bigger, never smaller."
+        },
+        {
+          "id": "d",
+          "text": "13",
+          "whyWrong": "This sizes for the weekly mean. The game resolves every week at its busiest hour, so a fleet sized for the mean is short by the whole peak multiplier exactly when it matters."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak load is 1100 × 1.5 = 1650/s. Capacity has to reach peak ÷ 0.6, and each server gives 150/s, so you divide and round up. Rounding down would leave the fleet over the target on the busiest hour.",
+    "tags": [
+      "capacity-math",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-instances-needed",
+      "params": {
+        "meanRps": 1100,
+        "peakMultiplier": 1.5,
+        "capacityRps": 150,
+        "targetUtilization": 0.6
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-utilization-from-load-0001",
+    "conceptId": "capacity-and-utilization",
+    "depth": 1,
+    "prompt": "An app server has a capacity of 400/s. Traffic averages 90/s and its busiest hour runs at 2.5 times that. What is the server's utilization at peak, as a percentage?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "56%"
+        },
+        {
+          "id": "b",
+          "text": "23%",
+          "whyWrong": "This measures the weekly mean against capacity. The game resolves every week at its busiest hour, so the figure that matters is the peak, which is higher by the whole peak multiplier."
+        },
+        {
+          "id": "c",
+          "text": "44%",
+          "whyWrong": "This is the share of capacity still free, not the share in use. The two add up to 100%, and it is the used share that drives the latency curve."
+        },
+        {
+          "id": "d",
+          "text": "39%",
+          "whyWrong": "This averages the utilization at the mean with the utilization at the peak. Nothing in the game runs at that average: the week is resolved at the peak, and a component sized for a blend is short when the busy hour arrives."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak load is 90 × 2.5 = 225/s, and utilization is received ÷ capacity at peak, so 225 ÷ 400. Every latency and error figure in the game is resolved at that busiest hour rather than at the mean.",
+    "tags": [
+      "utilization",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-utilization-from-load",
+      "params": {
+        "meanRps": 90,
+        "peakMultiplier": 2.5,
+        "capacityRps": 400
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-utilization-from-load-0002",
+    "conceptId": "capacity-and-utilization",
+    "depth": 1,
+    "prompt": "An app server has a capacity of 1000/s. Traffic averages 200/s and its busiest hour runs at 2.5 times that. What is the server's utilization at peak, as a percentage?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "50%"
+        },
+        {
+          "id": "b",
+          "text": "20%",
+          "whyWrong": "This measures the weekly mean against capacity. The game resolves every week at its busiest hour, so the figure that matters is the peak, which is higher by the whole peak multiplier."
+        },
+        {
+          "id": "c",
+          "text": "35%",
+          "whyWrong": "This averages the utilization at the mean with the utilization at the peak. Nothing in the game runs at that average: the week is resolved at the peak, and a component sized for a blend is short when the busy hour arrives."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak load is 200 × 2.5 = 500/s, and utilization is received ÷ capacity at peak, so 500 ÷ 1000. Every latency and error figure in the game is resolved at that busiest hour rather than at the mean.",
+    "tags": [
+      "utilization",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-utilization-from-load",
+      "params": {
+        "meanRps": 200,
+        "peakMultiplier": 2.5,
+        "capacityRps": 1000
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-utilization-from-load-0003",
+    "conceptId": "capacity-and-utilization",
+    "depth": 1,
+    "prompt": "An app server has a capacity of 800/s. Traffic averages 260/s and its busiest hour runs at 2.5 times that. What is the server's utilization at peak, as a percentage?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "81%"
+        },
+        {
+          "id": "b",
+          "text": "33%",
+          "whyWrong": "This measures the weekly mean against capacity. The game resolves every week at its busiest hour, so the figure that matters is the peak, which is higher by the whole peak multiplier."
+        },
+        {
+          "id": "c",
+          "text": "19%",
+          "whyWrong": "This is the share of capacity still free, not the share in use. The two add up to 100%, and it is the used share that drives the latency curve."
+        },
+        {
+          "id": "d",
+          "text": "57%",
+          "whyWrong": "This averages the utilization at the mean with the utilization at the peak. Nothing in the game runs at that average: the week is resolved at the peak, and a component sized for a blend is short when the busy hour arrives."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak load is 260 × 2.5 = 650/s, and utilization is received ÷ capacity at peak, so 650 ÷ 800. Every latency and error figure in the game is resolved at that busiest hour rather than at the mean.",
+    "tags": [
+      "utilization",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-utilization-from-load",
+      "params": {
+        "meanRps": 260,
+        "peakMultiplier": 2.5,
+        "capacityRps": 800
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-utilization-from-load-0004",
+    "conceptId": "capacity-and-utilization",
+    "depth": 1,
+    "prompt": "An app server has a capacity of 800/s. Traffic averages 360/s and its busiest hour runs at 1.5 times that. What is the server's utilization at peak, as a percentage?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "68%"
+        },
+        {
+          "id": "b",
+          "text": "45%",
+          "whyWrong": "This measures the weekly mean against capacity. The game resolves every week at its busiest hour, so the figure that matters is the peak, which is higher by the whole peak multiplier."
+        },
+        {
+          "id": "c",
+          "text": "32%",
+          "whyWrong": "This is the share of capacity still free, not the share in use. The two add up to 100%, and it is the used share that drives the latency curve."
+        },
+        {
+          "id": "d",
+          "text": "56%",
+          "whyWrong": "This averages the utilization at the mean with the utilization at the peak. Nothing in the game runs at that average: the week is resolved at the peak, and a component sized for a blend is short when the busy hour arrives."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak load is 360 × 1.5 = 540/s, and utilization is received ÷ capacity at peak, so 540 ÷ 800. Every latency and error figure in the game is resolved at that busiest hour rather than at the mean.",
+    "tags": [
+      "utilization",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-utilization-from-load",
+      "params": {
+        "meanRps": 360,
+        "peakMultiplier": 1.5,
+        "capacityRps": 800
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-utilization-from-load-0005",
+    "conceptId": "capacity-and-utilization",
+    "depth": 1,
+    "prompt": "An app server has a capacity of 800/s. Traffic averages 190/s and its busiest hour runs at 2 times that. What is the server's utilization at peak, as a percentage?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "48%"
+        },
+        {
+          "id": "b",
+          "text": "24%",
+          "whyWrong": "This measures the weekly mean against capacity. The game resolves every week at its busiest hour, so the figure that matters is the peak, which is higher by the whole peak multiplier."
+        },
+        {
+          "id": "c",
+          "text": "53%",
+          "whyWrong": "This is the share of capacity still free, not the share in use. The two add up to 100%, and it is the used share that drives the latency curve."
+        },
+        {
+          "id": "d",
+          "text": "36%",
+          "whyWrong": "This averages the utilization at the mean with the utilization at the peak. Nothing in the game runs at that average: the week is resolved at the peak, and a component sized for a blend is short when the busy hour arrives."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak load is 190 × 2 = 380/s, and utilization is received ÷ capacity at peak, so 380 ÷ 800. Every latency and error figure in the game is resolved at that busiest hour rather than at the mean.",
+    "tags": [
+      "utilization",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-utilization-from-load",
+      "params": {
+        "meanRps": 190,
+        "peakMultiplier": 2,
+        "capacityRps": 800
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-utilization-from-load-0006",
+    "conceptId": "capacity-and-utilization",
+    "depth": 1,
+    "prompt": "An app server has a capacity of 250/s. Traffic averages 60/s and its busiest hour runs at 3 times that. What is the server's utilization at peak, as a percentage?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "72%"
+        },
+        {
+          "id": "b",
+          "text": "24%",
+          "whyWrong": "This measures the weekly mean against capacity. The game resolves every week at its busiest hour, so the figure that matters is the peak, which is higher by the whole peak multiplier."
+        },
+        {
+          "id": "c",
+          "text": "28%",
+          "whyWrong": "This is the share of capacity still free, not the share in use. The two add up to 100%, and it is the used share that drives the latency curve."
+        },
+        {
+          "id": "d",
+          "text": "48%",
+          "whyWrong": "This averages the utilization at the mean with the utilization at the peak. Nothing in the game runs at that average: the week is resolved at the peak, and a component sized for a blend is short when the busy hour arrives."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak load is 60 × 3 = 180/s, and utilization is received ÷ capacity at peak, so 180 ÷ 250. Every latency and error figure in the game is resolved at that busiest hour rather than at the mean.",
+    "tags": [
+      "utilization",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-utilization-from-load",
+      "params": {
+        "meanRps": 60,
+        "peakMultiplier": 3,
+        "capacityRps": 250
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-utilization-from-load-0007",
+    "conceptId": "capacity-and-utilization",
+    "depth": 1,
+    "prompt": "An app server has a capacity of 800/s. Traffic averages 200/s and its busiest hour runs at 2.5 times that. What is the server's utilization at peak, as a percentage?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "63%"
+        },
+        {
+          "id": "b",
+          "text": "25%",
+          "whyWrong": "This measures the weekly mean against capacity. The game resolves every week at its busiest hour, so the figure that matters is the peak, which is higher by the whole peak multiplier."
+        },
+        {
+          "id": "c",
+          "text": "38%",
+          "whyWrong": "This is the share of capacity still free, not the share in use. The two add up to 100%, and it is the used share that drives the latency curve."
+        },
+        {
+          "id": "d",
+          "text": "44%",
+          "whyWrong": "This averages the utilization at the mean with the utilization at the peak. Nothing in the game runs at that average: the week is resolved at the peak, and a component sized for a blend is short when the busy hour arrives."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak load is 200 × 2.5 = 500/s, and utilization is received ÷ capacity at peak, so 500 ÷ 800. Every latency and error figure in the game is resolved at that busiest hour rather than at the mean.",
+    "tags": [
+      "utilization",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-utilization-from-load",
+      "params": {
+        "meanRps": 200,
+        "peakMultiplier": 2.5,
+        "capacityRps": 800
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-utilization-from-load-0008",
+    "conceptId": "capacity-and-utilization",
+    "depth": 1,
+    "prompt": "An app server has a capacity of 800/s. Traffic averages 240/s and its busiest hour runs at 1.5 times that. What is the server's utilization at peak, as a percentage?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "45%"
+        },
+        {
+          "id": "b",
+          "text": "30%",
+          "whyWrong": "This measures the weekly mean against capacity. The game resolves every week at its busiest hour, so the figure that matters is the peak, which is higher by the whole peak multiplier."
+        },
+        {
+          "id": "c",
+          "text": "55%",
+          "whyWrong": "This is the share of capacity still free, not the share in use. The two add up to 100%, and it is the used share that drives the latency curve."
+        },
+        {
+          "id": "d",
+          "text": "38%",
+          "whyWrong": "This averages the utilization at the mean with the utilization at the peak. Nothing in the game runs at that average: the week is resolved at the peak, and a component sized for a blend is short when the busy hour arrives."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak load is 240 × 1.5 = 360/s, and utilization is received ÷ capacity at peak, so 360 ÷ 800. Every latency and error figure in the game is resolved at that busiest hour rather than at the mean.",
+    "tags": [
+      "utilization",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-utilization-from-load",
+      "params": {
+        "meanRps": 240,
+        "peakMultiplier": 1.5,
+        "capacityRps": 800
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-utilization-from-load-0009",
+    "conceptId": "capacity-and-utilization",
+    "depth": 1,
+    "prompt": "An app server has a capacity of 400/s. Traffic averages 150/s and its busiest hour runs at 2 times that. What is the server's utilization at peak, as a percentage?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "75%"
+        },
+        {
+          "id": "b",
+          "text": "38%",
+          "whyWrong": "This measures the weekly mean against capacity. The game resolves every week at its busiest hour, so the figure that matters is the peak, which is higher by the whole peak multiplier."
+        },
+        {
+          "id": "c",
+          "text": "25%",
+          "whyWrong": "This is the share of capacity still free, not the share in use. The two add up to 100%, and it is the used share that drives the latency curve."
+        },
+        {
+          "id": "d",
+          "text": "56%",
+          "whyWrong": "This averages the utilization at the mean with the utilization at the peak. Nothing in the game runs at that average: the week is resolved at the peak, and a component sized for a blend is short when the busy hour arrives."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak load is 150 × 2 = 300/s, and utilization is received ÷ capacity at peak, so 300 ÷ 400. Every latency and error figure in the game is resolved at that busiest hour rather than at the mean.",
+    "tags": [
+      "utilization",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-utilization-from-load",
+      "params": {
+        "meanRps": 150,
+        "peakMultiplier": 2,
+        "capacityRps": 400
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-utilization-from-load-0010",
+    "conceptId": "capacity-and-utilization",
+    "depth": 1,
+    "prompt": "An app server has a capacity of 400/s. Traffic averages 140/s and its busiest hour runs at 1.5 times that. What is the server's utilization at peak, as a percentage?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "53%"
+        },
+        {
+          "id": "b",
+          "text": "35%",
+          "whyWrong": "This measures the weekly mean against capacity. The game resolves every week at its busiest hour, so the figure that matters is the peak, which is higher by the whole peak multiplier."
+        },
+        {
+          "id": "c",
+          "text": "48%",
+          "whyWrong": "This is the share of capacity still free, not the share in use. The two add up to 100%, and it is the used share that drives the latency curve."
+        },
+        {
+          "id": "d",
+          "text": "44%",
+          "whyWrong": "This averages the utilization at the mean with the utilization at the peak. Nothing in the game runs at that average: the week is resolved at the peak, and a component sized for a blend is short when the busy hour arrives."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak load is 140 × 1.5 = 210/s, and utilization is received ÷ capacity at peak, so 210 ÷ 400. Every latency and error figure in the game is resolved at that busiest hour rather than at the mean.",
+    "tags": [
+      "utilization",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-utilization-from-load",
+      "params": {
+        "meanRps": 140,
+        "peakMultiplier": 1.5,
+        "capacityRps": 400
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-utilization-from-load-0011",
+    "conceptId": "capacity-and-utilization",
+    "depth": 1,
+    "prompt": "An app server has a capacity of 200/s. Traffic averages 50/s and its busiest hour runs at 2.5 times that. What is the server's utilization at peak, as a percentage?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "63%"
+        },
+        {
+          "id": "b",
+          "text": "25%",
+          "whyWrong": "This measures the weekly mean against capacity. The game resolves every week at its busiest hour, so the figure that matters is the peak, which is higher by the whole peak multiplier."
+        },
+        {
+          "id": "c",
+          "text": "38%",
+          "whyWrong": "This is the share of capacity still free, not the share in use. The two add up to 100%, and it is the used share that drives the latency curve."
+        },
+        {
+          "id": "d",
+          "text": "44%",
+          "whyWrong": "This averages the utilization at the mean with the utilization at the peak. Nothing in the game runs at that average: the week is resolved at the peak, and a component sized for a blend is short when the busy hour arrives."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak load is 50 × 2.5 = 125/s, and utilization is received ÷ capacity at peak, so 125 ÷ 200. Every latency and error figure in the game is resolved at that busiest hour rather than at the mean.",
+    "tags": [
+      "utilization",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-utilization-from-load",
+      "params": {
+        "meanRps": 50,
+        "peakMultiplier": 2.5,
+        "capacityRps": 200
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-utilization-from-load-0012",
+    "conceptId": "capacity-and-utilization",
+    "depth": 1,
+    "prompt": "An app server has a capacity of 800/s. Traffic averages 160/s and its busiest hour runs at 2.5 times that. What is the server's utilization at peak, as a percentage?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "50%"
+        },
+        {
+          "id": "b",
+          "text": "20%",
+          "whyWrong": "This measures the weekly mean against capacity. The game resolves every week at its busiest hour, so the figure that matters is the peak, which is higher by the whole peak multiplier."
+        },
+        {
+          "id": "c",
+          "text": "35%",
+          "whyWrong": "This averages the utilization at the mean with the utilization at the peak. Nothing in the game runs at that average: the week is resolved at the peak, and a component sized for a blend is short when the busy hour arrives."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak load is 160 × 2.5 = 400/s, and utilization is received ÷ capacity at peak, so 400 ÷ 800. Every latency and error figure in the game is resolved at that busiest hour rather than at the mean.",
+    "tags": [
+      "utilization",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-utilization-from-load",
+      "params": {
+        "meanRps": 160,
+        "peakMultiplier": 2.5,
+        "capacityRps": 800
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-utilization-from-load-0013",
+    "conceptId": "capacity-and-utilization",
+    "depth": 1,
+    "prompt": "An app server has a capacity of 1000/s. Traffic averages 290/s and its busiest hour runs at 3 times that. What is the server's utilization at peak, as a percentage?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "87%"
+        },
+        {
+          "id": "b",
+          "text": "29%",
+          "whyWrong": "This measures the weekly mean against capacity. The game resolves every week at its busiest hour, so the figure that matters is the peak, which is higher by the whole peak multiplier."
+        },
+        {
+          "id": "c",
+          "text": "13%",
+          "whyWrong": "This is the share of capacity still free, not the share in use. The two add up to 100%, and it is the used share that drives the latency curve."
+        },
+        {
+          "id": "d",
+          "text": "58%",
+          "whyWrong": "This averages the utilization at the mean with the utilization at the peak. Nothing in the game runs at that average: the week is resolved at the peak, and a component sized for a blend is short when the busy hour arrives."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak load is 290 × 3 = 870/s, and utilization is received ÷ capacity at peak, so 870 ÷ 1000. Every latency and error figure in the game is resolved at that busiest hour rather than at the mean.",
+    "tags": [
+      "utilization",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-utilization-from-load",
+      "params": {
+        "meanRps": 290,
+        "peakMultiplier": 3,
+        "capacityRps": 1000
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-utilization-from-load-0014",
+    "conceptId": "capacity-and-utilization",
+    "depth": 1,
+    "prompt": "An app server has a capacity of 800/s. Traffic averages 230/s and its busiest hour runs at 3 times that. What is the server's utilization at peak, as a percentage?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "86%"
+        },
+        {
+          "id": "b",
+          "text": "29%",
+          "whyWrong": "This measures the weekly mean against capacity. The game resolves every week at its busiest hour, so the figure that matters is the peak, which is higher by the whole peak multiplier."
+        },
+        {
+          "id": "c",
+          "text": "14%",
+          "whyWrong": "This is the share of capacity still free, not the share in use. The two add up to 100%, and it is the used share that drives the latency curve."
+        },
+        {
+          "id": "d",
+          "text": "57%",
+          "whyWrong": "This averages the utilization at the mean with the utilization at the peak. Nothing in the game runs at that average: the week is resolved at the peak, and a component sized for a blend is short when the busy hour arrives."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak load is 230 × 3 = 690/s, and utilization is received ÷ capacity at peak, so 690 ÷ 800. Every latency and error figure in the game is resolved at that busiest hour rather than at the mean.",
+    "tags": [
+      "utilization",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-utilization-from-load",
+      "params": {
+        "meanRps": 230,
+        "peakMultiplier": 3,
+        "capacityRps": 800
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-utilization-from-load-0015",
+    "conceptId": "capacity-and-utilization",
+    "depth": 1,
+    "prompt": "An app server has a capacity of 400/s. Traffic averages 110/s and its busiest hour runs at 3 times that. What is the server's utilization at peak, as a percentage?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "83%"
+        },
+        {
+          "id": "b",
+          "text": "28%",
+          "whyWrong": "This measures the weekly mean against capacity. The game resolves every week at its busiest hour, so the figure that matters is the peak, which is higher by the whole peak multiplier."
+        },
+        {
+          "id": "c",
+          "text": "18%",
+          "whyWrong": "This is the share of capacity still free, not the share in use. The two add up to 100%, and it is the used share that drives the latency curve."
+        },
+        {
+          "id": "d",
+          "text": "55%",
+          "whyWrong": "This averages the utilization at the mean with the utilization at the peak. Nothing in the game runs at that average: the week is resolved at the peak, and a component sized for a blend is short when the busy hour arrives."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak load is 110 × 3 = 330/s, and utilization is received ÷ capacity at peak, so 330 ÷ 400. Every latency and error figure in the game is resolved at that busiest hour rather than at the mean.",
+    "tags": [
+      "utilization",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-utilization-from-load",
+      "params": {
+        "meanRps": 110,
+        "peakMultiplier": 3,
+        "capacityRps": 400
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-utilization-from-load-0016",
+    "conceptId": "capacity-and-utilization",
+    "depth": 1,
+    "prompt": "An app server has a capacity of 500/s. Traffic averages 110/s and its busiest hour runs at 1.5 times that. What is the server's utilization at peak, as a percentage?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "33%"
+        },
+        {
+          "id": "b",
+          "text": "22%",
+          "whyWrong": "This measures the weekly mean against capacity. The game resolves every week at its busiest hour, so the figure that matters is the peak, which is higher by the whole peak multiplier."
+        },
+        {
+          "id": "c",
+          "text": "67%",
+          "whyWrong": "This is the share of capacity still free, not the share in use. The two add up to 100%, and it is the used share that drives the latency curve."
+        },
+        {
+          "id": "d",
+          "text": "28%",
+          "whyWrong": "This averages the utilization at the mean with the utilization at the peak. Nothing in the game runs at that average: the week is resolved at the peak, and a component sized for a blend is short when the busy hour arrives."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Peak load is 110 × 1.5 = 165/s, and utilization is received ÷ capacity at peak, so 165 ÷ 500. Every latency and error figure in the game is resolved at that busiest hour rather than at the mean.",
+    "tags": [
+      "utilization",
+      "peak-vs-mean"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-utilization-from-load",
+      "params": {
+        "meanRps": 110,
+        "peakMultiplier": 1.5,
+        "capacityRps": 500
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-latency-at-utilization-0001",
+    "conceptId": "capacity-and-utilization",
+    "depth": 2,
+    "prompt": "A component has a service time of 10 ms and is running at 50% utilization at peak. What is its p99 at that load, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "92 ms"
+        },
+        {
+          "id": "b",
+          "text": "20 ms",
+          "whyWrong": "This is the mean response time, not the 99th percentile. Response times are spread exponentially around the mean, so p99 is about 4.6 times it."
+        },
+        {
+          "id": "c",
+          "text": "14 ms",
+          "whyWrong": "This is the median, which is about 0.69 of the mean. Half of all requests beat it, so it says nothing about the tail the SLO is set on."
+        },
+        {
+          "id": "d",
+          "text": "10 ms",
+          "whyWrong": "This is the service time on its own: what the component takes with nothing queued in front of the request. Under load a request also waits, and that wait is most of the figure."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Two steps. The mean is W = 10 ÷ (1 − 0.5) = 20 ms, and p99 is W × ln 100 ≈ 4.605 W. Stopping at the mean understates what the slowest one in a hundred users waits by more than four times.",
+    "tags": [
+      "latency-curve",
+      "percentiles"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-latency-at-utilization",
+      "params": {
+        "serviceTimeMs": 10,
+        "utilization": 0.5
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-latency-at-utilization-0002",
+    "conceptId": "capacity-and-utilization",
+    "depth": 2,
+    "prompt": "A component has a service time of 6 ms and is running at 85% utilization at peak. What is its p99 at that load, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "184 ms"
+        },
+        {
+          "id": "b",
+          "text": "40 ms",
+          "whyWrong": "This is the mean response time, not the 99th percentile. Response times are spread exponentially around the mean, so p99 is about 4.6 times it."
+        },
+        {
+          "id": "c",
+          "text": "28 ms",
+          "whyWrong": "This is the median, which is about 0.69 of the mean. Half of all requests beat it, so it says nothing about the tail the SLO is set on."
+        },
+        {
+          "id": "d",
+          "text": "33 ms",
+          "whyWrong": "This divides the service time by u rather than by 1 − u. It gets smaller as the component gets busier, which is the opposite of what queueing does."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Two steps. The mean is W = 6 ÷ (1 − 0.85) = 40 ms, and p99 is W × ln 100 ≈ 4.605 W. Stopping at the mean understates what the slowest one in a hundred users waits by more than four times.",
+    "tags": [
+      "latency-curve",
+      "percentiles"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-latency-at-utilization",
+      "params": {
+        "serviceTimeMs": 6,
+        "utilization": 0.85
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-latency-at-utilization-0003",
+    "conceptId": "capacity-and-utilization",
+    "depth": 2,
+    "prompt": "A component has a service time of 12 ms and is running at 60% utilization at peak. What is its p99 at that load, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "138 ms"
+        },
+        {
+          "id": "b",
+          "text": "30 ms",
+          "whyWrong": "This is the mean response time, not the 99th percentile. Response times are spread exponentially around the mean, so p99 is about 4.6 times it."
+        },
+        {
+          "id": "c",
+          "text": "21 ms",
+          "whyWrong": "This is the median, which is about 0.69 of the mean. Half of all requests beat it, so it says nothing about the tail the SLO is set on."
+        },
+        {
+          "id": "d",
+          "text": "92 ms",
+          "whyWrong": "This divides the service time by u rather than by 1 − u. It gets smaller as the component gets busier, which is the opposite of what queueing does."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Two steps. The mean is W = 12 ÷ (1 − 0.6) = 30 ms, and p99 is W × ln 100 ≈ 4.605 W. Stopping at the mean understates what the slowest one in a hundred users waits by more than four times.",
+    "tags": [
+      "latency-curve",
+      "percentiles"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-latency-at-utilization",
+      "params": {
+        "serviceTimeMs": 12,
+        "utilization": 0.6
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-latency-at-utilization-0004",
+    "conceptId": "capacity-and-utilization",
+    "depth": 2,
+    "prompt": "A component has a service time of 4 ms and is running at 80% utilization at peak. What is its p99 at that load, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "92 ms"
+        },
+        {
+          "id": "b",
+          "text": "20 ms",
+          "whyWrong": "This is the mean response time, not the 99th percentile. Response times are spread exponentially around the mean, so p99 is about 4.6 times it."
+        },
+        {
+          "id": "c",
+          "text": "14 ms",
+          "whyWrong": "This is the median, which is about 0.69 of the mean. Half of all requests beat it, so it says nothing about the tail the SLO is set on."
+        },
+        {
+          "id": "d",
+          "text": "23 ms",
+          "whyWrong": "This divides the service time by u rather than by 1 − u. It gets smaller as the component gets busier, which is the opposite of what queueing does."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Two steps. The mean is W = 4 ÷ (1 − 0.8) = 20 ms, and p99 is W × ln 100 ≈ 4.605 W. Stopping at the mean understates what the slowest one in a hundred users waits by more than four times.",
+    "tags": [
+      "latency-curve",
+      "percentiles"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-latency-at-utilization",
+      "params": {
+        "serviceTimeMs": 4,
+        "utilization": 0.8
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-latency-at-utilization-0005",
+    "conceptId": "capacity-and-utilization",
+    "depth": 2,
+    "prompt": "A component has a service time of 4 ms and is running at 85% utilization at peak. What is its p99 at that load, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "123 ms"
+        },
+        {
+          "id": "b",
+          "text": "27 ms",
+          "whyWrong": "This is the mean response time, not the 99th percentile. Response times are spread exponentially around the mean, so p99 is about 4.6 times it."
+        },
+        {
+          "id": "c",
+          "text": "18 ms",
+          "whyWrong": "This is the median, which is about 0.69 of the mean. Half of all requests beat it, so it says nothing about the tail the SLO is set on."
+        },
+        {
+          "id": "d",
+          "text": "22 ms",
+          "whyWrong": "This divides the service time by u rather than by 1 − u. It gets smaller as the component gets busier, which is the opposite of what queueing does."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Two steps. The mean is W = 4 ÷ (1 − 0.85) = 27 ms, and p99 is W × ln 100 ≈ 4.605 W. Stopping at the mean understates what the slowest one in a hundred users waits by more than four times.",
+    "tags": [
+      "latency-curve",
+      "percentiles"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-latency-at-utilization",
+      "params": {
+        "serviceTimeMs": 4,
+        "utilization": 0.85
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-latency-at-utilization-0006",
+    "conceptId": "capacity-and-utilization",
+    "depth": 2,
+    "prompt": "A component has a service time of 15 ms and is running at 85% utilization at peak. What is its p99 at that load, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "461 ms"
+        },
+        {
+          "id": "b",
+          "text": "100 ms",
+          "whyWrong": "This is the mean response time, not the 99th percentile. Response times are spread exponentially around the mean, so p99 is about 4.6 times it."
+        },
+        {
+          "id": "c",
+          "text": "69 ms",
+          "whyWrong": "This is the median, which is about 0.69 of the mean. Half of all requests beat it, so it says nothing about the tail the SLO is set on."
+        },
+        {
+          "id": "d",
+          "text": "81 ms",
+          "whyWrong": "This divides the service time by u rather than by 1 − u. It gets smaller as the component gets busier, which is the opposite of what queueing does."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Two steps. The mean is W = 15 ÷ (1 − 0.85) = 100 ms, and p99 is W × ln 100 ≈ 4.605 W. Stopping at the mean understates what the slowest one in a hundred users waits by more than four times.",
+    "tags": [
+      "latency-curve",
+      "percentiles"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-latency-at-utilization",
+      "params": {
+        "serviceTimeMs": 15,
+        "utilization": 0.85
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-latency-at-utilization-0007",
+    "conceptId": "capacity-and-utilization",
+    "depth": 2,
+    "prompt": "A component has a service time of 10 ms and is running at 95% utilization at peak. What is its p99 at that load, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "921 ms"
+        },
+        {
+          "id": "b",
+          "text": "200 ms",
+          "whyWrong": "This is the mean response time, not the 99th percentile. Response times are spread exponentially around the mean, so p99 is about 4.6 times it."
+        },
+        {
+          "id": "c",
+          "text": "139 ms",
+          "whyWrong": "This is the median, which is about 0.69 of the mean. Half of all requests beat it, so it says nothing about the tail the SLO is set on."
+        },
+        {
+          "id": "d",
+          "text": "48 ms",
+          "whyWrong": "This divides the service time by u rather than by 1 − u. It gets smaller as the component gets busier, which is the opposite of what queueing does."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Two steps. The mean is W = 10 ÷ (1 − 0.95) = 200 ms, and p99 is W × ln 100 ≈ 4.605 W. Stopping at the mean understates what the slowest one in a hundred users waits by more than four times.",
+    "tags": [
+      "latency-curve",
+      "percentiles"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-latency-at-utilization",
+      "params": {
+        "serviceTimeMs": 10,
+        "utilization": 0.95
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-latency-at-utilization-0008",
+    "conceptId": "capacity-and-utilization",
+    "depth": 2,
+    "prompt": "A component has a service time of 8 ms and is running at 70% utilization at peak. What is its p99 at that load, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "123 ms"
+        },
+        {
+          "id": "b",
+          "text": "27 ms",
+          "whyWrong": "This is the mean response time, not the 99th percentile. Response times are spread exponentially around the mean, so p99 is about 4.6 times it."
+        },
+        {
+          "id": "c",
+          "text": "18 ms",
+          "whyWrong": "This is the median, which is about 0.69 of the mean. Half of all requests beat it, so it says nothing about the tail the SLO is set on."
+        },
+        {
+          "id": "d",
+          "text": "53 ms",
+          "whyWrong": "This divides the service time by u rather than by 1 − u. It gets smaller as the component gets busier, which is the opposite of what queueing does."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Two steps. The mean is W = 8 ÷ (1 − 0.7) = 27 ms, and p99 is W × ln 100 ≈ 4.605 W. Stopping at the mean understates what the slowest one in a hundred users waits by more than four times.",
+    "tags": [
+      "latency-curve",
+      "percentiles"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-latency-at-utilization",
+      "params": {
+        "serviceTimeMs": 8,
+        "utilization": 0.7
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-latency-at-utilization-0009",
+    "conceptId": "capacity-and-utilization",
+    "depth": 2,
+    "prompt": "A component has a service time of 20 ms and is running at 85% utilization at peak. What is its p99 at that load, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "614 ms"
+        },
+        {
+          "id": "b",
+          "text": "133 ms",
+          "whyWrong": "This is the mean response time, not the 99th percentile. Response times are spread exponentially around the mean, so p99 is about 4.6 times it."
+        },
+        {
+          "id": "c",
+          "text": "92 ms",
+          "whyWrong": "This is the median, which is about 0.69 of the mean. Half of all requests beat it, so it says nothing about the tail the SLO is set on."
+        },
+        {
+          "id": "d",
+          "text": "108 ms",
+          "whyWrong": "This divides the service time by u rather than by 1 − u. It gets smaller as the component gets busier, which is the opposite of what queueing does."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Two steps. The mean is W = 20 ÷ (1 − 0.85) = 133 ms, and p99 is W × ln 100 ≈ 4.605 W. Stopping at the mean understates what the slowest one in a hundred users waits by more than four times.",
+    "tags": [
+      "latency-curve",
+      "percentiles"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-latency-at-utilization",
+      "params": {
+        "serviceTimeMs": 20,
+        "utilization": 0.85
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-latency-at-utilization-0010",
+    "conceptId": "capacity-and-utilization",
+    "depth": 2,
+    "prompt": "A component has a service time of 8 ms and is running at 95% utilization at peak. What is its p99 at that load, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "737 ms"
+        },
+        {
+          "id": "b",
+          "text": "160 ms",
+          "whyWrong": "This is the mean response time, not the 99th percentile. Response times are spread exponentially around the mean, so p99 is about 4.6 times it."
+        },
+        {
+          "id": "c",
+          "text": "111 ms",
+          "whyWrong": "This is the median, which is about 0.69 of the mean. Half of all requests beat it, so it says nothing about the tail the SLO is set on."
+        },
+        {
+          "id": "d",
+          "text": "39 ms",
+          "whyWrong": "This divides the service time by u rather than by 1 − u. It gets smaller as the component gets busier, which is the opposite of what queueing does."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Two steps. The mean is W = 8 ÷ (1 − 0.95) = 160 ms, and p99 is W × ln 100 ≈ 4.605 W. Stopping at the mean understates what the slowest one in a hundred users waits by more than four times.",
+    "tags": [
+      "latency-curve",
+      "percentiles"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-latency-at-utilization",
+      "params": {
+        "serviceTimeMs": 8,
+        "utilization": 0.95
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-latency-at-utilization-0011",
+    "conceptId": "capacity-and-utilization",
+    "depth": 2,
+    "prompt": "A component has a service time of 15 ms and is running at 75% utilization at peak. What is its p99 at that load, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "276 ms"
+        },
+        {
+          "id": "b",
+          "text": "60 ms",
+          "whyWrong": "This is the mean response time, not the 99th percentile. Response times are spread exponentially around the mean, so p99 is about 4.6 times it."
+        },
+        {
+          "id": "c",
+          "text": "42 ms",
+          "whyWrong": "This is the median, which is about 0.69 of the mean. Half of all requests beat it, so it says nothing about the tail the SLO is set on."
+        },
+        {
+          "id": "d",
+          "text": "92 ms",
+          "whyWrong": "This divides the service time by u rather than by 1 − u. It gets smaller as the component gets busier, which is the opposite of what queueing does."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Two steps. The mean is W = 15 ÷ (1 − 0.75) = 60 ms, and p99 is W × ln 100 ≈ 4.605 W. Stopping at the mean understates what the slowest one in a hundred users waits by more than four times.",
+    "tags": [
+      "latency-curve",
+      "percentiles"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-latency-at-utilization",
+      "params": {
+        "serviceTimeMs": 15,
+        "utilization": 0.75
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-latency-at-utilization-0012",
+    "conceptId": "capacity-and-utilization",
+    "depth": 2,
+    "prompt": "A component has a service time of 6 ms and is running at 60% utilization at peak. What is its p99 at that load, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "69 ms"
+        },
+        {
+          "id": "b",
+          "text": "15 ms",
+          "whyWrong": "This is the mean response time, not the 99th percentile. Response times are spread exponentially around the mean, so p99 is about 4.6 times it."
+        },
+        {
+          "id": "c",
+          "text": "10 ms",
+          "whyWrong": "This is the median, which is about 0.69 of the mean. Half of all requests beat it, so it says nothing about the tail the SLO is set on."
+        },
+        {
+          "id": "d",
+          "text": "46 ms",
+          "whyWrong": "This divides the service time by u rather than by 1 − u. It gets smaller as the component gets busier, which is the opposite of what queueing does."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Two steps. The mean is W = 6 ÷ (1 − 0.6) = 15 ms, and p99 is W × ln 100 ≈ 4.605 W. Stopping at the mean understates what the slowest one in a hundred users waits by more than four times.",
+    "tags": [
+      "latency-curve",
+      "percentiles"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-latency-at-utilization",
+      "params": {
+        "serviceTimeMs": 6,
+        "utilization": 0.6
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-latency-at-utilization-0013",
+    "conceptId": "capacity-and-utilization",
+    "depth": 2,
+    "prompt": "A component has a service time of 12 ms and is running at 90% utilization at peak. What is its p99 at that load, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "553 ms"
+        },
+        {
+          "id": "b",
+          "text": "120 ms",
+          "whyWrong": "This is the mean response time, not the 99th percentile. Response times are spread exponentially around the mean, so p99 is about 4.6 times it."
+        },
+        {
+          "id": "c",
+          "text": "83 ms",
+          "whyWrong": "This is the median, which is about 0.69 of the mean. Half of all requests beat it, so it says nothing about the tail the SLO is set on."
+        },
+        {
+          "id": "d",
+          "text": "61 ms",
+          "whyWrong": "This divides the service time by u rather than by 1 − u. It gets smaller as the component gets busier, which is the opposite of what queueing does."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Two steps. The mean is W = 12 ÷ (1 − 0.9) = 120 ms, and p99 is W × ln 100 ≈ 4.605 W. Stopping at the mean understates what the slowest one in a hundred users waits by more than four times.",
+    "tags": [
+      "latency-curve",
+      "percentiles"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-latency-at-utilization",
+      "params": {
+        "serviceTimeMs": 12,
+        "utilization": 0.9
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-latency-at-utilization-0014",
+    "conceptId": "capacity-and-utilization",
+    "depth": 2,
+    "prompt": "A component has a service time of 4 ms and is running at 90% utilization at peak. What is its p99 at that load, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "184 ms"
+        },
+        {
+          "id": "b",
+          "text": "40 ms",
+          "whyWrong": "This is the mean response time, not the 99th percentile. Response times are spread exponentially around the mean, so p99 is about 4.6 times it."
+        },
+        {
+          "id": "c",
+          "text": "28 ms",
+          "whyWrong": "This is the median, which is about 0.69 of the mean. Half of all requests beat it, so it says nothing about the tail the SLO is set on."
+        },
+        {
+          "id": "d",
+          "text": "20 ms",
+          "whyWrong": "This divides the service time by u rather than by 1 − u. It gets smaller as the component gets busier, which is the opposite of what queueing does."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Two steps. The mean is W = 4 ÷ (1 − 0.9) = 40 ms, and p99 is W × ln 100 ≈ 4.605 W. Stopping at the mean understates what the slowest one in a hundred users waits by more than four times.",
+    "tags": [
+      "latency-curve",
+      "percentiles"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-latency-at-utilization",
+      "params": {
+        "serviceTimeMs": 4,
+        "utilization": 0.9
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-latency-at-utilization-0015",
+    "conceptId": "capacity-and-utilization",
+    "depth": 2,
+    "prompt": "A component has a service time of 5 ms and is running at 75% utilization at peak. What is its p99 at that load, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "92 ms"
+        },
+        {
+          "id": "b",
+          "text": "20 ms",
+          "whyWrong": "This is the mean response time, not the 99th percentile. Response times are spread exponentially around the mean, so p99 is about 4.6 times it."
+        },
+        {
+          "id": "c",
+          "text": "14 ms",
+          "whyWrong": "This is the median, which is about 0.69 of the mean. Half of all requests beat it, so it says nothing about the tail the SLO is set on."
+        },
+        {
+          "id": "d",
+          "text": "31 ms",
+          "whyWrong": "This divides the service time by u rather than by 1 − u. It gets smaller as the component gets busier, which is the opposite of what queueing does."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Two steps. The mean is W = 5 ÷ (1 − 0.75) = 20 ms, and p99 is W × ln 100 ≈ 4.605 W. Stopping at the mean understates what the slowest one in a hundred users waits by more than four times.",
+    "tags": [
+      "latency-curve",
+      "percentiles"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-latency-at-utilization",
+      "params": {
+        "serviceTimeMs": 5,
+        "utilization": 0.75
+      }
+    }
+  },
+  {
+    "id": "q-capacity-and-utilization-d-capacity-latency-at-utilization-0016",
+    "conceptId": "capacity-and-utilization",
+    "depth": 2,
+    "prompt": "A component has a service time of 10 ms and is running at 90% utilization at peak. What is its p99 at that load, to the nearest millisecond?",
+    "kind": {
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "461 ms"
+        },
+        {
+          "id": "b",
+          "text": "100 ms",
+          "whyWrong": "This is the mean response time, not the 99th percentile. Response times are spread exponentially around the mean, so p99 is about 4.6 times it."
+        },
+        {
+          "id": "c",
+          "text": "69 ms",
+          "whyWrong": "This is the median, which is about 0.69 of the mean. Half of all requests beat it, so it says nothing about the tail the SLO is set on."
+        },
+        {
+          "id": "d",
+          "text": "51 ms",
+          "whyWrong": "This divides the service time by u rather than by 1 − u. It gets smaller as the component gets busier, which is the opposite of what queueing does."
+        }
+      ],
+      "correctId": "a"
+    },
+    "explanation": "Two steps. The mean is W = 10 ÷ (1 − 0.9) = 100 ms, and p99 is W × ln 100 ≈ 4.605 W. Stopping at the mean understates what the slowest one in a hundred users waits by more than four times.",
+    "tags": [
+      "latency-curve",
+      "percentiles"
+    ],
+    "status": "active",
+    "reviewStatus": "needs-review",
+    "provenance": {
+      "origin": "derived",
+      "generatedAt": "2026-09-16",
+      "generator": "claude-code/opus-5",
+      "batchId": "d-2026-09-16-capacity-and-utilization",
+      "templateId": "tpl-capacity-latency-at-utilization",
+      "params": {
+        "serviceTimeMs": 10,
+        "utilization": 0.9
+      }
+    }
+  }
+]

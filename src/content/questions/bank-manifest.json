@@ -1,0 +1,364 @@
+{
+  "issued": {
+    "q-capacity-and-utilization-a-0001": {
+      "concept": "capacity-and-utilization",
+      "origin": "authored"
+    },
+    "q-capacity-and-utilization-a-0002": {
+      "concept": "capacity-and-utilization",
+      "origin": "authored"
+    },
+    "q-capacity-and-utilization-a-0003": {
+      "concept": "capacity-and-utilization",
+      "origin": "authored"
+    },
+    "q-capacity-and-utilization-a-0004": {
+      "concept": "capacity-and-utilization",
+      "origin": "authored"
+    },
+    "q-capacity-and-utilization-a-0005": {
+      "concept": "capacity-and-utilization",
+      "origin": "authored"
+    },
+    "q-capacity-and-utilization-a-0006": {
+      "concept": "capacity-and-utilization",
+      "origin": "authored"
+    },
+    "q-capacity-and-utilization-a-0007": {
+      "concept": "capacity-and-utilization",
+      "origin": "authored"
+    },
+    "q-capacity-and-utilization-a-0008": {
+      "concept": "capacity-and-utilization",
+      "origin": "authored"
+    },
+    "q-capacity-and-utilization-a-0009": {
+      "concept": "capacity-and-utilization",
+      "origin": "authored"
+    },
+    "q-capacity-and-utilization-a-0010": {
+      "concept": "capacity-and-utilization",
+      "origin": "authored"
+    },
+    "q-capacity-and-utilization-a-0011": {
+      "concept": "capacity-and-utilization",
+      "origin": "authored"
+    },
+    "q-capacity-and-utilization-a-0012": {
+      "concept": "capacity-and-utilization",
+      "origin": "authored"
+    },
+    "q-capacity-and-utilization-a-0013": {
+      "concept": "capacity-and-utilization",
+      "origin": "authored"
+    },
+    "q-capacity-and-utilization-a-0014": {
+      "concept": "capacity-and-utilization",
+      "origin": "authored"
+    },
+    "q-capacity-and-utilization-a-0015": {
+      "concept": "capacity-and-utilization",
+      "origin": "authored"
+    },
+    "q-capacity-and-utilization-d-capacity-instances-needed-0001": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-instances-needed"
+    },
+    "q-capacity-and-utilization-d-capacity-instances-needed-0002": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-instances-needed"
+    },
+    "q-capacity-and-utilization-d-capacity-instances-needed-0003": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-instances-needed"
+    },
+    "q-capacity-and-utilization-d-capacity-instances-needed-0004": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-instances-needed"
+    },
+    "q-capacity-and-utilization-d-capacity-instances-needed-0005": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-instances-needed"
+    },
+    "q-capacity-and-utilization-d-capacity-instances-needed-0006": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-instances-needed"
+    },
+    "q-capacity-and-utilization-d-capacity-instances-needed-0007": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-instances-needed"
+    },
+    "q-capacity-and-utilization-d-capacity-instances-needed-0008": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-instances-needed"
+    },
+    "q-capacity-and-utilization-d-capacity-instances-needed-0009": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-instances-needed"
+    },
+    "q-capacity-and-utilization-d-capacity-instances-needed-0010": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-instances-needed"
+    },
+    "q-capacity-and-utilization-d-capacity-instances-needed-0011": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-instances-needed"
+    },
+    "q-capacity-and-utilization-d-capacity-instances-needed-0012": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-instances-needed"
+    },
+    "q-capacity-and-utilization-d-capacity-instances-needed-0013": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-instances-needed"
+    },
+    "q-capacity-and-utilization-d-capacity-instances-needed-0014": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-instances-needed"
+    },
+    "q-capacity-and-utilization-d-capacity-instances-needed-0015": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-instances-needed"
+    },
+    "q-capacity-and-utilization-d-capacity-instances-needed-0016": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-instances-needed"
+    },
+    "q-capacity-and-utilization-d-capacity-latency-at-utilization-0001": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-latency-at-utilization"
+    },
+    "q-capacity-and-utilization-d-capacity-latency-at-utilization-0002": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-latency-at-utilization"
+    },
+    "q-capacity-and-utilization-d-capacity-latency-at-utilization-0003": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-latency-at-utilization"
+    },
+    "q-capacity-and-utilization-d-capacity-latency-at-utilization-0004": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-latency-at-utilization"
+    },
+    "q-capacity-and-utilization-d-capacity-latency-at-utilization-0005": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-latency-at-utilization"
+    },
+    "q-capacity-and-utilization-d-capacity-latency-at-utilization-0006": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-latency-at-utilization"
+    },
+    "q-capacity-and-utilization-d-capacity-latency-at-utilization-0007": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-latency-at-utilization"
+    },
+    "q-capacity-and-utilization-d-capacity-latency-at-utilization-0008": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-latency-at-utilization"
+    },
+    "q-capacity-and-utilization-d-capacity-latency-at-utilization-0009": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-latency-at-utilization"
+    },
+    "q-capacity-and-utilization-d-capacity-latency-at-utilization-0010": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-latency-at-utilization"
+    },
+    "q-capacity-and-utilization-d-capacity-latency-at-utilization-0011": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-latency-at-utilization"
+    },
+    "q-capacity-and-utilization-d-capacity-latency-at-utilization-0012": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-latency-at-utilization"
+    },
+    "q-capacity-and-utilization-d-capacity-latency-at-utilization-0013": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-latency-at-utilization"
+    },
+    "q-capacity-and-utilization-d-capacity-latency-at-utilization-0014": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-latency-at-utilization"
+    },
+    "q-capacity-and-utilization-d-capacity-latency-at-utilization-0015": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-latency-at-utilization"
+    },
+    "q-capacity-and-utilization-d-capacity-latency-at-utilization-0016": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-latency-at-utilization"
+    },
+    "q-capacity-and-utilization-d-capacity-utilization-from-load-0001": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-utilization-from-load"
+    },
+    "q-capacity-and-utilization-d-capacity-utilization-from-load-0002": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-utilization-from-load"
+    },
+    "q-capacity-and-utilization-d-capacity-utilization-from-load-0003": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-utilization-from-load"
+    },
+    "q-capacity-and-utilization-d-capacity-utilization-from-load-0004": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-utilization-from-load"
+    },
+    "q-capacity-and-utilization-d-capacity-utilization-from-load-0005": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-utilization-from-load"
+    },
+    "q-capacity-and-utilization-d-capacity-utilization-from-load-0006": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-utilization-from-load"
+    },
+    "q-capacity-and-utilization-d-capacity-utilization-from-load-0007": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-utilization-from-load"
+    },
+    "q-capacity-and-utilization-d-capacity-utilization-from-load-0008": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-utilization-from-load"
+    },
+    "q-capacity-and-utilization-d-capacity-utilization-from-load-0009": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-utilization-from-load"
+    },
+    "q-capacity-and-utilization-d-capacity-utilization-from-load-0010": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-utilization-from-load"
+    },
+    "q-capacity-and-utilization-d-capacity-utilization-from-load-0011": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-utilization-from-load"
+    },
+    "q-capacity-and-utilization-d-capacity-utilization-from-load-0012": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-utilization-from-load"
+    },
+    "q-capacity-and-utilization-d-capacity-utilization-from-load-0013": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-utilization-from-load"
+    },
+    "q-capacity-and-utilization-d-capacity-utilization-from-load-0014": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-utilization-from-load"
+    },
+    "q-capacity-and-utilization-d-capacity-utilization-from-load-0015": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-utilization-from-load"
+    },
+    "q-capacity-and-utilization-d-capacity-utilization-from-load-0016": {
+      "concept": "capacity-and-utilization",
+      "origin": "derived",
+      "template": "tpl-capacity-utilization-from-load"
+    },
+    "q-percentiles-a-0001": {
+      "concept": "percentiles",
+      "origin": "authored"
+    },
+    "q-percentiles-a-0002": {
+      "concept": "percentiles",
+      "origin": "authored"
+    },
+    "q-percentiles-a-0003": {
+      "concept": "percentiles",
+      "origin": "authored"
+    },
+    "q-percentiles-a-0004": {
+      "concept": "percentiles",
+      "origin": "authored"
+    },
+    "q-percentiles-a-0005": {
+      "concept": "percentiles",
+      "origin": "authored"
+    },
+    "q-percentiles-a-0006": {
+      "concept": "percentiles",
+      "origin": "authored"
+    },
+    "q-percentiles-a-0007": {
+      "concept": "percentiles",
+      "origin": "authored"
+    },
+    "q-percentiles-a-0008": {
+      "concept": "percentiles",
+      "origin": "authored"
+    },
+    "q-percentiles-a-0009": {
+      "concept": "percentiles",
+      "origin": "authored"
+    },
+    "q-percentiles-a-0010": {
+      "concept": "percentiles",
+      "origin": "authored"
+    },
+    "q-percentiles-a-0011": {
+      "concept": "percentiles",
+      "origin": "authored"
+    },
+    "q-percentiles-a-0012": {
+      "concept": "percentiles",
+      "origin": "authored"
+    },
+    "q-percentiles-a-0013": {
+      "concept": "percentiles",
+      "origin": "authored"
+    },
+    "q-percentiles-a-0014": {
+      "concept": "percentiles",
+      "origin": "authored"
+    },
+    "q-percentiles-a-0015": {
+      "concept": "percentiles",
+      "origin": "authored"
+    }
+  }
+}
