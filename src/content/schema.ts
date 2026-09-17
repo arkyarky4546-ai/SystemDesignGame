@@ -23,6 +23,12 @@ export type ComponentTier = {
   /** Cost per instance per turn, integer cents. */
   readonly runningCostPerTurnCents: number
   /**
+   * Chance one instance of this size goes down in a given week, 0..1 (02-SIMULATION §5.7).
+   * Content, not balance: a cheaper box is a less reliable box, and that tradeoff is the
+   * lesson (ADR-0050).
+   */
+  readonly failureRatePerTurn: number
+  /**
    * The concept that has to be passed before this size can be chosen, or absent when it's
    * open from the start (00-GAME-DESIGN §4). The smallest size of a placeable component is
    * always open, or a new run couldn't build anything.
@@ -48,9 +54,15 @@ export type ComponentDef = {
   readonly placeable: boolean
   /**
    * Size options, smallest first. A node's `tier` indexes this list. Empty for kinds without
-   * sizes. §5's `failureRatePerTurn` joins when failures are modeled (02-SIMULATION §5.7).
+   * sizes.
    */
   readonly tiers: readonly ComponentTier[]
+  /**
+   * Instance counts above one, and the concept that opens each (ADR-0050). Absent means the
+   * kind runs one instance only. `replicas` is the count being opened, so `{ replicas: 2 }`
+   * is the second instance — N+1, the fix `single-point-of-failure` teaches.
+   */
+  readonly replicaGates?: readonly ReplicaGate[]
   readonly validConnections: {
     /** Kinds this component accepts requests from. */
     readonly upstream: readonly ComponentKind[]
@@ -85,6 +97,38 @@ export const CONCEPT_IDS = [
 ] as const
 
 export type ConceptId = (typeof CONCEPT_IDS)[number]
+
+/**
+ * Concepts 04-CURRICULUM promises but no lesson has been written for yet. A gate may name
+ * one so the catalog can state what will open a component, without inventing the content
+ * that teaches it. Nothing can pass a concept that doesn't exist, so such a gate stays shut
+ * until its id moves to `CONCEPT_IDS` (ADR-0051).
+ */
+export const PLANNED_CONCEPT_IDS = ['single-point-of-failure', 'horizontal-scaling'] as const
+
+export type PlannedConceptId = (typeof PLANNED_CONCEPT_IDS)[number]
+
+/**
+ * What a promised concept will be called, from 04-CURRICULUM. The catalog names the concept
+ * that will open a locked instance count, and the title has to come from somewhere until
+ * the lesson exists. When one is written, its title moves into the concept and drops here.
+ */
+export const PLANNED_CONCEPT_TITLES: Readonly<Record<PlannedConceptId, string>> = {
+  'single-point-of-failure': 'One of everything is zero of something',
+  'horizontal-scaling': 'Adding boxes instead of buying bigger ones',
+}
+
+/** A concept a gate may name: one that exists, or one the curriculum has promised. */
+export type GateConceptId = ConceptId | PlannedConceptId
+
+/**
+ * One instance count a concept opens on a component (ADR-0050). `up-to` opens exactly that
+ * count, so `{ replicas: 2 }` is the second instance; `uncapped` opens every count above.
+ */
+export type ReplicaGate = {
+  readonly gatedBy: GateConceptId
+  readonly opens: { readonly kind: 'up-to'; readonly replicas: number } | { readonly kind: 'uncapped' }
+}
 
 /** A lesson block (03-CONTENT-SCHEMA §2). */
 export type Block =

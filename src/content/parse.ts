@@ -3,6 +3,7 @@ import {
   COMPONENT_KINDS,
   CONCEPT_IDS,
   DEMO_IDS,
+  PLANNED_CONCEPT_IDS,
   type Block,
   type Check,
   type ComponentDef,
@@ -17,6 +18,7 @@ import {
   type Provenance,
   type Question,
   type QuestionKind,
+  type ReplicaGate,
 } from './schema'
 
 // Zod schemas for every content file (03-CONTENT-SCHEMA §8's first rule). Each mirrors a
@@ -32,6 +34,9 @@ const kind = z.enum(COMPONENT_KINDS)
 const conceptId = z.enum(CONCEPT_IDS)
 const cents = z.number().int().nonnegative()
 const positive = z.number().positive()
+// A gate may name a concept the curriculum has promised but nobody has written yet, so it
+// stays shut rather than being absent from the catalog (ADR-0051).
+const gateConceptId = z.enum([...CONCEPT_IDS, ...PLANNED_CONCEPT_IDS])
 const depth = z.union([z.literal(1), z.literal(2), z.literal(3)])
 
 const DiagramNodeSchema: z.ZodType<DiagramNode> = z.object({ id: nonEmpty, kind, tier: z.number().int().nonnegative() })
@@ -133,7 +138,18 @@ const ComponentTierSchema: z.ZodType<ComponentTier> = z.object({
   serviceTimeMs: positive,
   setupCostCents: cents,
   runningCostPerTurnCents: cents,
+  // A rate of 0 would promise hardware that never fails, which is the misconception
+  // `single-point-of-failure` exists to correct, so every size carries a real chance.
+  failureRatePerTurn: z.number().gt(0).lt(1),
   gatedBy: conceptId.optional(),
+})
+
+const ReplicaGateSchema: z.ZodType<ReplicaGate> = z.object({
+  gatedBy: gateConceptId,
+  opens: z.discriminatedUnion('kind', [
+    z.object({ kind: z.literal('up-to'), replicas: z.number().int().min(2) }),
+    z.object({ kind: z.literal('uncapped') }),
+  ]),
 })
 
 export const ComponentDefSchema: z.ZodType<ComponentDef> = z.object({
@@ -142,6 +158,7 @@ export const ComponentDefSchema: z.ZodType<ComponentDef> = z.object({
   gatedBy: conceptId.optional(),
   placeable: z.boolean(),
   tiers: z.array(ComponentTierSchema),
+  replicaGates: z.array(ReplicaGateSchema).optional(),
   validConnections: z.object({
     upstream: z.array(kind),
     downstream: z.array(kind),

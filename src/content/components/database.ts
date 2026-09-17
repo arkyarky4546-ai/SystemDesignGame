@@ -11,11 +11,14 @@ export const database = {
   // bottleneck (ADR-0033). The prices are M9's to tune with the balance harness (ADR-0048).
   // Everything above Small waits on `vertical-scaling`, which the curriculum gives component
   // size upgrades to once `capacity-and-utilization` has opened the app server's (ADR-0040).
+  // Lower failure rates than an app server of the same size: managed data stores are the
+  // part of the stack people pay most to keep up (02-SIMULATION §5.7, ADR-0052). A database
+  // still can't be made redundant — §5.4's replication is Tier 3 — so its outage is total.
   tiers: [
-    { label: 'Small', capacityRps: 15, serviceTimeMs: 6, setupCostCents: 150_00, runningCostPerTurnCents: 30_00 },
-    { label: 'Medium', capacityRps: 50, serviceTimeMs: 6, setupCostCents: 600_00, runningCostPerTurnCents: 80_00, gatedBy: 'vertical-scaling' },
-    { label: 'Large', capacityRps: 200, serviceTimeMs: 5, setupCostCents: 1_800_00, runningCostPerTurnCents: 200_00, gatedBy: 'vertical-scaling' },
-    { label: 'Extra large', capacityRps: 600, serviceTimeMs: 5, setupCostCents: 4_500_00, runningCostPerTurnCents: 450_00, gatedBy: 'vertical-scaling' },
+    { label: 'Small', capacityRps: 15, serviceTimeMs: 6, setupCostCents: 150_00, runningCostPerTurnCents: 30_00, failureRatePerTurn: 0.012 },
+    { label: 'Medium', capacityRps: 50, serviceTimeMs: 6, setupCostCents: 600_00, runningCostPerTurnCents: 80_00, failureRatePerTurn: 0.009, gatedBy: 'vertical-scaling' },
+    { label: 'Large', capacityRps: 200, serviceTimeMs: 5, setupCostCents: 1_800_00, runningCostPerTurnCents: 200_00, failureRatePerTurn: 0.006, gatedBy: 'vertical-scaling' },
+    { label: 'Extra large', capacityRps: 600, serviceTimeMs: 5, setupCostCents: 4_500_00, runningCostPerTurnCents: 450_00, failureRatePerTurn: 0.005, gatedBy: 'vertical-scaling' },
   ],
   validConnections: {
     upstream: ['app-server'],
