@@ -6,6 +6,8 @@ import type { GameStore, LastTurn, SaveProblem } from '../state/store'
 import { StatusBar } from './components/StatusBar'
 import { WeekGuide } from './components/WeekGuide'
 import { CanvasScreen } from './screens/canvas/CanvasScreen'
+import { CheckScreen } from './screens/learning/CheckScreen'
+import { LessonScreen } from './screens/learning/LessonScreen'
 import { TurnReport } from './screens/report/TurnReport'
 import { TURN_ANIMATION_MS, type TurnPlayback } from './turn-playback'
 import { useMediaQuery } from './use-media-query'
@@ -20,6 +22,9 @@ export function App({ store }: { readonly store: StoreApi<GameStore> }) {
   const run = useStore(store, (state) => state.run)
   const lastTurn = useStore(store, (state) => state.ui.lastTurn)
   const guideOpen = useStore(store, (state) => state.ui.guideOpen)
+  const learning = useStore(store, (state) => state.ui.learning)
+  const knowledge = useStore(store, (state) => state.knowledge)
+  const difficulty = useStore(store, (state) => state.settings.difficulty)
   const advanceButton = useRef<HTMLButtonElement | null>(null)
   const guideButton = useRef<HTMLButtonElement | null>(null)
   const guideId = useId()
@@ -82,7 +87,7 @@ export function App({ store }: { readonly store: StoreApi<GameStore> }) {
         <header className="flex flex-wrap items-center gap-x-6 gap-y-1 border-b border-panel-line px-4 py-2">
           <h1 className="text-base font-semibold text-ink-bright">{BRANDING.name}</h1>
           {run && <StatusBar run={run} playback={playback} />}
-          {run && (
+          {run && !learning && (
             <button
               ref={guideButton}
               type="button"
@@ -107,14 +112,37 @@ export function App({ store }: { readonly store: StoreApi<GameStore> }) {
             </button>
           </div>
         )}
-        <CanvasScreen
-          store={store}
-          playback={playback}
-          busy={busy}
-          onAdvance={() => store.getState().advanceTurn()}
-          advanceButtonRef={advanceButton}
-          guide={guideOpen && <WeekGuide id={guideId} focusHeading={guideRequested} onClose={closeGuideFromInside} />}
-        />
+        {learning && run ? (
+          learning.kind === 'lesson' ? (
+            <LessonScreen
+              conceptId={learning.conceptId}
+              onTakeCheck={() => store.getState().openCheck(learning.conceptId)}
+              onClose={() => store.getState().closeLearning()}
+            />
+          ) : (
+            <CheckScreen
+              key={learning.attemptNumber}
+              conceptId={learning.conceptId}
+              attemptNumber={learning.attemptNumber}
+              difficulty={difficulty}
+              knowledge={knowledge}
+              seed={run.seed}
+              onRecord={(attempt) => store.getState().recordCheck(attempt)}
+              onRetake={() => store.getState().openCheck(learning.conceptId)}
+              onRereadLesson={() => store.getState().openLesson(learning.conceptId)}
+              onClose={() => store.getState().closeLearning()}
+            />
+          )
+        ) : (
+          <CanvasScreen
+            store={store}
+            playback={playback}
+            busy={busy}
+            onAdvance={() => store.getState().advanceTurn()}
+            advanceButtonRef={advanceButton}
+            guide={guideOpen && <WeekGuide id={guideId} focusHeading={guideRequested} onClose={closeGuideFromInside} />}
+          />
+        )}
       </div>
       {reportOpen && <TurnReport lastTurn={lastTurn} onClose={() => setDismissed(lastTurn)} />}
     </div>

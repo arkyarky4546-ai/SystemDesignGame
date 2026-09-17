@@ -143,7 +143,18 @@ export function TurnReport({ lastTurn, onClose }: TurnReportProps) {
               )}
               <dt className="font-medium text-ink-bright">Net</dt>
               <dd className="num text-right font-medium text-ink-bright">{formatDollarsAndCents(result.economy.netCents)}</dd>
+              {lastTurn.bonusCents > 0 && (
+                <>
+                  <dt>Learning bonus</dt>
+                  <dd className="num text-right text-ledger">{formatDollarsAndCents(lastTurn.bonusCents)}</dd>
+                </>
+              )}
             </dl>
+            {lastTurn.bonusCents > 0 && (
+              <p className="text-xs leading-relaxed">
+                Paid when you passed a check, so it was already in the cash this week started with. A concept pays once.
+              </p>
+            )}
           </div>
           <div className="flex flex-col gap-2">
             <h3 className="text-sm font-medium text-ink-bright">Reputation</h3>

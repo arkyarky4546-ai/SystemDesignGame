@@ -16,6 +16,9 @@ function setup({ reducedMotion }: { readonly reducedMotion: boolean }) {
   const store = createGameStore({ storage: memoryStorage(), catalog: CONTENT_CATALOG, now: FIXED_NOW })
   store.getState().startRun(1)
   store.setState({ settings: { ...store.getState().settings, reducedMotion } })
+  // This covers the turn loop, not the gate: sizes above Small need `capacity-and-utilization`
+  // from M4b on, so the loop is exercised as a player who has already passed it.
+  store.setState({ knowledge: { unlockedConcepts: ['capacity-and-utilization'], checkHistory: [] } })
   render(<App store={store} />)
   const run = (): RunState => {
     const current = store.getState().run

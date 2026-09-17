@@ -2,7 +2,7 @@ import { useCallback, useMemo, useRef, useState, type ReactNode, type Ref } from
 import { useStore } from 'zustand'
 import type { StoreApi } from 'zustand/vanilla'
 import { COMPONENT_DEFS } from '../../../content/components'
-import type { ComponentKind } from '../../../content/schema'
+import type { ComponentKind, ConceptId } from '../../../content/schema'
 import { forecastTraffic, planTurn, type Architecture, type NodeId, type TickResult } from '../../../engine'
 import { findNode, nearestFreeCell, placeNode } from '../../../state/architecture'
 import { lastResolvedTick } from '../../../state/selectors'
@@ -64,6 +64,7 @@ export function CanvasScreen({ store, playback = null, busy = false, onAdvance, 
   const run = useStore(store, (state) => state.run)
   const catalog = useStore(store, (state) => state.catalog)
   const difficulty = useStore(store, (state) => state.settings.difficulty)
+  const knowledge = useStore(store, (state) => state.knowledge)
   const refusal = useStore(store, (state) => state.ui.turnError)
   const [selection, setSelection] = useState<CanvasSelection>({ kind: 'none' })
   const [message, setMessage] = useState<CanvasMessage | null>(null)
@@ -157,6 +158,8 @@ export function CanvasScreen({ store, playback = null, busy = false, onAdvance, 
     onChange,
     onSelect: setSelection,
     onMessage: setMessage,
+    knowledge,
+    onOpenConcept: (conceptId: ConceptId) => store.getState().openLesson(conceptId),
   }
   const palette = <ComponentPalette catalog={catalog} onDrop={onDrop} onPlace={onPlace} />
   const inspector = <NodeInspector {...inspectorProps} />

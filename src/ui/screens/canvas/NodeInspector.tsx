@@ -1,12 +1,16 @@
 import { useId, useState, type ReactNode } from 'react'
 import { COMPONENT_DEFS } from '../../../content/components'
-import { setupCostCents, type Architecture, type ComponentNode, type Edge, type PricedCatalog, type TickResult } from '../../../engine'
+import { CONCEPTS } from '../../../content/concepts'
+import type { ConceptId } from '../../../content/schema'
+import { setupCostCents, type Architecture, type ComponentNode, type Edge, type Knowledge, type PricedCatalog, type TickResult } from '../../../engine'
 import { connect, connectionRefusal, disconnect, findNode, removeNode, setTier, type Edit } from '../../../state/architecture'
+import { isTierUnlocked, lockedTiers } from '../../../state/unlocks'
 import type { CanvasMessage, CanvasSelection } from '../../canvas/ArchitectureCanvas'
 import { describeConnectionRefusal, describeEditRefusal, nodeName } from '../../canvas/copy'
 import { Term, TermGroup } from '../../components/Term'
 import { formatDollars, formatMs, formatRps, formatUtilization } from '../../format'
 import type { TermId } from '../../glossary'
+import { LOCKED, lockedSizesLine } from '../learning/learning-copy'
 
 type NodeInspectorProps = {
   /** What the next Advance will run: the player's plan. */
@@ -20,6 +24,10 @@ type NodeInspectorProps = {
   readonly onChange: (architecture: Architecture, announcement: string) => void
   readonly onSelect: (selection: CanvasSelection) => void
   readonly onMessage: (message: CanvasMessage) => void
+  /** What the player has learned. Sizes a concept still gates can't be chosen (00-GAME-DESIGN §4). */
+  readonly knowledge: Knowledge
+  /** Opens a concept's lesson, from the line that says which sizes it unlocks. */
+  readonly onOpenConcept: (conceptId: ConceptId) => void
   /** Keeps the empty-state heading for screen readers only, where a surrounding sheet already shows it. */
   readonly headingHidden?: boolean
 }
@@ -136,30 +144,35 @@ function NodeDetails(
       </div>
 
       {def.tiers.length > 0 && (
-        <label className="flex flex-col gap-1 text-xs">
-          Size
-          <select
-            className={`${FIELD} num`}
-            value={node.tier}
-            onChange={(event) =>
-              apply(
-                setTier(architecture, node.id, Number(event.target.value)),
-                `${name} set to ${def.tiers[Number(event.target.value)]?.label ?? 'a new size'}.`,
-              )
-            }
-          >
-            {def.tiers.map((option, index) => {
-              const figures = tiers[index]
-              return (
-                <option key={option.label} value={index}>
-                  {figures
-                    ? `${option.label} · ${formatRps(figures.capacityRps)} · ${formatDollars(figures.runningCostPerTurnCents)} a week`
-                    : option.label}
-                </option>
-              )
-            })}
-          </select>
-        </label>
+        <div className="flex flex-col gap-1">
+          <label className="flex flex-col gap-1 text-xs">
+            Size
+            <select
+              className={`${FIELD} num`}
+              value={node.tier}
+              onChange={(event) => {
+                const chosen = Number(event.target.value)
+                // Disabled options can't be picked, so this only catches a stale render.
+                if (!isTierUnlocked(props.knowledge, node.kind, chosen)) return
+                apply(setTier(architecture, node.id, chosen), `${name} set to ${def.tiers[chosen]?.label ?? 'a new size'}.`)
+              }}
+            >
+              {def.tiers.map((option, index) => {
+                const figures = tiers[index]
+                const unlocked = isTierUnlocked(props.knowledge, node.kind, index)
+                const figuresText = figures
+                  ? `${option.label} · ${formatRps(figures.capacityRps)} · ${formatDollars(figures.runningCostPerTurnCents)} a week`
+                  : option.label
+                return (
+                  <option key={option.label} value={index} disabled={!unlocked && index !== node.tier}>
+                    {unlocked ? figuresText : `${figuresText} · ${LOCKED.optionSuffix}`}
+                  </option>
+                )
+              })}
+            </select>
+          </label>
+          <LockedSizes kind={node.kind} knowledge={props.knowledge} onOpenConcept={props.onOpenConcept} />
+        </div>
       )}
 
       {tier && (
@@ -262,6 +275,36 @@ function NodeDetails(
         </div>
       )}
     </section>
+  )
+}
+
+/**
+ * Which sizes are still locked and what unlocks them (00-GAME-DESIGN §4). It names the
+ * concept rather than the mechanism, and opens its lesson, so the player who hits the
+ * ceiling has one press between them and the thing that lifts it.
+ */
+function LockedSizes({
+  kind,
+  knowledge,
+  onOpenConcept,
+}: {
+  readonly kind: ComponentNode['kind']
+  readonly knowledge: Knowledge
+  readonly onOpenConcept: (conceptId: ConceptId) => void
+}) {
+  const locked = lockedTiers(knowledge, kind)
+  const conceptId = locked[0]?.gatedBy
+  if (!conceptId) return null
+  return (
+    <p className="text-xs leading-relaxed">
+      {lockedSizesLine(
+        locked.map((tier) => tier.label),
+        CONCEPTS[conceptId].title,
+      )}{' '}
+      <button type="button" className="underline decoration-flow decoration-dotted underline-offset-4 hover:text-ink-bright" onClick={() => onOpenConcept(conceptId)}>
+        {LOCKED.openLesson}
+      </button>
+    </p>
   )
 }
 
