@@ -161,5 +161,14 @@ export const BALANCE = {
      * never missed. Placeholder.
      */
     missedQuestionWeight: 3,
+    /**
+     * 09-QUESTION-BANK §5's hard rules on what one check may contain. Not placeholders: the
+     * spec gives these, and they are what stops a check degenerating into arithmetic drill
+     * (too many derived) or into pure recall (too few).
+     */
+    maxDerived: 2,
+    minAuthored: 2,
+    /** Most tags two questions in one draw may share, so a check spreads across the concept. */
+    maxSharedTags: 1,
   },
 } as const
