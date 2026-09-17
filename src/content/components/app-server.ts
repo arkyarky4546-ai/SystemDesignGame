@@ -5,11 +5,13 @@ export const appServer = {
   displayName: 'App server',
   placeable: true,
   // Placeholder figures until M7 (ADR-0033): four steps spanning Act 1's 2.5–250 rps peak.
+  // Everything above Small waits on `capacity-and-utilization`: the curriculum gives server
+  // tier upgrades to that concept, and databases to `vertical-scaling` later (ADR-0040).
   tiers: [
     { label: 'Small', capacityRps: 10, serviceTimeMs: 12, setupCostCents: 100_00, runningCostPerTurnCents: 20_00 },
-    { label: 'Medium', capacityRps: 40, serviceTimeMs: 11, setupCostCents: 400_00, runningCostPerTurnCents: 50_00 },
-    { label: 'Large', capacityRps: 150, serviceTimeMs: 10, setupCostCents: 1_200_00, runningCostPerTurnCents: 120_00 },
-    { label: 'Extra large', capacityRps: 500, serviceTimeMs: 10, setupCostCents: 3_000_00, runningCostPerTurnCents: 300_00 },
+    { label: 'Medium', capacityRps: 40, serviceTimeMs: 11, setupCostCents: 400_00, runningCostPerTurnCents: 50_00, gatedBy: 'capacity-and-utilization' },
+    { label: 'Large', capacityRps: 150, serviceTimeMs: 10, setupCostCents: 1_200_00, runningCostPerTurnCents: 120_00, gatedBy: 'capacity-and-utilization' },
+    { label: 'Extra large', capacityRps: 500, serviceTimeMs: 10, setupCostCents: 3_000_00, runningCostPerTurnCents: 300_00, gatedBy: 'capacity-and-utilization' },
   ],
   validConnections: {
     upstream: ['ingress', 'app-server'],
