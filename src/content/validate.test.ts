@@ -97,6 +97,25 @@ describe('a deliberately broken fixture', () => {
     expect(messages).toContain('concept "capacity-and-utilization" has no depth-2 question')
   })
 
+  it('fails when every question in a concept is one depth (M7b)', () => {
+    const pool = (REAL.questions['capacity-and-utilization'] ?? []).map((question): Question => ({ ...question, depth: 2 }))
+    const messages = messagesFor(withPool('capacity-and-utilization', pool), CAPACITY_QUESTIONS)
+    expect(messages).toContain(
+      'every active question in "capacity-and-utilization" is depth 2; §6 assigns depth per question, not per concept',
+    )
+  })
+
+  it('fails when every authored question in a concept is one depth, even if derived ones vary', () => {
+    const pool = (REAL.questions['capacity-and-utilization'] ?? []).map((question): Question =>
+      question.provenance.origin === 'authored' ? { ...question, depth: 2 } : question,
+    )
+    const messages = messagesFor(withPool('capacity-and-utilization', pool), CAPACITY_QUESTIONS)
+    expect(messages).toContain(
+      'every authored question in "capacity-and-utilization" is depth 2; §6 assigns depth per question, not per concept',
+    )
+    expect(messages.some((message) => message.startsWith('every active question'))).toBe(false)
+  })
+
   it('fails when a prerequisite names a concept that does not exist', () => {
     // The id is a union, so an unknown one only arrives from a hand-edited file or a rename.
     const concept = { ...CAPACITY, prerequisites: ['read-replicas'] } as unknown as Concept

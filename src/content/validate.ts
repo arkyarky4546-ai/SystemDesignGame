@@ -114,6 +114,7 @@ function checkPool(concept: Concept, pool: readonly Question[], say: Say) {
     }
   }
   if (!active.some((question) => question.depth === 2)) say(file, `concept "${concept.id}" has no depth-2 question`)
+  checkDepthSpread(concept, active, file, say)
   if (concept.tier >= 3 && !active.some((question) => question.depth === 3)) {
     say(file, `tier ${concept.tier} concept "${concept.id}" has no depth-3 question`)
   }
@@ -121,6 +122,25 @@ function checkPool(concept: Concept, pool: readonly Question[], say: Say) {
   for (const question of active) {
     if (question.conceptId !== concept.id) say(file, `question "${question.id}" names concept "${question.conceptId}"`)
     checkWhyWrong(question, file, say)
+  }
+}
+
+/**
+ * 09-QUESTION-BANK §6: depth is assigned per question by rubric, and the commonest
+ * miscalibration is giving a whole concept one depth — labelling by topic rather than by what
+ * each question asks. Checked over the pool, and over the authored questions on their own,
+ * since templates fix derived depths and authoring is where the rubric is applied by hand.
+ */
+function checkDepthSpread(concept: Concept, active: readonly Question[], file: string, say: Say) {
+  const depthsOf = (questions: readonly Question[]) => [...new Set(questions.map((question) => question.depth))]
+  const pool = depthsOf(active)
+  if (pool.length === 1) {
+    say(file, `every active question in "${concept.id}" is depth ${pool[0]}; §6 assigns depth per question, not per concept`)
+  }
+  const authored = active.filter((question) => question.provenance.origin === 'authored')
+  const authoredDepths = depthsOf(authored)
+  if (authored.length > 1 && authoredDepths.length === 1) {
+    say(file, `every authored question in "${concept.id}" is depth ${authoredDepths[0]}; §6 assigns depth per question, not per concept`)
   }
 }
 
